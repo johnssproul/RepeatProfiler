@@ -14,7 +14,7 @@ BASE="refbase_"
 commands =$@ 
 
 
-#testing git
+#it works 
 
 
 if [[ -d $3 ]]; then
