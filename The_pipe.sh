@@ -11,10 +11,10 @@ mkdir $The_folder
 
 
 BASE="refbase_"
-commands =$@
+commands =$@ 
 
 
-
+#testing git
 
 
 if [[ -d $3 ]]; then
