@@ -11,10 +11,10 @@ mkdir $The_folder
 
 
 BASE="refbase_"
-commands =$@ 
+commands=$@ 
 
 
-#it works 
+#it works 	
 
 
 if [[ -d $3 ]]; then
@@ -275,12 +275,12 @@ Rscript scripts/All_RP_graphs.R $Number
 mv all_graphs_scaled $The_folder
 
 
-#rm -f The_summary.txt ref_temp.txt
+rm -f The_summary.txt ref_temp.txt bowtie.log Index_conv.txt *db.2*
 
 mv Repeat_Profiler_temp $The_folder
 mv all_depth_cvs $The_folder
 mv The_summary_final.csv Errors_README.log $The_folder 2> /dev/null
-
+mv *Rplots* $The_folder
 
 rm *fofn*
 
