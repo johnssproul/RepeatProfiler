@@ -6,6 +6,31 @@ currentDate=`tr ' ' '_' <<<"$currentDate"`
 rm -f Errors_README.txt
 echo $currentDate
 
+
+commands=$@ 
+
+num_commands=`echo $commands | wc -w `
+
+echo $num_commands
+if ((num_commands == 0 ))
+ then
+
+echo "please use -h flag to view help menu for how to use this tool"
+
+exit 1
+
+fi
+
+if (( num_commands < 4 ))
+ then
+
+echo "Not all madantory flags were used. please review a sample usage using  the  -h flag to view help menu"
+
+exit 1
+
+fi
+
+
 The_folder="$currentDate"
 mkdir $The_folder
 
@@ -280,7 +305,7 @@ rm -f The_summary.txt ref_temp.txt bowtie.log Index_conv.txt *db.2*
 mv Repeat_Profiler_temp $The_folder
 mv all_depth_cvs $The_folder
 mv The_summary_final.csv Errors_README.log $The_folder 2> /dev/null
-mv *Rplots* $The_folder
+mv *Rplots* $The_folder	
 
 rm *fofn*
 
