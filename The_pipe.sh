@@ -9,6 +9,8 @@ echo $currentDate
 
 commands=$@ 
 
+mydir=$(dirname $(readlink -f $0))
+
 num_commands=`echo $commands | wc -w `
 
 echo $num_commands
@@ -52,7 +54,7 @@ elif [[ -f $3 ]]; then
 
 echo "The refrences inputed:"
 
-bash scripts/Fasta_splitter.sh $3
+bash $mydir/Fasta_splitter.sh $3
 
 refs=Repeat_Profiler_temp
 
@@ -92,7 +94,7 @@ echo "$(tail -n +2 $line)" > ref_temp.txt
 
 The_ref_size=`wc -c < ref_temp.txt`
 
-bash scripts/Readmegen.sh
+bash $mydir/Readmegen.sh
 
     bowtie2-build $line $BASE > /dev/null 2> /dev/null
     echo "The name of the reference  sequence whose index was built and currently under analysis :"
@@ -163,7 +165,7 @@ fi
 echo "Bowtie2 alignment settings: $a"
 
 
-bash scripts/map_mpileup.sh $line $4 $2 $p $a 
+bash $mydir/map_mpileup.sh $line $4 $2 $p $a 
 retval=$?
 
 if [ $retval -ne 0 ]; then
@@ -186,7 +188,7 @@ pile_counted_name="${Ref_name}_${F}"
 
 echo $pile_counted_name >> multi_poly_names.txt
 
-python scripts/pileup_basecount_sink.py $pairpile $pile_counted_name $The_ref_size
+python $mydir/pileup_basecount_sink.py $pairpile $pile_counted_name $The_ref_size
 
 
 cp "$pile_counted_name.csv" all_depth_cvs
@@ -199,7 +201,7 @@ stringpile3="_"
 output="$output$stringpile3$stringpile2"
 	
 echo "$output" >> fofn_folders.txt
-Rscript scripts/polymorphism_2.0.R $output
+Rscript $mydir/polymorphism_2.0.R $output
 
 
 
@@ -220,21 +222,21 @@ do
 
 echo $folder_names
 
-Rscript scripts/RP_4.0.R $folder_names
+Rscript $mydir/RP_4.0.R $folder_names
 
 mv $folder_names $the_output
 done < fofn_folders.txt
 
 
-Rscript scripts/All_RP_graphs_reference.R
+Rscript $mydir/All_RP_graphs_reference.R
 
 mv *Plots_all_reads_combined* $the_output
 
-Rscript scripts/multi_Poly_maker.R 
+Rscript $mydir/multi_Poly_maker.R 
 
 mv *all_Poly_reads_graphs_combinded* $the_output
 rm -f phylip.phy
-Rscript scripts/fraction_bases.R > Closely_related_reads_analysis.txt
+Rscript $mydir/fraction_bases.R > Closely_related_reads_analysis.txt
 
 mv phylip.phy $the_output
 
@@ -255,7 +257,7 @@ echo "user_provided.txt wasnt provided, so the graph of correlation between read
 
 fi
 
-Rscript scripts/Corr_test.R $the_output 2> R_correlation_errors.txt
+Rscript $mydir/Corr_test.R $the_output 2> R_correlation_errors.txt
 
 mv R_correlation_errors.txt $the_output
 
@@ -289,13 +291,13 @@ done < fofnrefs.txt
 
 
 #rm -f *csv
-Rscript scripts/The_depth_analyser.R 2> /dev/null
+Rscript $mydir/The_depth_analyser.R 2> /dev/null
 Number=`wc -l < fofn_bam.txt`
 
 rm -f -r all_graphs_scaled
 mkdir all_graphs_scaled
 
-Rscript scripts/All_RP_graphs.R $Number
+Rscript $mydir/All_RP_graphs.R $Number
 #mv *pdf all_graphs_scaled
 mv all_graphs_scaled $The_folder
 
