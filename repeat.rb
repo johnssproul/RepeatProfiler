@@ -31,6 +31,7 @@ class Repeat < Formula
 	bin.install("Corr_test.R")
 	bin.install("All_RP_graphs_reference.R")
 	bin.install("All_RP_graphs.R")
+	bin.install("multi_Poly_maker.R")
 	bin.install("pileup_basecount_sink.py")
 	
 	#system "cp -r scripts bin"
