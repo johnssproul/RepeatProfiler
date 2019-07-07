@@ -1,25 +1,35 @@
 # Documentation: https://docs.brew.sh/Formula-Cookbook
 #                https://rubydoc.brew.sh/Formula
 # PLEASE REMOVE ALL GENERATED COMMENTS BEFORE SUBMITTING YOUR PULL REQUEST!
-class RepeatTest < Formula
+class Repeat < Formula
   desc "yarab"
   homepage "https://github.com/johnssproul/RepeatProfiler/"
-  url "https://github.com/johnssproul/RepeatProfiler/raw/master/Repeatprofiler.tar.gz"
+  url "https://github.com/johnssproul/RepeatProfiler/raw/master/brew_test/repeat-test.tar.gz"
   version "1.1"
   sha256 ""
   # depends_on "cmake" => :build
 
-  def install
-    # ENV.deparallelize  # if your formula fails when building in parallel
-    # Remove unrecognized options if warned by configure
-   ## system "./configure","--prefix=#{prefix}"
-    # system "cmake",  ".", *std_cmake_args
-    #system "cp The_Pipe.sh scripts *  $(brew --prefix)/bin   " # if this fails, try separate make/make install steps
-	system "install.sh #{prefix}"
-	system "cp -r *  #{prefix}"
-	bin.install("The_pipe.sh")
+	
 
-	#system "cp -r 
+
+
+  def install
+		
+	#system "bash install.sh"
+	bin.install("The_pipe.sh")
+	bin.install("Readmegen.sh")
+	bin.install("map_mpileup.sh")
+	bin.install("Fasta_splitter.sh")
+	bin.install("The_depth_analyser.R")
+	bin.install("RP_4.0.R")
+	bin.install("polymorphism_2.0.R")
+	bin.install("fraction_bases.R")
+	bin.install("Corr_test.R")
+	bin.install("All_RP_graphs_reference.R")
+	bin.install("All_RP_graphs.R")
+	bin.install("pileup_basecount_sink.py")
+	
+	#system "cp -r scripts bin"
   
   end
 

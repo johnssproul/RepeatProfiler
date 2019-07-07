@@ -506,8 +506,24 @@ for ( r in 1:NROW(fraction_table)) {
   
 }
 
+codes<-data.frame(codes=character(),meaning=character(),stringsAsFactors = FALSE)
+codes[1,]<- c("A C","M")
+codes[2,]<- c("A G","R")
+codes[3,]<- c("A T","W")
+codes[4,]<- c("C G","S")
+codes[5,]<- c("C T","Y")
+codes[6,]<- c("G T","K")
+codes[7,]<- c("A C G","V")
+codes[8,]<- c("A C T","H")
+codes[9,]<- c("A G T","D")
+codes[10,]<- c("C G T","B")
+codes[11,]<- c("G A T C","N")
 
-codes<-read.csv("scripts/Codes.csv",header = TRUE,stringsAsFactors = FALSE,fileEncoding="UTF-8-BOM")
+
+
+
+
+
 
 for (i in 1:NROW(Polyarray)) {
   
