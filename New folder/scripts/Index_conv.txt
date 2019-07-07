@@ -1,0 +1,6 @@
+Read1	Read2	index
+breve_DNA3799_5M_R1.fq	breve_DNA3799_5M_R2.fq	001
+geopearlis_DNA4731_5M_R1.fq	geopearlis_DNA4731_5M_R2.fq	002
+lividulum_DNA3486_5M_R1.fq	lividulum_DNA3486_5M_R2.fq	003
+saturatum_DNA3313_5M_R1.fq	saturatum_DNA3313_5M_R2.fq	004
+testatum_DNA3088_5M_R1.fq	testatum_DNA3088_5M_R2.fq	005

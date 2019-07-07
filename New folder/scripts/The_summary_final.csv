@@ -1,0 +1,5 @@
+"Reference","Sample_index","Read1","Read2","Total_reads","percent_mapped","Ref_Length","Average_coverage","max_coverage"
+"dmel_rDNA_28S_rDNA_Other_rDNA.fa","S001","5M_isoG_1.gz","5M_isoG_2.fq",500000,0.42,1995,285.439598997494,347
+"dmel_rDNA_28S_rDNA_Other_rDNA.fa","S002","LIB0329_sub1_R1.fastq","LIB0329_sub1_R2.fastq",1000000,0.13,1995,134.851629072682,289
+"dmel_rDNA_ETS_Other_rDNA.fa","S001","5M_isoG_1.gz","5M_isoG_2.fq",500000,0.17,824,270.526699029126,320
+"dmel_rDNA_ETS_Other_rDNA.fa","S002","LIB0329_sub1_R1.fastq","LIB0329_sub1_R2.fastq",1000000,0,824,0,0
