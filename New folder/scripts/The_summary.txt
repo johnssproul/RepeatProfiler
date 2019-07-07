@@ -1,5 +1,0 @@
-Reference	Sample_index	Read1	Read2	Total_reads	percent_mapped
-dmel_rDNA_28S_rDNA_Other_rDNA.fa	S001	5M_isoG_1.gz	5M_isoG_2.fq	500000	0.42
-dmel_rDNA_28S_rDNA_Other_rDNA.fa	S002	LIB0329_sub1_R1.fastq	LIB0329_sub1_R2.fastq	1000000	0.13
-dmel_rDNA_ETS_Other_rDNA.fa	S001	5M_isoG_1.gz	5M_isoG_2.fq	500000	0.17
-dmel_rDNA_ETS_Other_rDNA.fa	S002	LIB0329_sub1_R1.fastq	LIB0329_sub1_R2.fastq	1000000	0.00

@@ -1,9 +1,0 @@
-name_poly
-dmel_rDNA_ITS2_Other_rDNA.fa_001
-dmel_rDNA_ITS2_Other_rDNA.fa_002
-dmel_rDNA_ITS2_Other_rDNA.fa_003
-dmel_rDNA_ITS2_Other_rDNA.fa_004
-dmel_rDNA_ITS2_Other_rDNA.fa_005
-dmel_rDNA_ITS2_Other_rDNA.fa_006
-dmel_rDNA_ITS2_Other_rDNA.fa_007
-dmel_rDNA_ITS2_Other_rDNA.fa_008
