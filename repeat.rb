@@ -12,18 +12,18 @@ class Repeat < Formula
   def install
     system "Rscript", "-e", "install.packages(c('ggplot2','gridExtra'),repos='https://cran.rstudio.com')"
     bin.install("The_pipe.sh")
-    lib.install("Readmegen.sh")
-    lib.install("map_mpileup.sh")
-    lib.install("Fasta_splitter.sh")
-    lib.install("The_depth_analyser.R")
-    lib.install("RP_4.0.R")
-    lib.install("polymorphism_2.0.R")
-    lib.install("fraction_bases.R")
-    lib.install("Corr_test.R")
-    lib.install("All_RP_graphs_reference.R")
-    lib.install("All_RP_graphs.R")
-    lib.install("multi_Poly_maker.R")
-    lib.install("pileup_basecount_sink.py")
+    libexec.install("Readmegen.sh")
+    libexec.install("map_mpileup.sh")
+    libexec.install("Fasta_splitter.sh")
+    libexec.install("The_depth_analyser.R")
+    libexec.install("RP_4.0.R")
+    libexec.install("polymorphism_2.0.R")
+    libexec.install("fraction_bases.R")
+    libexec.install("Corr_test.R")
+    libexec.install("All_RP_graphs_reference.R")
+    libexec.install("All_RP_graphs.R")
+    libexec.install("multi_Poly_maker.R")
+    libexec.install("pileup_basecount_sink.py")
   end
 
   test do

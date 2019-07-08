@@ -11,7 +11,7 @@ commands=$@
 
 #echo "$(brew --cellar repeat)/$(brew list --versions repeat | tr ' ' '\n' | tail -1)/lib this lists all version paths 
 
-mydir=`echo "$(brew --cellar repeat)/1.0/lib"`
+mydir=`echo "$(brew --cellar repeat)/1.0/libexec"`
 
 num_commands=`echo $commands | wc -w `
 
