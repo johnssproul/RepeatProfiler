@@ -314,7 +314,6 @@ mv *Rplots* $The_folder
 rm *fofn*
 
 rm -f -r multi_poly
-rm -f  *multi*
 
 #design of the cow was borrowed from the famous cowsay command
 
