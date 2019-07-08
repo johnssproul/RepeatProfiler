@@ -1,17 +1,13 @@
-# Documentation: https://docs.brew.sh/Formula-Cookbook
-#                https://rubydoc.brew.sh/Formula
-# PLEASE REMOVE ALL GENERATED COMMENTS BEFORE SUBMITTING YOUR PULL REQUEST!
 class Repeat < Formula
   desc "yarab"
   homepage "https://github.com/johnssproul/RepeatProfiler/"
   url "https://github.com/johnssproul/RepeatProfiler/raw/master/repeat-test.tar.gz"
-  version "1.1"
-  sha256 ""
-  # depends_on "cmake" => :build
-	depends_on "r"
-	depends_on "python"
-	depends_on "samtools"
+  version "1.0"
+  sha256 "c27daab16ffeb5b05510c01383264b6daaea5c61b3cd31a053eba9c07fe81987"
 	depends_on "bowtie2"
+	depends_on "python"
+	depends_on "r"
+	depends_on "samtools"
 	
 
 
@@ -21,18 +17,19 @@ class Repeat < Formula
 	
 	#system "bash install.sh"
 	bin.install("The_pipe.sh")
-	bin.install("Readmegen.sh")
-	bin.install("map_mpileup.sh")
-	bin.install("Fasta_splitter.sh")
-	bin.install("The_depth_analyser.R")
-	bin.install("RP_4.0.R")
-	bin.install("polymorphism_2.0.R")
-	bin.install("fraction_bases.R")
-	bin.install("Corr_test.R")
-	bin.install("All_RP_graphs_reference.R")
-	bin.install("All_RP_graphs.R")
-	bin.install("multi_Poly_maker.R")
-	bin.install("pileup_basecount_sink.py")
+	lib.install("Readmegen.sh")
+
+	lib.install("map_mpileup.sh")
+	lib.install("Fasta_splitter.sh")
+	lib.install("The_depth_analyser.R")
+	lib.install("RP_4.0.R")
+	lib.install("polymorphism_2.0.R")
+	lib.install("fraction_bases.R")
+	lib.install("Corr_test.R")
+	lib.install("All_RP_graphs_reference.R")
+	lib.install("All_RP_graphs.R")
+	lib.install("multi_Poly_maker.R")
+	#bin.install("pileup_basecount_sink.py")
 	
 	#system "cp -r scripts bin"
   
