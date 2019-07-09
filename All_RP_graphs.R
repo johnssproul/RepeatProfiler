@@ -1,11 +1,11 @@
-args = commandArgs(trailingOnly=TRUE) #what are the arguments
+args = commandArgs(trailingOnly = TRUE)
 print("this is ALL_RP_GRAPHS SCRIPT")
 
-setwd("/Users/Anya/Documents/GitHub/SproulProject/scriptTest23/scripts")
+#setwd("/Users/Anya/Documents/GitHub/SproulProject/scriptTest23/scripts")
 
 library(ggplot2)
 library(scales)
-library(gridExtra)
+library(ggpubr)
 
 index_conv <- read.table("Index_conv.txt", header = TRUE, stringsAsFactors = FALSE)
 
@@ -15,10 +15,8 @@ multmerge = function(mypath){
   Reduce(function(x, y) {merge(x, y, all = TRUE)}, datalist)
 }
 
-The_path = getwd()
-all_depth_csv = multmerge("all_depth_cvs") #this one returns a null object
-#all_depth_csv = multmerge("temp_cvs")
-
+#The_path = getwd()
+all_depth_csv = multmerge("all_depth_cvs")
 vector_of_averages <- c()
 
 for (i in 2:NCOL(all_depth_csv)) {
@@ -41,19 +39,21 @@ for(i in 2:NCOL(all_depth_csv)){
   name_first <- strsplit(name,"_")
   name_first <- name_first[[1]]
   name_first <- as.numeric(name_first[length(name_first)])
+
   Read1_first = index_conv[name_first,1]
   Read2_first = index_conv[name_first,2]
+
   d <- colnames(all_depth_csv)
   Depth_column = d[i]
 
   if(Read1_first != Read2_first){
-    Title = paste(d[i],"                 ","Read1:",Read1_first,"    Read2:",Read2_first,sep = "")
+    Title = paste(d[i], "                 ", "Read1:", Read1_first, "    Read2:", Read2_first, sep = "")
   }else if(Read1_first == Read2_first){
-    Title = paste(d[i],"                 ","Read:",Read1_first)
+    Title = paste(d[i], "                 ", "Read:", Read1_first)
   }
 
-  df1<-subset(all_depth_csv,select = c("Position",Depth_column))
-  df1<-na.omit(df1)
+  df1 <- subset(all_depth_csv,select = c("Position", Depth_column))
+  df1 <- na.omit(df1)
   colnames(df1)[2] <- "Depth"
 
 ### makes plot 1 ###
@@ -71,33 +71,23 @@ for(i in 2:NCOL(all_depth_csv)){
   scaledVals <- c(0, 0.25, 0.75, 0.8, 1.0)
 
   horizontalPlot <- ggplot(data = df1, aes(x = Position, y = Depth))+
-    geom_bar(aes(color = Depth), alpha = 1, stat = "identity", width = 1.0)+
-    coord_cartesian(xlim = c(0, length(df1$Position)), ylim = c(0, length(df1$Depth)))+  #sets axis range based on data
-    scale_color_gradientn(name = "Depth", breaks = Lbreak, labels = Llabels, rs, colours = colors, values = scaledVals, guide = "colourbar")+ #use custom colors with custom scale, I think
-    #scale_color_gradientn(name = "Depth", colours = colors, guide = "colourbar")+ #use custom colors without custom scale
-
-    #uses the midpoint of the data to exstablish the reference point for the gradient.
-    #scale_color_gradient2(low = "blue", mid = "green", high = "red", midpoint = The_midpoint/2)+
-    #scale_fill_gradient2(low = "blue", mid = "green", high = "red", midpoint = The_midpoint/2)+
-    #midpoint = max(Df2[2])/2)+
-
+    geom_bar(aes(color = Depth, fill = Depth), alpha = 1, stat = "identity", width = 1.0)+
+    scale_colour_gradientn(name = "Depth", breaks = Lbreak, labels = Llabels, rs, colours = colors, values = scaledVals, guide = "colourbar", aesthetics = c("colour", "fill"))+ #use custom colors with custom scale, I think
     theme_bw()+ #to remove grey background
     theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+ #to remove gridlines
     ggtitle(Title)
 
   print(horizontalPlot)
 
-  #Plot1name=paste(d[i],".png",sep="")
-  #ggsave(as.character(Plot1name), Plot1, units = "mm", width = 175, height = 50)
-
   #args[1] is the number of graphs
-  if(N == 5) {
+  if(N == as.numeric(args[1])) {
     Plots_list[[N]] <- horizontalPlot
-    test_ggpubr <- ggarrange(plotlist = Plots_list, ncol = 1)
-    ggexport(test_ggpubr, filename = "test_ggpubr.pdf")
+    All_plots <- ggarrange(plotlist = Plots_list, ncol = 1)
     #All_plots <- do.call(grid.arrange, c(Plots_list,ncol = 1))
-    #the_name = paste("all_graphs_scaled/", Depth_column, ".pdf", sep = "")
+    the_name = paste("all_graphs_scaled/", Depth_column, ".pdf", sep = "")
+    ggexport(All_plots, filename = the_name, width = 25, height = 25)
     #ggsave("the_name.pdf", All_plots, width = 25, height = 25, units = "in",limitsize = TRUE)
+
     All_plots <- NULL
     Plots_list <- list()
     N = 1
@@ -106,7 +96,3 @@ for(i in 2:NCOL(all_depth_csv)){
     N = N + 1
   }
 }
-
-
-
-

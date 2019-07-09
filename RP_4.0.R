@@ -1,17 +1,18 @@
 #!/usr/bin/env Rscript
-setwd("/Users/Anya/Documents/GitHub/SproulProject/scriptTest23/scripts")
+
+#setwd("/Users/Anya/Documents/GitHub/SproulProject/archives/scriptTest23_edits/scripts")
 
 args = commandArgs(trailingOnly=TRUE)
 
 library(ggplot2)
 library(scales)
 
-index_conv <- read.table("Index_conv.txt",header = TRUE,stringsAsFactors = FALSE)
+index_conv <- read.table("Index_conv.txt", header = TRUE, stringsAsFactors = FALSE)
 
 multmerge = function(mypath){
   filenames = list.files(path = mypath, full.names = TRUE)
   datalist = lapply(filenames, function(x){read.csv(file = x,header=T)})
-  Reduce(function(x,y) {merge(x,y,all = TRUE)}, datalist)
+  Reduce(function(x, y) {merge(x, y, all = TRUE)}, datalist)
 }
 
 The_path = getwd()
@@ -20,9 +21,9 @@ all_depth_csv = multmerge("temp_cvs")
 vector_of_averages <- c()
 refrencce_length <- NROW(all_depth_csv)
 
-#name<-args[1]
-name <- "aeruginosum_LIB0206ScoreAdaptTrimDeNovoRibosomalComplex_contig_690.fa_001"
-name_first <- strsplit(name,"_")
+name<-args[1]
+#name <- "aeruginosum_LIB0206ScoreAdaptTrimDeNovoRibosomalComplex_contig_690.fa_001"
+name_first <- strsplit(name, "_")
 name_first <- name_first[[1]]
 name_first <- as.numeric(name_first[length(name_first)])
 
@@ -30,9 +31,9 @@ Read1_first = index_conv[name_first,1]
 Read2_first = index_conv[name_first,2]
 
 if(Read1_first != Read2_first){
-  Title = paste(args[1],"                 ","Read1:",Read1_first,"    Read2:",Read2_first,sep = "")
+  Title = paste(args[1], "                 ", "Read1:",Read1_first, "    Read2:", Read2_first,sep = "")
 }else if(Read1_first == Read2_first){
-  Title = paste(args[1],"                 ","Read:",Read1_first)
+  Title = paste(args[1], "                 ", "Read:",Read1_first)
 }
 
 for (i in 2:NCOL(all_depth_csv)) {
@@ -42,15 +43,14 @@ for (i in 2:NCOL(all_depth_csv)) {
 }
 
 data <- summary(vector_of_averages)
-
 The_midpoint = as.numeric(data[5])
+Depth_column=make.names(args[1])
 
-#Depth_column=make.names(args[1])
-Depth_column = "aeruginosum_LIB0206ScoreAdaptTrimDeNovoRibosomalComplex_contig_690.fa_005"
+#Depth_column = "aeruginosum_LIB0206ScoreAdaptTrimDeNovoRibosomalComplex_contig_690.fa_005"
 
 #Df1 < -read.table("pileup_counted.txt",header=TRUE,fill = TRUE)
 #args[1] = "TIRANT_I_LTR_Gypsy.fa_1"
-df1 <- subset(all_depth_csv,select = c("Position",Depth_column))
+df1 <- subset(all_depth_csv, select = c("Position", Depth_column))
 colnames(df1)[2] <- "Depth"
 
 
@@ -72,25 +72,22 @@ Llabels <-  c(0, l2, l3, l4, l5) #creates vector of labels
 scaledVals <- c(0, 0.25, 0.75, 0.8, 1.0)
 
 horizontalPlot <- ggplot(data = df1, aes(x = Position, y = Depth))+
-  geom_bar(aes(color = Depth), alpha = 1, stat = "identity", width = 1.0)+
-  coord_cartesian(xlim = c(0, length(df1$Position)), ylim = c(0, length(df1$Depth)))+  #sets axis range based on data
-  scale_color_gradientn(name = "Depth", breaks = Lbreak, labels = Llabels, rs, colours = colors, values = scaledVals, guide = "colourbar")+ #use custom colors with custom scale, I think
-  #scale_color_gradientn(name = "Depth", colours = colors, guide = "colourbar")+ #use custom colors without custom scale
-
+  geom_bar(aes(color = Depth, fill = Depth), alpha = 1, stat = "identity", width = 1.0)+
+  #coord_cartesian(xlim = c(0, length(df1$Position)), ylim = c(0, length(df1$Depth)))+  #sets axis range based on data
+  scale_colour_gradientn(name = "Depth", breaks = Lbreak, labels = Llabels, rs, colours = colors, values = scaledVals, guide = "colourbar", aesthetics = c("colour", "fill"))+ #use custom colors with custom scale, I think
+  #scale_color_gradientn(name = "Depth", colours = colors, guide = "colourbar")+
   #uses the midpoint of the data to exstablish the reference point for the gradient.
   #scale_color_gradient2(low = "blue", mid = "green", high = "red", midpoint = The_midpoint/2)+
   #scale_fill_gradient2(low = "blue", mid = "green", high = "red", midpoint = The_midpoint/2)+
       #midpoint = max(Df2[2])/2)+
-
   theme_bw()+ #to remove grey background
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+ #to remove gridlines
-  ggtitle(Title)
+  ggtitle("Title")
 
 print(horizontalPlot)
 #dev.off()
-
-#Plot1name=paste(as.character(args[1]),"/X1.png",sep="")
-#ggsave(as.character(Plot1name), horizontalPlot, units = "mm", width = 175, height = 50)
+Plot1name = paste(as.character(args[1]), "/X1.png", sep="")
+ggsave(as.character(Plot1name), horizontalPlot, units = "mm", width = 175, height = 50)
 horizontalPlot
 ########## Good Above ##########
 
@@ -104,28 +101,26 @@ vals.fun<-function(y){
 }
 
 vals <- lapply(df1[[2]], vals.fun)
-vals
+head(vals)
 y <- unlist(vals)
 mid <- rep(df1$Position, lengths(vals))
 df2 <- data.frame(x = mid-0.4, xend = mid+0.4, y = y, yend = y)
 
 verticalPlot<-ggplot(data = df2, aes(x = x, xend = xend, y = y, yend = yend, color = y))+
   geom_segment(size = 2)+
-  coord_cartesian(xlim = c(0, length(df1$Position)), ylim = c(0, length(df1$Depth)))+  #sets axis range based on data
-  scale_color_gradientn(name = "Depth", breaks = Lbreak, labels = Llabels, rs, colours = colors, values = scaledVals, guide = "colourbar")+ #use custom colors with custom scale, I think
-  #scale_color_gradientn(name = "Depth", colours = colors, guide = "colourbar")+ #use custom colors without custom scale
-  #scale_color_gradient2(low = "blue", mid = "green", high = "red", midpoint = The_midpoint/2)+
-    #midpoint = max(db.new2)/2)+
-  #scale_fill_gradient2(low = "blue", mid = "green", high = "red", midpoint = The_midpoint/2)+
+  #coord_cartesian(xlim = c(0, length(df1$Position)), ylim = c(0, length(df1$Depth)))+  #sets axis range based on data
+  scale_color_gradientn(name = "Depth", colours = colors, guide = "colourbar")+
+  #scale_fill_gradientn(name = "Depth", breaks = Lbreak, labels = Llabels, rs, colours = colors, values = scaledVals, guide = "colourbar")+ #use custom colors with custom scale, I think
+  xlab("Position")+ #rename x axis
+  ylab("Depth")+ #rename y axis
   theme_bw()+ #to remove grey background
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+ #to remove gridlines
   ggtitle(Title)
 
 print(verticalPlot)
 #dev.off()
-
-#Plot2name = paste(as.character(args[1]),"/X2.png",sep="")
-#ggsave(as.character(Plot2name), verticalPlot, units = "mm", width = 175, height = 50)
+Plot2name = paste(as.character(args[1]), "/X2.png", sep="")
+ggsave(as.character(Plot2name), verticalPlot, units = "mm", width = 175, height = 50)
 verticalPlot
 ########## Good Above ##########
 
@@ -133,14 +128,14 @@ verticalPlot
 ########## Plot 3 :: Preparations ##########
 #defines fun.split function that partitions the data into bins of size 10
 #bin size can be increased or decreased based on reference length
-df3.1<-df1[2]
+df3.1 <- df1[2]
 fun.split <- function(x) {
   split(x, ceiling(seq_along(x)/25))
 }
 
 #use lapply to loop through each vector in df1 and execute the function, fun.split
 #this will split each vector into bins with the specified value in each bin.
-df3.2<-lapply(df3.1, fun.split)
+df3.2 <- lapply(df3.1, fun.split)
 print(df3.2)
 
 ##loops through the bins in df3.2 and returns a mean for each bin
@@ -171,15 +166,14 @@ print('Plot 3 :: Solid Plot')
 
 solidPlot <- ggplot(data=means3.df, aes(x=Position, y=Depth))+
   geom_area(fill="royalblue3")+
-  coord_cartesian(xlim = c(0, length(df1$Position)), ylim = c(0, length(df1$Depth)))+  #sets axis range based on data
+  #coord_cartesian(xlim = c(0, length(df1$Position)), ylim = c(0, length(df1$Depth)))+  #sets axis range based on data
   theme_bw()+ #to remove grey background
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+ #to remove gridlines
   ggtitle(Title)
 
 print(solidPlot)
 #dev.off()
-
-#Plot3name=paste(as.character(args[1]),"/X3.png",sep="")
-#ggsave(as.character(Plot3name), solidPlot, units = "mm", width = 175, height = 50)
+Plot3name = paste(as.character(args[1]), "/X3.png", sep="")
+ggsave(as.character(Plot3name), solidPlot, units = "mm", width = 175, height = 50)
 solidPlot
 ########## Good Above ##########

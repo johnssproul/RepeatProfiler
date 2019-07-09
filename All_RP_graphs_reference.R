@@ -1,10 +1,11 @@
 print("this is ALL_RP_GRAPHS_REFRERENCE")
 
-setwd("/Users/Anya/Documents/GitHub/SproulProject/scriptTest23/scripts")
+#setwd("/Users/Anya/Documents/GitHub/SproulProject/scriptTest23/scripts")
 
 library(ggplot2)
 library(scales)
-library(gridExtra)
+library(ggpubr)
+#library(gridExtra)
 
 multmerge = function(mypath){
   filenames = list.files(path = mypath, full.names = TRUE)
@@ -34,26 +35,27 @@ Plots_list <- list()
 for(i in 2:NCOL(all_depth_csv)){
   names_all <- colnames(all_depth_csv)
   name <- names_all[i]
-  name_first <- strsplit(name,'_')
+  name_first <- strsplit(name, '_')
   name_first <- name_first[[1]]
   name_first <- as.numeric(name_first[length(name_first)])
+
   Read1_first = index_conv[name_first,1]
   Read2_first = index_conv[name_first,2]
+
   d <- colnames(all_depth_csv)
   Depth_column = d[i]
 
   if(Read1_first != Read2_first){
-    Title = paste(d[i],"                 ","Read1:",Read1_first,"    Read2:",Read2_first,sep = "")
+    Title = paste(d[i], "                 ", "Read1:", Read1_first, "    Read2:", Read2_first,sep = "")
   }else if(Read1_first == Read2_first){
-    Title = paste(d[i],"                 ","Read:",Read1_first)
+    Title = paste(d[i], "                 ", "Read:", Read1_first)
   }
 
-  #Df1<-read.table("pileup_counted.txt",header=TRUE,fill = TRUE)
-  #args[1]="TIRANT_I_LTR_Gypsy.fa_1"
-  df1<-subset(all_depth_csv,select = c("Position", Depth_column))
-  df1<-na.omit(df1)
+  df1 <- subset(all_depth_csv, select = c("Position", Depth_column))
+  df1 <- na.omit(df1)
   colnames(df1)[2] <- "Depth"
 
+### makes plot 1 ###
   rs <- rescale(df1$Position, to = c(0, 1)) #rescale values of position to be in range 0-1
   colors <- c("blue", "green3", "yellow", "orange", "red") #set colors for gradient
 
@@ -68,27 +70,18 @@ for(i in 2:NCOL(all_depth_csv)){
   scaledVals <- c(0, 0.25, 0.75, 0.8, 1.0)
 
   horizontalPlot <- ggplot(data = df1, aes(x = Position, y = Depth))+
-    geom_bar(aes(color = Depth), alpha = 1, stat = "identity", width = 1.0)+
-    #coord_cartesian(xlim = c(0, length(df1$Position)), ylim = c(0, length(df1$Depth)))+  #sets axis range based on data
-    scale_color_gradientn(name = "Depth", breaks = Lbreak, labels = Llabels, rs, colours = colors, values = scaledVals, guide = "colourbar")+ #use custom colors with custom scale, I think
-    #scale_color_gradientn(name = "Depth", colours = colors, guide = "colourbar")+ #use custom colors without custom scale
-
-    #uses the midpoint of the data to exstablish the reference point for the gradient.
-    #scale_color_gradient2(low = "blue", mid = "green", high = "red", midpoint = The_midpoint/2)+
-    #scale_fill_gradient2(low = "blue", mid = "green", high = "red", midpoint = The_midpoint/2)+
-    #midpoint = max(Df2[2])/2)+
-
+    geom_bar(aes(color = Depth, fill = Depth), alpha = 1, stat = "identity", width = 1.0)+
+    scale_colour_gradientn(name = "Depth", breaks = Lbreak, labels = Llabels, rs, colours = colors, values = scaledVals, guide = "colourbar", aesthetics = c("colour", "fill"))+ #use custom colors with custom scale, I think
     theme_bw()+ #to remove grey background
     theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+ #to remove gridlines
     ggtitle(Title)
 
   print(horizontalPlot)
-  # Plot1name=paste(d[i],".png",sep="")
-  # ggsave(as.character(Plot1name), Plot1, units = "mm", width = 175, height = 50)
 
   Plots_list[[i-1]] <- horizontalPlot
 }
 
-All_plots <- do.call(grid.arrange, c(Plots_list,ncol=1))
-
-ggsave("Plots_all_reads_combined.pdf", All_plots, width = 25, height = 49, units = "in")
+All_plots <- ggarrange(plotlist = Plots_list, ncol = 1)
+#All_plots <- do.call(grid.arrange, c(Plots_list,ncol=1))
+ggexport(All_plots, filename = "Plots_all_reads_combined.pdf", width = 25, height = 25)
+#ggsave("Plots_all_reads_combined.pdf", All_plots, width = 25, height = 49, units = "in")
