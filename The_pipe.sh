@@ -1,5 +1,7 @@
 #!/bin/bash
+
 rm -f *.out *.bam *fofn*
+
 
 currentDate=`date`
 currentDate=`tr ' ' '_' <<<"$currentDate"`
@@ -84,7 +86,7 @@ if [[ -d $3 ]]; then
 
 elif [[ -f $3 ]]; then
 	rm -f -r Repeat_Profiler_temp
-		mkdir Repeat_Profiler_temp
+	mkdir Repeat_Profiler_temp
 
 
 echo "The refrences inputed:"
@@ -308,7 +310,7 @@ mv R_correlation_errors.txt $the_output
 
 mv multi_poly $the_output
 mv multi_poly_names.txt $the_output
-
+	
 mv *.bam *out ReadMe.txt $the_output
 fi # end of pile up 
 mv $the_output $The_folder
@@ -359,7 +361,7 @@ echo "               ||----w |    "
 echo "               ||     ||    "
 fi 
 if [ "$1" == "clean" ]; then
-rm -f -r *bam *fofn* *.out* *multi_poly_names* *_output*
+rm -f -r *bam *fofn* *.out* *multi_poly_names* *_output* *_conv* *summary* *bt2* *ref_temp* *bowtie.log* *ReadMe* *_cvs* *_temp*
 echo "remians of a broken run were cleaned successfuly "
 fi
 if [ "$1" == "-h" ]; then

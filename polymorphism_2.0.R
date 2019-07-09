@@ -18,10 +18,10 @@ Read2_first=index_conv[name_first,2]
 
 if(Read1_first!=Read2_first){
   
-  Title=paste(args[1],"                 ","Read1:",Read1_first,"    Read2:",Read2_first,sep = "")
+  Title=paste(args[1],"Read1:",Read1_first,"Read2:",Read2_first,sep = " ")
 }else if(Read1_first==Read2_first){
   
-  Title=paste(args[1],"                 ","Read:",Read1_first)
+  Title=paste(args[1],"Read:",Read1_first,sep = " ")
   
   
 }
@@ -58,6 +58,6 @@ myPlot <- ggplot(base_countsRed.m, aes(x = Position, y = value, fill = variable,
   #removes gray background
   theme_bw()+
   #To remove gridlines:
-  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),element_text(size = 11, face = "bold"))+ ggtitle(Title)
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),plot.title = element_text(size = 7, face = "bold"))+ ggtitle(Title)
 
 print(myPlot)

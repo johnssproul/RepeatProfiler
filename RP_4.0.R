@@ -29,10 +29,10 @@ Read2_first=index_conv[name_first,2]
 
 if(Read1_first!=Read2_first){
   
-  Title=paste(args[1],"                 ","Read1:",Read1_first,"    Read2:",Read2_first,sep = "")
+  Title=paste(args[1],"Read1:",Read1_first,"Read2:",Read2_first,sep = " ")
 }else if(Read1_first==Read2_first){
   
-  Title=paste(args[1],"                 ","Read:",Read1_first)
+  Title=paste(args[1],"Read:",Read1_first,sep = " ")
   
   
 }
@@ -93,7 +93,7 @@ Plot1<-ggplot(data=Df2, aes(x=Position, y=Depth))+
   #to remove gray background
   theme_bw()+
   #To remove gridlines:
-  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + ggtitle(Title)
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),plot.title = element_text(size = 5, face = "bold"))+ ggtitle(Title)
 
 ###########
 #This is a cool way to make the color gradient way prettier, but it may not let us specify a midpoint that puts all plots on the same scale. Need to check.
@@ -160,7 +160,7 @@ Plot2<-ggplot(data = d2, aes(x = x, xend = xend, y = y, yend = yend, color = y))
   
   theme_bw()+
   #To remove gridlines:
-  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),element_text(size = 11, face = "bold"))+ ggtitle(Title)
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),plot.title = element_text(size = 5, face = "bold"))+ ggtitle(Title)
 
 print(Plot2)
 #dev.off()
@@ -238,7 +238,7 @@ Plot3<-ggplot(data=db.2, aes(x=Position, y=Depth))+
   #to remove gray background
   theme_bw()+
   #To remove gridlines:
-  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + ggtitle(Title)
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),plot.title = element_text(size = 5, face = "bold"))+ ggtitle(Title)
 
 #This uses the midpoint of the data to exstablish the reference point for the gradient.
 #scale_color_gradient2(low = "blue", mid = "green", high = "red",
