@@ -15,7 +15,6 @@ commands=$@
 mydir=`pwd`
 num_commands=`echo $commands | wc -w `
 
-echo $num_commands
 if ((num_commands == 0 ))
  then
 
@@ -24,6 +23,35 @@ echo "please use -h flag to view help menu for how to use this tool"
 exit 1
 
 fi
+
+
+
+if  [[ $1 == "pileup" ]] ||  [[ $1  ==  "clean" ]] || [[ $1 ==  "-h" ]]; then
+
+echo "" > /dev/null
+
+
+else
+
+echo "wrong command structure please use -h to view a sample command or refer to the manual"
+exit 1
+
+
+fi
+if [ "$1" == "pileup" ]; then
+
+if  [[ $2 == "-u" ]] ||  [[ $2  ==  "-p" ]]; then
+
+echo "" > /dev/null
+
+
+else
+
+echo "second parameter should be -u or -p"
+exit 1
+
+
+fi 
 
 if (( num_commands < 4 ))
  then
@@ -35,6 +63,8 @@ exit 1
 fi
 
 
+
+
 The_folder="$currentDate"
 mkdir $The_folder
 
@@ -44,6 +74,9 @@ commands=$@
 
 
 #it works 	
+
+
+
 
 
 if [[ -d $3 ]]; then
@@ -128,7 +161,6 @@ echo "$the_output" >>fofn_Theoutputs.txt
 numPairpile=1
 
 
-if [ "$1" == "pileup" ]; then
 p=8
 if [[ $@  ==  *"-t"* ]]; then
 
@@ -267,7 +299,7 @@ mv R_correlation_errors.txt $the_output
 
 
 
-fi
+
 
 
 
@@ -325,3 +357,18 @@ echo "        \  (oo)\_______         "
 echo "           (__)\       )\/\  "
 echo "               ||----w |    "
 echo "               ||     ||    "
+fi 
+if [ "$1" == "clean" ]; then
+rm -f -r *bam *fofn* *.out* *multi_poly_names* *_output*
+echo "remians of a broken run were cleaned successfuly "
+fi
+if [ "$1" == "-h" ]; then
+echo "a sample command for profiling will be:"
+echo "The_pipe.sh pileup <-p for paired reads or  -u for unpaired> <the refrence sequence path > <path of the folder containing reads> [opitonal flags]"
+echo ""
+echo "type The_pipe.sh clean to clean up a broken run"
+
+echo "check our github page for more info and what optional flags can be for pileup can be"
+
+fi
+
