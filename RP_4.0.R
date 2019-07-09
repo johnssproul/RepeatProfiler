@@ -160,7 +160,7 @@ Plot2<-ggplot(data = d2, aes(x = x, xend = xend, y = y, yend = yend, color = y))
   
   theme_bw()+
   #To remove gridlines:
-  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+ ggtitle(Title)
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),element_text(size = 11, face = "bold"))+ ggtitle(Title)
 
 print(Plot2)
 #dev.off()
