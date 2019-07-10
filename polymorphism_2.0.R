@@ -28,6 +28,8 @@ if(Read1_first != Read2_first){
 }
 
 #TODO <-- need to update path
+#setwd("/Users/Anya/Documents/GitHub/SproulProjectExtras/PipeTests/test12/Wed_Jul_10_08:09:48_EDT_2019/REsat1.fa_output/REsat1.fa_001")
+
 base_counts <- read.table("pileup_counted.txt", header = TRUE)
 head(base_counts[1])
 
@@ -53,3 +55,8 @@ polymorphPlot <- ggplot(base_countsRed.m, aes(x = Position, y = value, fill = va
   ggtitle(Title)
 
 print(polymorphPlot)
+
+#TODO <-- folder not created yet so giving error --> PlotRname = paste(as.character(args[1]), "/X4.pdf", sep="")
+PlotRname = paste("X4.pdf", sep="")
+ggsave(as.character(PlotRname), polymorphPlot, units = "mm", width = 175, height = 50)
+polymorphPlot

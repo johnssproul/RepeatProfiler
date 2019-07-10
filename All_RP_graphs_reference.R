@@ -56,22 +56,11 @@ for(i in 2:NCOL(all_depth_csv)){
   colnames(df1)[2] <- "Depth"
 
 ### makes plot 1 ###
-  rs <- rescale(df1$Position, to = c(0, 1)) #rescale values of position to be in range 0-1
   colors <- c("blue", "green3", "yellow", "orange", "red") #set colors for gradient
-
-  #sets the aesthetics of the colorbar
-  Lbreak <- c(0, data[2], data[5], data[6], length(df1$Depth)-1000) #sets position of breaks on colorbar
-  l2 <- round(as.numeric(data[2]),0) #sets second break at Q1 of averages
-  l3 <- round(as.numeric(data[5]),0) #sets third break at Q3 of averages
-  l4 <- round(as.numeric(data[6]),0) #sets fourth break at max of averages
-  l5 <- round(length(df1$Depth),0)-1000 #sets last break at 1000 less than maximum depth (label didn't show up at maximum depth)
-  Llabels <-  c(0, l2, l3, l4, l5) #creates vector of labels
-  #TODO <-- figure out how to make values and rescaler on the same scale using quartiles
-  scaledVals <- c(0, 0.25, 0.75, 0.8, 1.0)
 
   horizontalPlot <- ggplot(data = df1, aes(x = Position, y = Depth))+
     geom_bar(aes(color = Depth, fill = Depth), alpha = 1, stat = "identity", width = 1.0)+
-    scale_colour_gradientn(name = "Depth", breaks = Lbreak, labels = Llabels, rs, colours = colors, values = scaledVals, guide = "colourbar", aesthetics = c("colour", "fill"))+ #use custom colors with custom scale, I think
+    scale_colour_gradientn(name = "Depth", colours = colors, guide = "colourbar", aesthetics = c("colour", "fill"))+ #use custom colors with custom scale, I think
     theme_bw()+ #to remove grey background
     theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+ #to remove gridlines
     ggtitle(Title)
@@ -81,7 +70,7 @@ for(i in 2:NCOL(all_depth_csv)){
   Plots_list[[i-1]] <- horizontalPlot
 }
 
-All_plots <- ggarrange(plotlist = Plots_list, ncol = 1)
 #All_plots <- do.call(grid.arrange, c(Plots_list,ncol=1))
-ggexport(All_plots, filename = "Plots_all_reads_combined.pdf", width = 25, height = 25)
+All_plots <- ggarrange(plotlist = Plots_list, nrow = 5, ncol = 1, align = "v", common.legend = TRUE)
 #ggsave("Plots_all_reads_combined.pdf", All_plots, width = 25, height = 49, units = "in")
+ggexport(All_plots, filename = "Plots_all_reads_combined.pdf", width = 25, height = 25)

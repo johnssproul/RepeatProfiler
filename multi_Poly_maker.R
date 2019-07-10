@@ -62,8 +62,8 @@ for (i in 1:NROW(multi_poly_names)) {
   Plots_list[[i]] <- polymorphPlot
 }
 
-All_plots <- ggarrange(plotlist = Plots_list, ncol = 1)
 #All_plots <- do.call(grid.arrange,c(Plots_list,ncol=1))
-ggexport(All_plots, filename = "all_Poly_reads_graphs_combinded.pdf", width = 25, height = 25)
+All_plots <- ggarrange(plotlist = Plots_list, nrow = 5, ncol = 1, align = "v", common.legend = TRUE)
 #ggsave("all_Poly_reads_graphs_combinded.pdf", All_plots, width = 25, height = 49, units = "in")
+ggexport(All_plots, filename = "all_Poly_reads_graphs_combinded.pdf", width = 25, height = 25)
 
