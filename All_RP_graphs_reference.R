@@ -60,7 +60,8 @@ for(i in 2:NCOL(all_depth_csv)){
 
   horizontalPlot <- ggplot(data = df1, aes(x = Position, y = Depth))+
     geom_bar(aes(color = Depth, fill = Depth), alpha = 1, stat = "identity", width = 1.0)+
-    scale_colour_gradientn(name = "Depth", colours = colors, guide = "colourbar", aesthetics = c("colour", "fill"))+ #use custom colors with custom scale, I think
+    scale_colour_gradientn(name = "Depth", colours = colors, guide = "colourbar")+ #use custom colors with custom scale, I think
+    scale_fill_gradientn(colours = colors)+
     theme_bw()+ #to remove grey background
     theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+ #to remove gridlines
     ggtitle(Title)

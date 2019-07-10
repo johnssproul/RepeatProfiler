@@ -51,6 +51,9 @@ Depth_column=make.names(args[1])
 df1 <- subset(all_depth_csv, select = c("Position", Depth_column))
 colnames(df1)[2] <- "Depth"
 
+## scaling ##
+#summary_of_all <- summary(all_depth_csv)
+#rs
 
 ########## Plot 1 :: Horizontal Color Ramp ##########
 print('Plot 1 :: Horizontal Color Ramp')
@@ -70,7 +73,8 @@ Llabels <-  c(0, l2, l3, l4, l5) #creates vector of labels
 
 horizontalPlot <- ggplot(data = df1, aes(x = Position, y = Depth))+
   geom_bar(aes(color = Depth, fill = Depth), alpha = 1, stat = "identity", width = 1.0)+
-  scale_colour_gradientn(name = "Depth", breaks = Lbreak, labels = Llabels, colours = colors, guide = "colourbar", aesthetics = c("colour", "fill"))+ #use custom colors with custom scale, I think
+  scale_colour_gradientn(name = "Depth", breaks = Lbreak, labels = Llabels, colours = colors, guide = "colourbar")+ #use custom colors with custom scale, I think
+  scale_fill_gradientn(colours = colors)+
   #scale_color_gradientn(name = "Depth", colours = colors, guide = "colourbar")+
   #uses the midpoint of the data to exstablish the reference point for the gradient.
   #scale_color_gradient2(low = "blue", mid = "green", high = "red", midpoint = The_midpoint/2)+

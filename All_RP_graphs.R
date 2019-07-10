@@ -11,14 +11,6 @@ library(ggpubr)
 
 index_conv <- read.table("Index_conv.txt", header = TRUE, stringsAsFactors = FALSE)
 
-
-x1 <- seq(from=0, to=1000, by=2)
-y1 <- seq(from=0, to=1000, by=2)
-ggpubrData <- data.frame(x = x1, y = y1)
-plot1 <- ggplot(ggpubrData, aes(x = x, y = y))+
-  geom_bar(stat = "identity", width = 1.0)
-
-
 multmerge = function(mypath){
   filenames = list.files(path = mypath, full.names = TRUE)
   datalist = lapply(filenames, function(x){read.csv(file = x, header = T, check.names = FALSE)})
@@ -73,7 +65,8 @@ for(i in 2:NCOL(all_depth_csv)){
 
   horizontalPlot <- ggplot(data = df1, aes(x = Position, y = Depth))+
     geom_bar(aes(color = Depth, fill = Depth), alpha = 1, stat = "identity", width = 1.0)+
-    scale_colour_gradientn(name = "Depth", colours = colors, guide = "colourbar", aesthetics = c("colour", "fill"))+ #use custom colors with custom scale, I think
+    scale_colour_gradientn(name = "Depth", colours = colors, guide = "colourbar")+ #use custom colors with custom scale, I think
+    scale_fill_gradientn(colours = colors)+
     theme_bw()+ #to remove grey background
     theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+ #to remove gridlines
     ggtitle(Title)
