@@ -1,9 +1,5 @@
 Read1	Read2	index
-ERR418085_chmielewski_val_1.fq	ERR418085_chmielewskii_val_2.fq	001
-ERR418086_chmielewskii_val_1.fq	ERR418086_chmielewskii_val_2.fq	002
-ERR418089_cheesmaniae_val_1.fq	ERR418089_cheesmaniae_val_2.fq	003
-ERR418090_neorickii_val_1.fq	ERR418090_neorickii_val_2.fq	004
-ERR418091_neorickii_val_1.fq	ERR418091_neorickii_val_2.fq	005
-ERR418092_arcanum_val_1.fq	ERR418092_arcanum_val_2.fq	006
-ERR418093_arcanum_val_1.fq	ERR418093_arcanum_val_2.fq	007
-ERR418121_galapagense_val_1.fq	ERR418121_galapagense_val_2.fq	008
+5M_isoG_1.gz	5M_isoG_1.gz	001
+5M_isoG_2.fq	5M_isoG_2.fq	002
+5M_mauG_R1.fq	5M_mauG_R1.fq	003
+5M_mauG_R2.fq	5M_mauG_R2.fq	004

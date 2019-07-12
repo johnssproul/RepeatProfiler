@@ -1,259 +1,171 @@
 #!/usr/bin/env Rscript
+
 args = commandArgs(trailingOnly=TRUE)
-library (ggplot2)
+#args[1] <- "aeruginosum_LIB0206ScoreAdaptTrimDeNovoMtGenome_contig_565.fa_002" #path-specific
 
-index_conv<-read.table("Index_conv.txt",header = TRUE,stringsAsFactors=FALSE)
+library(ggplot2)
 
 
+########## Prepping Data Frame ##########
 multmerge = function(mypath){
-  filenames=list.files(path=mypath, full.names=TRUE)
-  datalist = lapply(filenames, function(x){read.csv(file=x,header=T)})
-  Reduce(function(x,y) {merge(x,y,all = TRUE)}, datalist)
+  filenames = list.files(path = mypath, full.names = TRUE)
+  datalist = lapply(filenames, function(x){read.csv(file = x,header=T)})
+  Reduce(function(x, y) {merge(x, y, all = TRUE)}, datalist)
 }
 
-The_path=getwd()
-all_depth_cvs = multmerge("temp_cvs")
+index_conv <- read.table("Index_conv.txt", header = TRUE, stringsAsFactors = FALSE)
 
-vector_of_averages<- c()
-refrencce_length<-NROW(all_depth_cvs)
-
+all_depth_csv = multmerge("temp_cvs")
 
 name<-args[1]
-name_first<-strsplit(name,"_")
-name_first<-name_first[[1]]
-name_first<-as.numeric(name_first[length(name_first)])
+name_first <- strsplit(name, "_")
+name_first <- name_first[[1]]
+name_first <- as.numeric(name_first[length(name_first)])
 
+Read1_first = index_conv[name_first,1]
+Read2_first = index_conv[name_first,2]
 
-Read1_first=index_conv[name_first,1]
-Read2_first=index_conv[name_first,2]
-
-if(Read1_first!=Read2_first){
-  
+if(Read1_first != Read2_first){
   Title=paste(args[1],"Read1:",Read1_first,"Read2:",Read2_first,sep = " ")
-}else if(Read1_first==Read2_first){
-  
+}else if(Read1_first == Read2_first){
   Title=paste(args[1],"Read:",Read1_first,sep = " ")
-  
-  
 }
 
 
+########## Prep for Standard Scale and Data Set ##########
+max <- 0
+for (i in 2:NCOL(all_depth_csv)) {
+  v <- as.vector(all_depth_csv[,i])
+  v <- na.omit(v)
+  max_column <- max(as.numeric(v))
 
-
-for (i in 2:NCOL(all_depth_cvs)) {
- v<-as.vector(all_depth_cvs[,i])
- 
- sum_coverage<-sum(as.numeric(v), na.rm = TRUE)
- 
- 
- vector_of_averages[i-1]<-sum_coverage/refrencce_length
- 
-  
-  
+  if(max_column > max) {
+    max <- max_column
+  }
 }
-  
-data<- summary(vector_of_averages)
 
+Depth_column = make.names(args[1])
 
-The_midpoint=as.numeric(data[5])
+df1 <- subset(all_depth_csv, select = c("Position", Depth_column))
+df1 <- na.omit(df1)
+colnames(df1)[2] <- "Depth"
 
+#determines split based on number of positions; this can be changed however you want it -- this n value is also used for plot 3
+if ((length(df1$Position) < 1000) || max(df1$Depth) < 800) {
+  n <- 1
+} else {
+  n <- 20
+}
 
+colors <- c("blue", "green3", "yellow", "orange", "red", "red")
 
+########## Plot 1 :: Horizontal Color Ramp ##########
+print('Plot 1 :: Horizontal Color Ramp')
 
-Depth_column=make.names(args[1])
-
-
-#Df1<-read.table("pileup_counted.txt",header=TRUE,fill = TRUE)
-#args[1]="TIRANT_I_LTR_Gypsy.fa_1"
-Df2<-subset(all_depth_cvs,select = c("Position",Depth_column))
-
-colnames(Df2)[2] <- "Depth"
-
-
-
-###################### Plot1 is working below ##########################
-
-
-print('Plot1')
-
-#for (i in 2:ncol(db.new2)){
-# print(sp.names2[i])
-
-#png(filename = "DepthPlot1.png", width=2200, height=300)
-
-Plot1<-ggplot(data=Df2, aes(x=Position, y=Depth))+
-  geom_bar(aes(color=Depth, fill=Depth), alpha = 1, stat="identity")+
-  
-  #This uses the midpoint of the data to exstablish the reference point for the gradient.
-  scale_color_gradient2(low = "blue", mid = "green", high = "red",
-                        midpoint = The_midpoint/2)+
-  scale_fill_gradient2(low = "blue", mid = "green", high = "red",
-                       midpoint = The_midpoint/2)+
-  #midpoint = max(Df2[2])/2)+
-  #to remove gray background
-  theme_bw()+
-  #To remove gridlines:
+horizontalPlot <- ggplot(data = df1, aes(x = Position, y = Depth))+
+  geom_bar(aes(color = Depth, fill = Depth), alpha = 1, stat = "identity", width = 1.0)+
+  scale_colour_gradientn(name = "Depth", values = c(0, .20, .30, .50, .80, 1.0), colours = colors, limits = c(0, max), guide = "colourbar")+
+  scale_fill_gradientn(name = "Depth", values = c(0, .20, .30, .50, .80, 1.0), colours = colors, limits = c(0, max), guide = "colourbar")+
+  theme_bw()+ #to remove grey background
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),plot.title = element_text(size = 5, face = "bold"))+ ggtitle(Title)
 
-###########
-#This is a cool way to make the color gradient way prettier, but it may not let us specify a midpoint that puts all plots on the same scale. Need to check.
-#Plot1+scale_color_gradientn(colours = c("blue", "green3", "yellow", "orange", "red")) #rainbow(5))
-###########
+#print(horizontalPlot)
 
-print(Plot1)
-#dev.off()
-
-Plot1name=paste(as.character(args[1]),"/X1.png",sep="")
-
-ggsave(as.character(Plot1name), Plot1, units = "mm", width = 175, height = 50)
-
-Plot1
-
-#}
+#Plot1name = paste("X1.png") #path-specific
+Plot1name = paste(as.character(args[1]), "/X1.png", sep="")
+ggsave(as.character(Plot1name), horizontalPlot, units = "mm", width = 175, height = 50)
+########## Good Above ##########
 
 
-############################## Good above ############################
-
-#defines a function for vals needed by Plot2
+########## Prep for Plot 2 ##########
+#defines a function that splits the data for plot 2 by=n
 vals.fun<-function(y){
-  seq(0, y, by=20)
+  seq(0, y, by=n)
 }
 
-
-################### Plot2 code (vert color ramp) #######################
-
-print('Plot2')
-
-
-vals <- lapply(Df2[[2]], vals.fun) ##the syntax 'Df2[[i]]' took forever to get right. I kept trying to do things like db.new2$[i] but you don't use square bracketws with a dollar sign.
-vals
+vals <- lapply(df1[[2]], vals.fun)
+head(vals)
 y <- unlist(vals)
-mid <- rep(Df2$Position, lengths(vals))
-d2 <- data.frame(x = mid - 0.4,
-                 xend = mid + 0.4,
-                 y = y,
-                 yend = y)
+mid <- rep(df1$Position, lengths(vals))
 
-# print(d2)
-
-#Writes a png file named by the species name associated with each iteration of the loop
-#png(filename = "DepthPlot2.png", width=2200, height=300)
+df2 <- data.frame(x = mid-0.5, xend = mid+0.5, y = y, yend = y)
+colnames(df2)[1] <- "Position"
+colnames(df2)[3] <- "Depth"
 
 
-#Uses d2 generated above to plot a vertical gradient profile
-Plot2<-ggplot(data = d2, aes(x = x, xend = xend, y = y, yend = yend, color = y)) +
-  geom_segment(size = 2) +
-  scale_color_gradient2(low = "blue", mid = "green", high = "red", 
-                        #midpoint = 5000)+
-                        #to calculate midpoint from current data vector
-                        midpoint = The_midpoint/2)+
-  #midpoint = max(db.new2)/2)+
-  scale_fill_gradient2(low = "blue", mid = "green", high = "red",
-                       #midpoint = 5000)+
-                       #to calculate midpoint from current data vector
-                       midpoint = The_midpoint/2)+
-  
-  #midpoint = max(db.new2)/2)+
-  
-  #to calculate midpoint relative to whole data set
-  # midpoint = max(d2)/2)
-  
-  theme_bw()+
-  #To remove gridlines:
+########## Plot 2 :: Vertical Color Ramp ##########
+print('Plot 2 :: Vertical Color Ramp')
+
+verticalPlot<-ggplot(data = df2, aes(x = Position, xend = xend, y = Depth, yend = yend, color = Depth))+
+  geom_segment(size = 2)+
+  scale_colour_gradientn(name = "Depth", values = c(0, .20, .30, .50, .80, 1.0), colours = colors, limits = c(0, max), guide = "colourbar")+
+  scale_fill_gradientn(name = "Depth", values = c(0, .20, .30, .50, .80, 1.0), colours = colors, limits = c(0, max), guide = "colourbar")+
+  theme_bw()+ #to remove grey background
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),plot.title = element_text(size = 5, face = "bold"))+ ggtitle(Title)
 
-print(Plot2)
-#dev.off()
-Plot2
-#}
+#print(verticalPlot)
 
-Plot2name=paste(as.character(args[1]),"/X2.png",sep="")
-
-
-ggsave(as.character(Plot2name), Plot2, units = "mm", width = 175, height = 50)
-
-###  ### I tried to make plot 3 smoother by extending the window to 25. The window size should really be calculated individually for each reference based on the total length of the reference in order to keep graphics consistent looking
-############################## Prep for plot 3 same as beginning of the script, but it makes larger bins of data to make for smoother lines on pdf###############################
+#Plot2name = paste("X2.png") #path-specific
+Plot2name = paste(as.character(args[1]), "/X2.png", sep="")
+ggsave(as.character(Plot2name), verticalPlot, units = "mm", width = 175, height = 50)
+########## Good Above ##########
 
 
-#defines fun.split function that partitions the data into bins of size 10. Bin size can be increased or decreased based on reference length
-Df3<-Df2[2]
-fun.split.100<- function(x) {
-  split(x, ceiling(seq_along(x)/25))
+#TODO <-- (is this still an issue?) I tried to make plot 3 smoother by extending the window to 25. The window size should really be calculated individually for each reference based on the total length of the reference in order to keep graphics consistent looking
+########## Plot 3 :: Preparations ##########
+df3.1 <- df1[2]
+
+#defines fun.split function that partitions the data into bins of size n; this can be changed however you want it
+fun.split <- function(x) {
+  split(x, ceiling(seq_along(x)/n))
 }
 
-#use lapply to loop through each vector in Df2 and execute the function 
-#fun.split. This will split each vector into bins with the specified value in each #bin.
+if(n != 1) {
+  #use lapply to loop through each vector in df1 and execute the function, fun.split
+  #this will split each vector into bins with the specified value in each bin.
+  df3.2 <- lapply(df3.1, fun.split)
 
-Df4<-lapply(Df3, fun.split.100)
-print(Df4)
+  ##loops through the bins in df and returns a mean for each bin
+  sp.names3 <- names(df3.2) #makes an object that consists of the names in df3.2, which are the species names
+  means3 <- as.list(rep(NA, length(sp.names3))) #makes an empty list the same length as sp.names; rep replicates the data --> so this line (I think) is making a list with the same length as depth3, but all the values are NA
+  names(means3) <- names(df3.2) #sets names in means3 to same as those in df3.2
 
-#This next bit loops through the bins in Df2.out and returns a mean for each #bin
+  #loops through the bins in df3.2 and returns a mean for each bin
+  for (i in 1:length(df3.2)) {
+    means3[[i]] <- sapply(df3.2[[i]], mean)
+  }
 
-#makes an object that consists of the names in Df2.out, which are the species names
-sp.names3 <- names(Df4)
-
-#makes an empty list the same length as sp.names, not sure what rep means
-mean.list2 <- as.list(rep(NA, length(sp.names3)))
-
-#Sets names in mean.list to same as those in Df2.out
-names(mean.list2) <- names(Df4)
-
-#fills mean.list with info from Df2.out (I think)
-
-for (i in 1:length(Df4)) {
-  mean.list2[[i]] <- sapply(Df4[[i]],mean)
+  #converts means3 to data frame and adds position column
+  df3 <- data.frame(means3, check.rows = TRUE, fix.empty.names = FALSE)
+} else {
+  df3 <- df3.1
 }
 
-#Convert mean.list to a dataframe:
-db<-as.data.frame(mean.list2, row.names=NULL)
-db
-#
-###This works around the fact that the above three lines of code make a data frame that breaks the plot.
-#By writing to a file and re-reading, it fixes the issue...need to find a more elegant solution.
-#write.csv(db.new, file="db.new.csv")
+#creates a vector for positions
+pos <- NULL
+for (i in 1:length(df3$Depth)) {
+  pos[i] <- (i*n)
+}
 
-write.csv(db, file="db.2.csv")
-db.2<-read.csv("db.2.csv", header=TRUE)
+df3$Position <- pos
+names(df3)[1] <- paste("Depth")
 
-#Renames new column to be "x"
-names(db.2)[1]<-paste("Position")
+head(df3)
 
+########## Plot 3 :: Solid Plot ##########
+print('Plot 3 :: Solid Plot')
 
-###################### Plot 3 is below ##########################
-
-# sp.names2<-names(db.new5)
-print('Plot3')
-
-
-# for (i in 2:ncol(db.new5)){
-#   print(sp.names2[i])
-
-#pdf uses file = instead of the png convention filename =
+#TODO <-- do you want the solid plot to be a pdf?
 #pdf(file ="DepthPlot3.pdf", width=900, height=300)
 
-Plot3<-ggplot(data=db.2, aes(x=Position, y=Depth))+
-  #geom_line(aes(color=sp1), alpha = 1/2, stat="identity")+
+solidPlot <- ggplot(data = df3, aes(x = Position, y = Depth))+
   geom_area(fill="royalblue3")+
-  #to remove gray background
-  theme_bw()+
-  #To remove gridlines:
+  theme_bw()+ #to remove grey background
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),plot.title = element_text(size = 5, face = "bold"))+ ggtitle(Title)
 
-#This uses the midpoint of the data to exstablish the reference point for the gradient.
-#scale_color_gradient2(low = "blue", mid = "green", high = "red",
-#midpoint = max(db.new2$sp1)/2)
-#could have done
-#midpoint = 5000)
+#print(solidPlot)
 
-print(Plot3)
-#dev.off()
-Plot3
-
-Plot3name=paste(as.character(args[1]),"/X3.png",sep="")
-
-ggsave(as.character(Plot3name), Plot3, units = "mm", width = 175, height = 50)
-
-#}
-
-########################## good above ################################
+#Plot3name = paste("X3.png") #path-specific
+Plot3name = paste(as.character(args[1]), "/X3.png", sep="")
+ggsave(as.character(Plot3name), solidPlot, units = "mm", width = 175, height = 50)
+########## Good Above ##########

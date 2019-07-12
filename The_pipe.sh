@@ -82,7 +82,13 @@ commands=$@
 
 
 if [[ -d $3 ]]; then
-	refs=$3
+	rm -f -r Repeat_Profiler_temp
+	mkdir Repeat_Profiler_temp
+	echo "The refrences inputed:"
+	path_refs=`cat $3/* > all_refs.fa`
+	bash $mydir/Fasta_splitter.sh all_refs.fa
+
+	refs=Repeat_Profiler_temp
 
 elif [[ -f $3 ]]; then
 	rm -f -r Repeat_Profiler_temp
@@ -352,9 +358,9 @@ rm -f The_summary.txt ref_temp.txt bowtie.log  *db.2*
 mv Repeat_Profiler_temp $The_folder
 mv all_depth_cvs $The_folder
 mv The_summary_final.csv Errors_README.log $The_folder 2> /dev/null
-mv *Rplots* $The_folder	
+rm -f  *Rplots*	
 
-rm -f  *fofn* *.out *.bam
+rm -f  *fofn* *.out *.bam all_refs.fa
 
 #rm -f -r multi_poly
 
@@ -370,7 +376,7 @@ echo "               ||----w |    "
 echo "               ||     ||    "
 fi 
 if [ "$1" == "clean" ]; then
-rm -f -r *bam *fofn* *.out* *multi_poly_names* *_output* *_conv* *summary* *bt2* *ref_temp* *bowtie.log* *ReadMe* *_cvs* *_temp* *db.2* *Rplots*
+rm -f -r *bam *fofn* *.out* *multi_poly_names* *_output* *_conv* *summary* *bt2* *ref_temp* *bowtie.log* *ReadMe* *_cvs* *_temp* *db.2* *Rplots* all_refs.fa
 echo "remians of a broken run were cleaned successfuly "
 fi
 if [ "$1" == "-h" ]; then

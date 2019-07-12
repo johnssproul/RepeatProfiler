@@ -1,4 +1,5 @@
 multi_poly_names<-read.table("multi_poly_names.txt",header = TRUE,stringsAsFactors=FALSE)
+options(warn=-1)
 
 fraction_table<-multi_poly_names
 
