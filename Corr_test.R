@@ -7,6 +7,7 @@ multmerge = function(mypath){
 }
 all_depth_cvs = multmerge("temp_cvs")
 
+
 if(NCOL(all_depth_cvs)>2){
 
 
@@ -75,7 +76,7 @@ for (first in 1:ncol(all_depth_cvs)) {
   name_first<-name_first[[1]]
   name_first<-as.numeric(name_first[length(name_first)])
   Read1_first=index_conv[name_first,"Read1"]
-  f=as.numeric(which(user_supplied$Read1==Read1_first))
+    f=as.numeric(which(user_supplied$Read1==Read1_first))
   group_first=user_supplied[f,"Group"]
   #print(group_first)
   #print(f)

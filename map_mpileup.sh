@@ -25,9 +25,9 @@ DIR=`pwd`
 #makes .txt files containing file names for all R1, R2, and .fa reference files. adds DIR to a slash and wildcard search for a given file type
 if [ $3 = "-p" ]; then
 
-ls ${reads}/*_R1*.fastq ${reads}/*_R1*.gz ${reads}/*_R1*.fq ${reads}/*_1*.fq ${reads}/*_1*.gz ${reads}/*_1*.fastq > fofn1.txt 2>/dev/null
+ls ${reads}/*_R1*.fastq ${reads}/*_R1.gz ${reads}/*_R1.fq ${reads}/*_1.fq ${reads}/*_1.gz ${reads}/*_1.fastq > fofn1.txt 2>/dev/null
 
-ls ${reads}/*_R2*.fastq ${reads}/*_R2*.gz ${reads}/*_R2*.fq ${reads}/*_2*.fq ${reads}/*_2*.gz ${reads}/*_2*.fastq > fofn2.txt 2>/dev/null
+ls ${reads}/*_R2.fastq ${reads}/*_R2.gz ${reads}/*_R2.fq ${reads}/*_2.fq ${reads}/*_2.gz ${reads}/*_2.fastq > fofn2.txt 2>/dev/null
 
 fi
 if [ $3 = "-u" ]; then

@@ -311,7 +311,16 @@ mv R_correlation_errors.txt $the_output
 mv multi_poly $the_output
 mv multi_poly_names.txt $the_output
 	
-mv *.bam *out ReadMe.txt $the_output
+	
+	
+if [[ $@  ==  *"-k"* ]]; then
+mv *.bam *.out $the_output
+
+
+fi	
+
+
+
 fi # end of pile up 
 mv $the_output $The_folder
 rm -f folder_names.txt
@@ -336,18 +345,18 @@ mkdir all_graphs_scaled
 Rscript $mydir/All_RP_graphs.R $Number
 #mv *pdf all_graphs_scaled
 mv all_graphs_scaled $The_folder
+mv  *ReadMe*  $The_folder
 
-
-rm -f The_summary.txt ref_temp.txt bowtie.log Index_conv.txt *db.2*
+rm -f The_summary.txt ref_temp.txt bowtie.log  *db.2*
 
 mv Repeat_Profiler_temp $The_folder
 mv all_depth_cvs $The_folder
 mv The_summary_final.csv Errors_README.log $The_folder 2> /dev/null
 mv *Rplots* $The_folder	
 
-rm *fofn*
+rm -f  *fofn* *.out *.bam
 
-rm -f -r multi_poly
+#rm -f -r multi_poly
 
 #design of the cow was borrowed from the famous cowsay command
 
@@ -361,7 +370,7 @@ echo "               ||----w |    "
 echo "               ||     ||    "
 fi 
 if [ "$1" == "clean" ]; then
-rm -f -r *bam *fofn* *.out* *multi_poly_names* *_output* *_conv* *summary* *bt2* *ref_temp* *bowtie.log* *ReadMe* *_cvs* *_temp*
+rm -f -r *bam *fofn* *.out* *multi_poly_names* *_output* *_conv* *summary* *bt2* *ref_temp* *bowtie.log* *ReadMe* *_cvs* *_temp* *db.2* *Rplots*
 echo "remians of a broken run were cleaned successfuly "
 fi
 if [ "$1" == "-h" ]; then
