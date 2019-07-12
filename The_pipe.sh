@@ -7,9 +7,9 @@ rm -f Errors_README.txt
 echo $currentDate
 
 
-commands=$@ 
+commands=$@
 
-#echo "$(brew --cellar repeat)/$(brew list --versions repeat | tr ' ' '\n' | tail -1)/lib this lists all version paths 
+#echo "$(brew --cellar repeat)/$(brew list --versions repeat | tr ' ' '\n' | tail -1)/lib this lists all version paths
 
 #mydir=`echo "$(brew --cellar repeat)/1.0/libexec"`  #this is brew stuff
 mydir=`pwd`
@@ -40,10 +40,10 @@ mkdir $The_folder
 
 
 BASE="refbase_"
-commands=$@ 
+commands=$@
 
 
-#it works 	
+#it works
 
 
 if [[ -d $3 ]]; then
@@ -74,14 +74,14 @@ mkdir all_depth_cvs
 
 
 rm -f *out  2> /dev/null
-ls $refs/*.fa > fofnrefs.txt 
+ls $refs/*.fa > fofnrefs.txt
 echo "Reference	Sample_index	Read1	Read2	Total_reads	percent_mapped" > The_summary.txt
 
 while read line
 do
 
 ref_char_count=`tail -n +2 $line | tr -cd 'ATGCatgc'  | wc -c`
-name_ref=$(awk -F "/" '{print $NF}' <<< $line) 
+name_ref=$(awk -F "/" '{print $NF}' <<< $line)
 
 
 if [[ $ref_char_count == 0 ]]; then
@@ -100,13 +100,13 @@ bash $mydir/Readmegen.sh
 
     bowtie2-build $line $BASE > /dev/null 2> /dev/null
     echo "The name of the reference  sequence whose index was built and currently under analysis :"
-    echo "$line" 
+    echo "$line"
     echo ""
-	
+
 
 
 #bash index_refs.sh
-name_ref=$(awk -F "/" '{print $NF}' <<< $line) 
+name_ref=$(awk -F "/" '{print $NF}' <<< $line)
 
 Ref_name=$name_ref
 ReadPair=1
@@ -133,10 +133,10 @@ p=8
 if [[ $@  ==  *"-t"* ]]; then
 
 commands=$@
-p=`echo "$commands" | awk '{for (I=1;I<=NF;I++) if ($I == "-t") {print $(I+1)};}' `	
+p=`echo "$commands" | awk '{for (I=1;I<=NF;I++) if ($I == "-t") {print $(I+1)};}' `
 re='^[0-9]+$'
 if ! [[ $p =~ $re ]] ; then
-   p=8	
+   p=8
 fi
 
 
@@ -159,7 +159,7 @@ done
 
 if [[ $@  ==  *"-D"* ]]; then
 commands=$@
-a=`echo "$commands" | awk '{for (I=1;I<=NF;I++) if ($I == "-D") {print $I " " $(I+1) " " $(I+2) " " $(I+3)" " $(I+4) " " $(I+5) " " $(I+6) " " $(I+7) " " $(I+8) " " $(I+9) };}' `	
+a=`echo "$commands" | awk '{for (I=1;I<=NF;I++) if ($I == "-D") {print $I " " $(I+1) " " $(I+2) " " $(I+3)" " $(I+4) " " $(I+5) " " $(I+6) " " $(I+7) " " $(I+8) " " $(I+9) };}' `
 
 
 fi
@@ -167,11 +167,11 @@ fi
 echo "Bowtie2 alignment settings: $a"
 
 
-bash $mydir/map_mpileup.sh $line $4 $2 $p $a 
+bash $mydir/map_mpileup.sh $line $4 $2 $p $a
 retval=$?
 
 if [ $retval -ne 0 ]; then
-    
+
 exit 1
 
 fi
@@ -201,18 +201,18 @@ output=$Ref_name
 stringpile2="$F"
 stringpile3="_"
 output="$output$stringpile3$stringpile2"
-	
+
 echo "$output" >> fofn_folders.txt
 Rscript $mydir/polymorphism_2.0.R $output
 
 
 
-rm -f -r $output	
-	
+rm -f -r $output
+
 mkdir $output
 mv *.pdf  pileup_counted.txt  $output
-#mv $output $the_output  # we are not moving now  we move in next pile up loop 
-	
+#mv $output $the_output  # we are not moving now  we move in next pile up loop
+
 ((numPairpile ++))
 
 done < fofn_pileup.txt
@@ -234,7 +234,7 @@ Rscript $mydir/All_RP_graphs_reference.R
 
 mv *Plots_all_reads_combined* $the_output
 
-Rscript $mydir/multi_Poly_maker.R 
+Rscript $mydir/multi_Poly_maker.R
 
 mv *all_Poly_reads_graphs_combinded* $the_output
 rm -f phylip.phy
@@ -247,7 +247,7 @@ mv Closely_related_reads_analysis.txt $the_output
 
 
 
-	
+
 
 
 
@@ -278,7 +278,7 @@ mv multi_poly $the_output
 mv multi_poly_names.txt $the_output
 
 mv *.bam *out ReadMe.txt $the_output
-fi # end of pile up 
+fi # end of pile up
 mv $the_output $The_folder
 rm -f folder_names.txt
 
@@ -289,7 +289,7 @@ rm -f fofn_folders.txt
 fi #this an fi for error handling dont mess with it. this is the end of the refrence
 done < fofnrefs.txt
 
-	
+
 
 
 #rm -f *csv
@@ -309,7 +309,7 @@ rm -f The_summary.txt ref_temp.txt bowtie.log Index_conv.txt *db.2*
 mv Repeat_Profiler_temp $The_folder
 mv all_depth_cvs $The_folder
 mv The_summary_final.csv Errors_README.log $The_folder 2> /dev/null
-mv *Rplots* $The_folder	
+mv *Rplots* $The_folder
 
 rm *fofn*
 
@@ -318,10 +318,10 @@ rm -f  *multi*
 
 #design of the cow was borrowed from the famous cowsay command
 
-echo "________________________________"                      
+echo "________________________________"
 echo "< WOW what a great pipeline !!!! >"
 echo "--------------------------------"
-echo "       \   ^__^"       
+echo "       \   ^__^"
 echo "        \  (oo)\_______         "
 echo "           (__)\       )\/\  "
 echo "               ||----w |    "

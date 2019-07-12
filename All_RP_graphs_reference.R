@@ -1,11 +1,9 @@
 print("this is ALL_RP_GRAPHS_REFRERENCE")
 
-#setwd("/Users/Anya/Documents/GitHub/SproulProject/scriptTest23/scripts")
-
 library(ggplot2)
 library(scales)
 library(ggpubr)
-#library(gridExtra)
+
 
 multmerge = function(mypath){
   filenames = list.files(path = mypath, full.names = TRUE)
@@ -13,26 +11,35 @@ multmerge = function(mypath){
   Reduce(function(x, y) {merge(x,y,all = TRUE)}, datalist)
 }
 
-all_depth_csv = multmerge("temp_cvs")
-
 index_conv <- read.table("Index_conv.txt", header = TRUE, stringsAsFactors = FALSE)
 
-vector_of_averages <- c()
+all_depth_csv = multmerge("temp_cvs")
 
+#determines number of plots per page based on number of samples
+l <- length(colnames(all_depth_csv))
+if (l < 16) {
+  n <- l
+} else {
+  n <- l/2
+}
+
+#set standard scale
+max <- 0
 for (i in 2:NCOL(all_depth_csv)) {
   v <- as.vector(all_depth_csv[,i])
   v <- na.omit(v)
-  sum_coverage <- sum(as.numeric(v), na.rm = TRUE)
-  vector_of_averages[i-1] <- sum_coverage/(NROW(v))
+  max_column <- max(as.numeric(v))
+
+  if(max_column > max) {
+    max <- max_column
+  }
 }
-
-data <- summary(vector_of_averages)
-
-The_midpoint = as.numeric(data[5])
 
 Plots_list <- list()
 
 for(i in 2:NCOL(all_depth_csv)){
+  print(i-1)
+
   names_all <- colnames(all_depth_csv)
   name <- names_all[i]
   name_first <- strsplit(name, '_')
@@ -55,23 +62,22 @@ for(i in 2:NCOL(all_depth_csv)){
   df1 <- na.omit(df1)
   colnames(df1)[2] <- "Depth"
 
-### makes plot 1 ###
-  colors <- c("blue", "green3", "yellow", "orange", "red") #set colors for gradient
+
+  ########## Plot 1 :: Horizontal Color Ramp ##########
+  colors <- c("blue", "green3", "yellow", "orange", "red", "red")
 
   horizontalPlot <- ggplot(data = df1, aes(x = Position, y = Depth))+
     geom_bar(aes(color = Depth, fill = Depth), alpha = 1, stat = "identity", width = 1.0)+
-    scale_colour_gradientn(name = "Depth", colours = colors, guide = "colourbar")+ #use custom colors with custom scale, I think
-    scale_fill_gradientn(colours = colors)+
+    scale_colour_gradientn(name = "Depth", values = c(0, .20, .30, .50, .80, 1.0), colours = colors, limits = c(0, max), guide = "colourbar")+
+    scale_fill_gradientn(name = "Depth", values = c(0, .20, .30, .50, .80, 1.0), colours = colors, limits = c(0, max), guide = "colourbar")+
     theme_bw()+ #to remove grey background
     theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+ #to remove gridlines
     ggtitle(Title)
 
-  print(horizontalPlot)
+  #print(horizontalPlot)
 
   Plots_list[[i-1]] <- horizontalPlot
 }
 
-#All_plots <- do.call(grid.arrange, c(Plots_list,ncol=1))
-All_plots <- ggarrange(plotlist = Plots_list, nrow = 5, ncol = 1, align = "v", common.legend = TRUE)
-#ggsave("Plots_all_reads_combined.pdf", All_plots, width = 25, height = 49, units = "in")
+All_plots <- ggarrange(plotlist = Plots_list, nrow = n, ncol = 1, align = "v", common.legend = TRUE)
 ggexport(All_plots, filename = "Plots_all_reads_combined.pdf", width = 25, height = 25)
