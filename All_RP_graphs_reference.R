@@ -80,4 +80,4 @@ for(i in 2:NCOL(all_depth_csv)){
 }
 
 All_plots <- ggarrange(plotlist = Plots_list, nrow = n, ncol = 1, align = "v", common.legend = TRUE)
-ggexport(All_plots, filename = "Plots_all_reads_combined.pdf", width = 25, height = 25)
+ggexport(All_plots, filename = "combined_horizontal_colored.pdf", width = 25, height = 25)

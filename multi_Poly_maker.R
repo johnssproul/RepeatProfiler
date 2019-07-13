@@ -69,4 +69,4 @@ for (i in 1:NROW(multi_poly_names)) {
 }
 
 All_plots <- ggarrange(plotlist = Plots_list, nrow = n, ncol = 1, align = "hv", common.legend = TRUE)
-ggexport(All_plots, filename = "all_Poly_reads_graphs_combinded.pdf", width = 25, height = 25)
+ggexport(All_plots, filename = "combined_variation_plots.pdf", width = 25, height = 25)

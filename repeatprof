@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #we will miss you pileup :( 
-rm -f *.out *.bam *fofn*
+rm -f *.out *.bam *fofn* Errors_README.txt
 
 
 currentDate=`date`
@@ -38,7 +38,7 @@ fi
 
 
 
-if  [[ $1 == "profile" ]] ||  [[ $1  ==  "clean" ]] || [[ $1 ==  "-h" ]]; then
+if  [[ $1 == "profile" ]] ||  [[ $1  ==  "clean" ]] || [[ $1 ==  "-h" ]] || [[ $1 == "pre-corr" ]]; then
 
 echo "" > /dev/null
 
@@ -54,34 +54,7 @@ fi
 
 
 
-commands=$@
-array=(${commands})
 
-for t in "${array[@]}"
-do
-
-if [[ $t  ==  "-o" ]]; then
-
-	(($t ++))
-	the_path=${array[t]}
-
-	    if [[ -d $the_path ]]; then
-		
-		 echo "the output will be at  $the_path  as you specified"
-		
-		else
-		   echo "the output directory specified is not correct. Please make sure it has no blanks and it is valid or dont specify and it will output the folder in current directory"
-		
-		   exit 0
-		fi
-		
-		
-		
-		
-		
-		
-    fi
-done
 
 
 
@@ -109,6 +82,69 @@ exit 1
 
 fi
 
+commands=$@
+array=(${commands})
+index=0
+
+for t in "${array[@]}"
+do
+
+if [[ $t  ==  "-o" ]]; then
+	((index ++))
+
+	the_path=${array[index]}
+
+	    if [[ -d $the_path ]]; then
+		
+		 echo "the output will be at  $the_path  as you specified"
+		
+		else
+		   echo "the output directory specified is not correct. Please make sure it has no blanks and it is valid or dont specify and it will output the folder in current directory"
+		
+		   exit 0
+		fi
+		
+		
+		
+		
+		
+		
+    fi
+		((index ++))
+
+done
+
+
+array=(${commands})
+index=0
+
+for p in "${array[@]}"
+do
+if [[ $p  ==  "-usrprov" ]]; then
+	((index ++))
+	
+	user_prov=${array[index]}
+	    if [[ -f $user_prov ]]; then
+		
+		currentdir=`pwd`
+	
+		 cp $user_prov  $currentdir
+		
+		else
+		   echo "the path of user_provided.txt file isnt correct"
+		
+		   exit 0
+		fi
+		
+		
+		
+		
+		
+		
+    fi
+	((index ++))
+done
+
 
 
 
@@ -127,24 +163,24 @@ commands=$@
 
 
 if [[ -d $3 ]]; then
-	rm -f -r Repeat_Profiler_temp
-	mkdir Repeat_Profiler_temp
+	rm -f -r Refrences_used
+	mkdir Refrences_used
 	echo "The refrences inputed:"
 	path_refs=`cat $3/*.fa > all_refs.fa`
 	bash $mydir/Fasta_splitter.sh all_refs.fa
 
-	refs=Repeat_Profiler_temp
+	refs=Refrences_used
 
 elif [[ -f $3 ]]; then
-	rm -f -r Repeat_Profiler_temp
-	mkdir Repeat_Profiler_temp
+	rm -f -r Refrences_used
+	mkdir Refrences_used
 
 
 echo "The refrences inputed:"
 
 bash $mydir/Fasta_splitter.sh $3
 
-refs=Repeat_Profiler_temp
+refs=Refrences_used
 
 
 else
@@ -295,7 +331,7 @@ Rscript $mydir/polymorphism_2.0.R $output
 rm -f -r $output	
 	
 mkdir $output
-mv *.pdf *.png  pileup_counted.txt  $output
+mv  *.png  pileup_counted.txt  $output  
 #mv $output $the_output  # we are not moving now  we move in next pile up loop 
 	
 ((numPairpile ++))
@@ -317,17 +353,16 @@ done < fofn_folders.txt
 
 Rscript $mydir/All_RP_graphs_reference.R
 
-mv *Plots_all_reads_combined* $the_output
 
 Rscript $mydir/multi_Poly_maker.R 
 
-mv *all_Poly_reads_graphs_combinded* $the_output
+mv *combined* $the_output
 rm -f phylip.phy
 Rscript $mydir/fraction_bases.R > Closely_related_reads_analysis.txt
 
 mv phylip.phy $the_output
 
-mv *age_analysis* $the_output
+mv *variation_analysis* $the_output
 mv Closely_related_reads_analysis.txt $the_output
 
 
@@ -346,8 +381,14 @@ fi
 
 Rscript $mydir/Corr_test.R $the_output 2> R_correlation_errors.txt
 
+
+if [ -s R_correlation_errors.txt ]
+then
+        rm -f R_correlation_errors.txt
+else
 mv R_correlation_errors.txt $the_output
 
+fi
 
 
 
@@ -359,8 +400,10 @@ mv R_correlation_errors.txt $the_output
 
 
 
-mv multi_poly $the_output
-mv multi_poly_names.txt $the_output
+
+
+#mv multi_poly $the_output    uncomment when testing 
+#mv multi_poly_names.txt $the_output
 	
 	
 	
@@ -390,24 +433,38 @@ done < fofnrefs.txt
 Rscript $mydir/The_depth_analyser.R 2> /dev/null
 Number=`wc -l < fofn_bam.txt`
 
-rm -f -r all_graphs_scaled
-mkdir all_graphs_scaled
+#rm -f all_Refrences_color_scaled_combined_graph.pdf
+
+rm -f -r refrences_wide_color_scaled_graphs
+mkdir refrences_wide_color_scaled_graphs
+
+echo "Thenumber: $Number"
 
 Rscript $mydir/All_RP_graphs.R $Number
+mv  refrences_wide_color_scaled_graphs $The_folder 
 #mv *pdf all_graphs_scaled
-mv all_graphs_scaled $The_folder
+
+
+# if [ -f all_Refrences_color_scaled_combined_graph.pdf ]; then
+
+# mv all_Refrencets_color_scaled_combined_graph.pdf $The_folder
+# else
+#echo "There was only 1 refrence inputed, so no combined refrences_scale_wide_graph.pdf for this run"
+# fi
+
+
 mv  *ReadMe*  $The_folder
 
 rm -f The_summary.txt ref_temp.txt bowtie.log  *db.2*
 
-mv Repeat_Profiler_temp $The_folder
+mv Refrences_used $The_folder
 mv all_depth_cvs $The_folder
 mv The_summary_final.csv Errors_README.log $The_folder 2> /dev/null
 rm -f  *Rplots*	
 
 rm -f  *fofn* *.out *.bam all_refs.fa
 
-rm -f -r multi_poly multi_poly_names.txt Index_conv.txt #comment when testing
+rm -f -r multi_poly multi_poly_names.txt #Index_conv.txt #comment when testing
 
 #design of the cow was borrowed from the famous cowsay command
 
@@ -426,8 +483,77 @@ fi
 
 
 fi 
+
+
+if [ "$1" == "pre-corr" ]; then
+
+reads=$3
+
+if  [[ $2 == "-u" ]] ||  [[ $2  ==  "-p" ]] ||  [[ $2  ==  "-v" ]]; then
+echo "" > /dev/null
+	
+
+else
+echo "wrong usage of pre-corr. please refer to github page on how to use it or type repeatprof -h  to review the structure"
+
+exit 1
+fi
+if [ $2 = "-p" ]; then
+
+ls ${reads}/*_R1*.fastq ${reads}/*_R1.gz ${reads}/*_R1.fq ${reads}/*_R1.fq.gz  ${reads}/*_1.fq ${reads}/*_1.fq.gz ${reads}/*_1.gz ${reads}/*_1.fastq > fofn1.txt 2>/dev/null
+
+ls ${reads}/*_R2.fastq ${reads}/*_R2.gz ${reads}/*_R2.fq ${reads}/*_R2.fq.gz  ${reads}/*_2.fq.gz  ${reads}/*_2.fq ${reads}/*_2.gz ${reads}/*_2.fastq > fofn2.txt 2>/dev/null
+
+
+reads1_check=`cat fofn1.txt | wc -l`
+reads2_check=`cat fofn2.txt | wc -l `
+
+fi
+if [ $2 = "-u" ]; then
+
+ls ${reads}/*.fastq ${reads}/*.gz ${reads}/*.fq ${reads}/*.fq.gz    > fofn1.txt 2>/dev/null
+
+ls ${reads}/*.fastq ${reads}/*.gz ${reads}/*.fq  ${reads}/*.fq.gz  > fofn2.txt 2>/dev/null
+
+
+
+reads1_check=`cat fofn1.txt | wc -l`
+reads2_check=`cat fofn2.txt | wc -l `
+
+fi
+
+
+
+
+
+
+if [[ $reads1_check == 0 && $reads2_check == 0 ]];then
+echo ""
+
+echo "The path of a file of  paired  read  provided doesnt contain any paired read that has correct format."| tee -a Errors_README.log
+echo "Make sure your read pairs  are in .fastq or .gz or .fq AND revise the path inputed"| tee -a Errors_README.log
+echo "Analysis wont be able to continue due to the failure of finding reads"
+exit 1
+
+
+fi
+
+if [ "$reads1_check" != "$reads2_check" ]; then
+
+echo "There is a pair of read missing. Please check the folder where you have your paired reads "| tee -a Errors_README.log
+exit 1
+fi
+
+Rscript $mydir/user_supplied_maker.R $2
+
+
+
+
+
+fi
+
 if [ "$1" == "clean" ]; then
-rm -f -r *bam *fofn* *.out* *multi_poly_names* *_output* *_conv* *summary* *bt2* *ref_temp* *bowtie.log* *ReadMe* *_cvs* *_temp* *db.2* *Rplots* all_refs.fa
+rm -f -r *bam *fofn* *.out* *multi_poly_names* *_output* *_conv* *summary* *bt2* *ref_temp* *bowtie.log* *ReadMe* *_cvs* *_temp* *db.2* *Rplots* all_refs.fa all_Refrences_color_scaled_combined_graph.pdf
 echo "remians of a broken run were cleaned successfuly "
 fi
 if [ "$1" == "-h" ]; then
@@ -435,9 +561,9 @@ echo "a sample command for profiling will be:"
 echo "repeatprof profile <-p for paired reads or  -u for unpaired> <the refrence sequence path > <path of the folder containing reads> [opitonal flags]"
 echo ""
 echo "optional flags:"
-echo "-o <folder_path>	use this flag followed by a space then a folder path"
+echo "-o <folder_path>	use to specifiy an directory where the final output file  be directed to. Default: current directory"
 echo "			This will direct the final output folder  to this specifiy folder"
-echo "-corr		        type this flag to make the correlation analysis. user_provided.txt is needed for the correlation graph. Please refer to the github page for more info about this"
+echo "-corr		        type this flag to make the correlation analysis. user_provided.txt is needed for the correlation graph. Please refer to the github page for more info about this or look below"
 echo "--very-fast | --local | --fast " 
 echo "--very-fast-local | --fast-local  type one of these 9 alignment settings for bowtie2. Default is  --very-sensitive"
 echo "-sensitive | --very-sensitive "
@@ -447,9 +573,16 @@ echo "-k	use this flag if you want to keep the sorted bam files of the alignment
 
 
 echo ""
+
+echo "repeatprof pre-corr <-u for unpaired reads  or -p paired reads  > <path of the folder containing reads> 	use this command to help prepare user_provided.txt for correlation graph produced by -corr flag in profile "
+echo "repeatprof pre-corr -v  use this command to review your edited user_provided.txt with your desired groups. This ensures that it is still in the correct file format."
+
+echo ""
+
+
 echo "repeatprof clean		use this command to cleanup a broken/terminated run"
 echo ""
-echo "check our github page https://github.com/johnssproul/RepeatProfiler for more  detailed info  please on how to run and supported input formats "
+echo "check our github page https://github.com/johnssproul/RepeatProfiler for more  detailed info  on how to run the tool and supported input formats "
 
 
 fi

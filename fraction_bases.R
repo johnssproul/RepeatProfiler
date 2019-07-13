@@ -389,7 +389,7 @@ if(fraction_table$Read1==fraction_table$Read2){
 
 
 
-write.csv(fraction_table,"age_analysis.csv",row.names = FALSE)
+write.csv(fraction_table,"variation_analysis.csv",row.names = FALSE)
 
 
 

@@ -32,9 +32,9 @@ ls ${reads}/*_R2.fastq ${reads}/*_R2.gz ${reads}/*_R2.fq ${reads}/*_R2.fq.gz  ${
 fi
 if [ $3 = "-u" ]; then
 
-ls ${reads}/*.fastq ${reads}/*.gz ${reads}/*.fq    > fofn1.txt 2>/dev/null
+ls ${reads}/*.fastq ${reads}/*.gz ${reads}/*.fq ${reads}/*.fq.gz    > fofn1.txt 2>/dev/null
 
-ls ${reads}/*.fastq ${reads}/*.gz ${reads}/*.fq    > fofn2.txt 2>/dev/null
+ls ${reads}/*.fastq ${reads}/*.gz ${reads}/*.fq  ${reads}/*.fq.gz  > fofn2.txt 2>/dev/null
 
 fi
 
@@ -50,7 +50,7 @@ if [[ $reads1_check == 0 && $reads2_check == 0 ]];then
 echo ""
 
 echo "The path of a file of  paired  read  provided doesnt contain any paired read that has correct format."| tee -a Errors_README.log
-echo "Make sure your read pairs  are in .fastq or .gz or .fq AND revise the path inputed"| tee -a Errors_README.log
+echo "Make sure your read pairs  are in .fastq or .gz or .fq AND revise the path inputed. Make sure there is no blanks in path"| tee -a Errors_README.log
 echo "Analysis wont be able to continue due to the failure of finding reads"
 exit 1
 
@@ -123,6 +123,7 @@ rm -f ${F}_sorted.bam
 # Finally mark and remove	  duplicates
 samtools markdup -r positionsort.bam ${F}_sorted.bam
 
+rm -f  positionsort.bam fixmate.bam namesort.bam
 
 
 
@@ -144,6 +145,7 @@ rm -f ${F}_sorted.bam
 samtools markdup -r positionsort.bam ${F}_sorted.bam
 
 
+rm -f  positionsort.bam fixmate.bam namesort.bam
 	
 
 fi

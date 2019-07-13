@@ -1,0 +1,5 @@
+Read1	Group
+5M_isoG_1.gz	temporary
+5M_isoG_2.fq	temporary
+5M_mauG_R1.fq	temporary
+5M_mauG_R2.fq	temporary

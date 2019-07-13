@@ -72,7 +72,7 @@ horizontalPlot <- ggplot(data = df1, aes(x = Position, y = Depth))+
 #print(horizontalPlot)
 
 #Plot1name = paste("X1.png") #path-specific
-Plot1name = paste(as.character(args[1]), "/X1.png", sep="")
+Plot1name = paste(as.character(args[1]), "/Horizontally_colored.png", sep="")
 ggsave(as.character(Plot1name), horizontalPlot, units = "mm", width = 175, height = 50)
 ########## Good Above ##########
 
@@ -106,7 +106,7 @@ verticalPlot<-ggplot(data = df2, aes(x = Position, xend = xend, y = Depth, yend 
 #print(verticalPlot)
 
 #Plot2name = paste("X2.png") #path-specific
-Plot2name = paste(as.character(args[1]), "/X2.png", sep="")
+Plot2name = paste(as.character(args[1]), "/Vertically_colored.png", sep="")
 ggsave(as.character(Plot2name), verticalPlot, units = "mm", width = 175, height = 50)
 ########## Good Above ##########
 
@@ -166,6 +166,6 @@ solidPlot <- ggplot(data = df3, aes(x = Position, y = Depth))+
 #print(solidPlot)
 
 #Plot3name = paste("X3.png") #path-specific
-Plot3name = paste(as.character(args[1]), "/X3.png", sep="")
+Plot3name = paste(as.character(args[1]), "/solid_colored.png", sep="")
 ggsave(as.character(Plot3name), solidPlot, units = "mm", width = 175, height = 50)
 ########## Good Above ##########

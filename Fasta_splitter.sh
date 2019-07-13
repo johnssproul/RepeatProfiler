@@ -23,9 +23,9 @@ do
 	
 	echo $File_name
 
-        echo ">$File_name_nofa" > Repeat_Profiler_temp/$File_name
+        echo ">$File_name_nofa" > Refrences_used/$File_name
     else
-        echo $line >> Repeat_Profiler_temp/$File_name
+        echo $line >> Refrences_used/$File_name
     fi
 done < $Fasta_file
 

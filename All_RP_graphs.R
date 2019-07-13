@@ -82,9 +82,11 @@ for(i in 2:NCOL(all_depth_csv)){
   if(N == as.numeric(args[1])) {
     Plots_list[[N]] <- horizontalPlot
     All_plots <- ggarrange(plotlist = Plots_list, nrow = n, ncol = 1, align = "hv", common.legend = TRUE)
-    the_name = paste("all_graphs_scaled/", Depth_column, ".pdf", sep = "")
+    the_name = paste("refrences_wide_color_scaled_graphs/", Depth_column, ".pdf", sep = "")
+#    the_name = "all_Refrences_color_scaled_combined_graph.pdf"
+    
     ggexport(All_plots, filename = the_name, width = 25, height = 25) #path-specific, uncomment the_name
-
+    dev.off()
     #reset variables
     All_plots <- NULL
     Plots_list <- list()
