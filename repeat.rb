@@ -2,7 +2,7 @@ class Repeat < Formula
   desc "Yarab"
   homepage "https://github.com/johnssproul/RepeatProfiler/"
   url "https://github.com/johnssproul/RepeatProfiler/raw/master/repeat-test.tar.gz"
-  version "1.0"
+  version "0.9"
   sha256 "42d9e05e59c36add973e385dc591acb9b284aed257c259467241b1f6ef354501"
   depends_on "bowtie2"
   depends_on "python"
@@ -10,8 +10,8 @@ class Repeat < Formula
   depends_on "samtools"
  
   def install
-    system "echo", "install.packages(c('ggplot2','gridExtra'),repos='https://cran.rstudio.com')", "|", "R", "--no-save"
-    bin.install("The_pipe.sh")
+    system "echo", "install.packages(c('ggplot2','gridExtra','ggpubr','magrittr','scales'),repos='https://cran.rstudio.com')", "|", "R", "--no-save"
+    bin.install("repeatprof")
     libexec.install("Readmegen.sh")
     libexec.install("map_mpileup.sh")
     libexec.install("Fasta_splitter.sh")

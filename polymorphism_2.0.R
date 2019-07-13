@@ -48,5 +48,5 @@ polymorphPlot <- ggplot(base_countsRed.m, aes(x = Position, y = Depth, fill = Ba
 
 #print(polymorphPlot)
 
-PlotRname = paste("X4.pdf", sep="")
+PlotRname = paste("X4.png", sep="")
 ggsave(as.character(PlotRname), polymorphPlot, units = "mm", width = 175, height = 50)

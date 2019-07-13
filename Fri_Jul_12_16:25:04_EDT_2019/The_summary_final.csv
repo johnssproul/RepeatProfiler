@@ -1,3 +1,0 @@
-"Reference","Sample_index","Read","Total_reads","percent_mapped","Ref_Length","Average_coverage","max_coverage"
-"dmel_rDNA_ETS_Other_rDNA.fa","S001","5M_mauG_R1.fq",5000000,0.07,824,199.632281553398,249
-"dmel_rDNA_ETS_Other_rDNA.fa","S002","5M_mauG_R2.fq",5000000,0.07,824,198.675970873786,250

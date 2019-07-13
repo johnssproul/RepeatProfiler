@@ -1,5 +1,0 @@
-dmel_rDNA_ETS_Other_rDNA.fa_001 and dmel_rDNA_ETS_Other_rDNA.fa_002 have   56 common polymorphric postions 
-Reads involved are 5M_mauG_R2.fq and 5M_mauG_R1.fq 
- 
-[1] 1
-[1] 2

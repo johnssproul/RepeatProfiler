@@ -1,26 +1,33 @@
 #!/bin/bash
 
+#we will miss you pileup :( 
 rm -f *.out *.bam *fofn*
 
 
 currentDate=`date`
 currentDate=`tr ' ' '_' <<<"$currentDate"`
 rm -f Errors_README.txt
-echo $currentDate
+#echo $currentDate
 
 
 commands=$@ 
 
 #echo "$(brew --cellar repeat)/$(brew list --versions repeat | tr ' ' '\n' | tail -1)/lib this lists all version paths 
 
-#mydir=`echo "$(brew --cellar repeat)/1.0/libexec"`
+#mydir=`echo "$(brew --cellar repeatprofiler)/0.9/libexec"`
 mydir=`pwd`
 num_commands=`echo $commands | wc -w `
 
 if ((num_commands == 0 ))
  then
-
+echo "RepeatProfiler v 0.9 -prerelease- x New x Beginning x "
 echo "please use -h flag to view help menu for how to use this tool"
+
+
+echo "____ ____ ___  ____ ____ ___    ___  ____ ____ ____ _ _    ____ ____" 
+echo "|__/ |___ |__] |___ |__|  |     |__] |__/ |  | |___ | |    |___ |__/ "
+echo "|  \ |___ |    |___ |  |  |     |    |  \ |__| |    | |___ |___ |  \ "
+                                                                     
 
 exit 1
 
@@ -28,7 +35,10 @@ fi
 
 
 
-if  [[ $1 == "pileup" ]] ||  [[ $1  ==  "clean" ]] || [[ $1 ==  "-h" ]]; then
+
+
+
+if  [[ $1 == "profile" ]] ||  [[ $1  ==  "clean" ]] || [[ $1 ==  "-h" ]]; then
 
 echo "" > /dev/null
 
@@ -40,7 +50,42 @@ exit 1
 
 
 fi
-if [ "$1" == "pileup" ]; then
+
+
+
+
+commands=$@
+array=(${commands})
+
+for t in "${array[@]}"
+do
+
+if [[ $t  ==  "-o" ]]; then
+
+	(($t ++))
+	the_path=${array[t]}
+
+	    if [[ -d $the_path ]]; then
+		
+		 echo "the output will be at  $the_path  as you specified"
+		
+		else
+		   echo "the output directory specified is not correct. Please make sure it has no blanks and it is valid or dont specify and it will output the folder in current directory"
+		
+		   exit 0
+		fi
+		
+		
+		
+		
+		
+		
+    fi
+done
+
+
+
+if [ "$1" == "profile" ]; then
 
 if  [[ $2 == "-u" ]] ||  [[ $2  ==  "-p" ]]; then
 
@@ -67,7 +112,7 @@ fi
 
 
 
-The_folder="$currentDate"
+The_folder="$currentDate-RepeatProfiler"
 mkdir $The_folder
 
 
@@ -85,7 +130,7 @@ if [[ -d $3 ]]; then
 	rm -f -r Repeat_Profiler_temp
 	mkdir Repeat_Profiler_temp
 	echo "The refrences inputed:"
-	path_refs=`cat $3/* > all_refs.fa`
+	path_refs=`cat $3/*.fa > all_refs.fa`
 	bash $mydir/Fasta_splitter.sh all_refs.fa
 
 	refs=Repeat_Profiler_temp
@@ -250,7 +295,7 @@ Rscript $mydir/polymorphism_2.0.R $output
 rm -f -r $output	
 	
 mkdir $output
-mv *.pdf  pileup_counted.txt  $output
+mv *.pdf *.png  pileup_counted.txt  $output
 #mv $output $the_output  # we are not moving now  we move in next pile up loop 
 	
 ((numPairpile ++))
@@ -362,7 +407,7 @@ rm -f  *Rplots*
 
 rm -f  *fofn* *.out *.bam all_refs.fa
 
-#rm -f -r multi_poly
+rm -f -r multi_poly multi_poly_names.txt Index_conv.txt #comment when testing
 
 #design of the cow was borrowed from the famous cowsay command
 
@@ -374,6 +419,12 @@ echo "        \  (oo)\_______         "
 echo "           (__)\       )\/\  "
 echo "               ||----w |    "
 echo "               ||     ||    "
+if [[ -d $the_path ]]; then
+mv $The_folder $the_path
+fi
+
+
+
 fi 
 if [ "$1" == "clean" ]; then
 rm -f -r *bam *fofn* *.out* *multi_poly_names* *_output* *_conv* *summary* *bt2* *ref_temp* *bowtie.log* *ReadMe* *_cvs* *_temp* *db.2* *Rplots* all_refs.fa
@@ -381,11 +432,25 @@ echo "remians of a broken run were cleaned successfuly "
 fi
 if [ "$1" == "-h" ]; then
 echo "a sample command for profiling will be:"
-echo "The_pipe.sh pileup <-p for paired reads or  -u for unpaired> <the refrence sequence path > <path of the folder containing reads> [opitonal flags]"
+echo "repeatprof profile <-p for paired reads or  -u for unpaired> <the refrence sequence path > <path of the folder containing reads> [opitonal flags]"
 echo ""
-echo "type The_pipe.sh clean to clean up a broken run"
+echo "optional flags:"
+echo "-o <folder_path>	use this flag followed by a space then a folder path"
+echo "			This will direct the final output folder  to this specifiy folder"
+echo "-corr		        type this flag to make the correlation analysis. user_provided.txt is needed for the correlation graph. Please refer to the github page for more info about this"
+echo "--very-fast | --local | --fast " 
+echo "--very-fast-local | --fast-local  type one of these 9 alignment settings for bowtie2. Default is  --very-sensitive"
+echo "-sensitive | --very-sensitive "
+echo "--very-sensitive-local | --sensitive-local  "
+echo "-k	use this flag if you want to keep the sorted bam files of the alignments in the final output folder"
 
-echo "check our github page for more info and what optional flags can be for pileup can be"
+
+
+echo ""
+echo "repeatprof clean		use this command to cleanup a broken/terminated run"
+echo ""
+echo "check our github page https://github.com/johnssproul/RepeatProfiler for more  detailed info  please on how to run and supported input formats "
+
 
 fi
 
