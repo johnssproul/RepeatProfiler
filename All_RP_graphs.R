@@ -1,6 +1,11 @@
 args = commandArgs(trailingOnly = TRUE)
 print("this is ALL_RP_GRAPHS SCRIPT")
 
+#print(as.character(args[2])) #brew stuff
+#.libPaths(as.character(args[2])) #brew stuff
+
+
+
 library(ggplot2)
 library(scales)
 library(ggpubr)

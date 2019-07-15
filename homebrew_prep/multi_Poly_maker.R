@@ -1,4 +1,8 @@
 args = commandArgs(trailingOnly = TRUE)
+.libPaths(as.character(args[1]))
+
+
+
 
 library(ggplot2)
 library(reshape2)

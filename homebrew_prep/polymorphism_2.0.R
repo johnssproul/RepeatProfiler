@@ -2,6 +2,8 @@
 
 args = commandArgs(trailingOnly = TRUE)
 #args[1] <- "REsat1.fa_001" #path-specific
+.libPaths(as.character(args[2]))
+
 
 library(ggplot2)
 library(reshape2)

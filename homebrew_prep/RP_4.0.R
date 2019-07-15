@@ -3,6 +3,8 @@
 args = commandArgs(trailingOnly=TRUE)
 #args[1] <- "aeruginosum_LIB0206ScoreAdaptTrimDeNovoMtGenome_contig_565.fa_002" #path-specific
 
+.libPaths(as.character(args[2]))
+
 library(ggplot2)
 
 

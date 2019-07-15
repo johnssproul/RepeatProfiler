@@ -1,4 +1,9 @@
 print("this is ALL_RP_GRAPHS_REFRERENCE")
+args = commandArgs(trailingOnly = TRUE)
+
+#print(as.character(args[1])) #brew stuff
+#.libPaths(as.character(args[1])) #brew stuff
+
 
 library(ggplot2)
 library(scales)

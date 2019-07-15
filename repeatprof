@@ -14,8 +14,16 @@ commands=$@
 
 #echo "$(brew --cellar repeat)/$(brew list --versions repeat | tr ' ' '\n' | tail -1)/lib this lists all version paths 
 
-#mydir=`echo "$(brew --cellar RepeatProf)/0.9/libexec"`
+#brew link --overwrite >/dev/null 2>&1  #brew stuff
+
+
+#mydir=`echo "$(brew --cellar repeatprof)/0.9/libexec"` #brew stuff
+
+#R_packages=`echo "$(brew --cellar repeatprof)/0.9/R_packages"` #brew stuff
+
+
 mydir=`pwd`
+
 num_commands=`echo $commands | wc -w `
 
 if ((num_commands == 0 ))
@@ -355,7 +363,7 @@ stringpile3="_"
 output="$output$stringpile3$stringpile2"
 	
 echo "$output" >> fofn_folders.txt
-Rscript $mydir/polymorphism_2.0.R $output
+Rscript $mydir/polymorphism_2.0.R $output $R_packages
 
 
 
@@ -376,20 +384,20 @@ do
 
 echo $folder_names
 
-Rscript $mydir/RP_4.0.R $folder_names
+Rscript $mydir/RP_4.0.R $folder_names $R_packages
 
 mv $folder_names $the_output
 done < fofn_folders.txt
 
 
-Rscript $mydir/All_RP_graphs_reference.R
+Rscript $mydir/All_RP_graphs_reference.R $R_packages
 
 
-Rscript $mydir/multi_Poly_maker.R 
+Rscript $mydir/multi_Poly_maker.R $R_packages 
 
 mv *combined* $the_output
 rm -f phylip.phy
-Rscript $mydir/fraction_bases.R > Closely_related_reads_analysis.txt
+Rscript $mydir/fraction_bases.R  > Closely_related_reads_analysis.txt
 
 mv phylip.phy $the_output
 
@@ -410,7 +418,7 @@ echo "user_provided.txt wasnt provided, so the graph of correlation between read
 
 fi
 
-Rscript $mydir/Corr_test.R $the_output 2> R_correlation_errors.txt
+Rscript $mydir/Corr_test.R $the_output $R_packages 2> R_correlation_errors.txt
 
 
 if [ -s R_correlation_errors.txt ]
@@ -486,7 +494,7 @@ mkdir refrences_wide_color_scaled_graphs
 
 echo "Thenumber: $Number"
 
-Rscript $mydir/All_RP_graphs.R $Number
+Rscript $mydir/All_RP_graphs.R $Number $R_packages
 mv  refrences_wide_color_scaled_graphs $The_folder 
 #mv *pdf all_graphs_scaled
 
@@ -654,4 +662,3 @@ echo "check our github page https://github.com/johnssproul/RepeatProfiler for mo
 
 
 fi
-
