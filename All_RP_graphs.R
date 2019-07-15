@@ -31,11 +31,6 @@ for (i in 2:NCOL(all_depth_csv)) {
 #determines number of plots per page based on number of samples
 l <- length(colnames(all_depth_csv))
 #args[1] <- l-1 #path-specific --> number of graphs
-if (l < 16) {
-  n <- l
-} else {
-  n <- round(l/2, 0)
-}
 
 Plots_list <- list()
 
@@ -81,7 +76,7 @@ for(i in 2:NCOL(all_depth_csv)){
 
   if(N == as.numeric(args[1])) {
     Plots_list[[N]] <- horizontalPlot
-    All_plots <- ggarrange(plotlist = Plots_list, nrow = n, ncol = 1, align = "hv", common.legend = TRUE)
+    All_plots <- ggarrange(plotlist = Plots_list, nrow = 8, ncol = 1, align = "hv", common.legend = TRUE)
     the_name = paste("all_graphs_scaled/", Depth_column, ".pdf", sep = "")
     ggexport(All_plots, filename = the_name, width = 25, height = 25) #path-specific, uncomment the_name
 
