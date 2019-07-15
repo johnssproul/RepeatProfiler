@@ -35,14 +35,11 @@ for (i in 2:NCOL(all_depth_csv)) {
 #determines number of plots per page based all references and samples -- setting default to 8 for now
 l <- length(colnames(all_depth_csv))
 #args[1] <- l-1 #path-specific --> number of graphs
-<<<<<<< HEAD
 #if (l < 10) {
  # n <- l
 #} else {
  # n <- 8)
 #}
-=======
->>>>>>> f0996a7dbf2193f183aafd195e6bef2fa56f14c8
 
 Plots_list <- list()
 
@@ -87,13 +84,8 @@ for(i in 2:NCOL(all_depth_csv)){
 
   if(N == as.numeric(args[1])) {
     Plots_list[[N]] <- horizontalPlot
-<<<<<<< HEAD
     All_plots <- ggarrange(plotlist = Plots_list, nrow = 8, ncol = 1, align = "hv", common.legend = TRUE) #common.legend = TRUE creates a single legend for all graphs on a page; if you want a separate legend for each graph, set to FALSE
     the_name = paste("refrences_wide_color_scaled_graphs/", Depth_column, ".pdf", sep = "")
-=======
-    All_plots <- ggarrange(plotlist = Plots_list, nrow = 8, ncol = 1, align = "hv", common.legend = TRUE)
-    the_name = paste("all_graphs_scaled/", Depth_column, ".pdf", sep = "")
->>>>>>> f0996a7dbf2193f183aafd195e6bef2fa56f14c8
     ggexport(All_plots, filename = the_name, width = 25, height = 25) #path-specific, uncomment the_name
     dev.off() #fixes random Rplots.pdf (I think)
 
