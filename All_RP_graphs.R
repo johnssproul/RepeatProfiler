@@ -1,9 +1,13 @@
 args = commandArgs(trailingOnly = TRUE)
 print("this is ALL_RP_GRAPHS SCRIPT")
 
+#print(as.character(args[2])) #brew stuff
+#.libPaths(as.character(args[2])) #brew stuff
+
 library(ggplot2)
 library(scales)
 library(ggpubr)
+
 
 multmerge = function(mypath){
   filenames = list.files(path = mypath, full.names = TRUE)
@@ -13,10 +17,10 @@ multmerge = function(mypath){
 
 index_conv <- read.table("Index_conv.txt", header = TRUE, stringsAsFactors = FALSE)
 
-#all_depth_csv = multmerge("./Wed_Jul_10_08:09:48_EDT_2019/all_depth_cvs") #path-specific
+#all_depth_csv = multmerge("./Mon_Jul_15_15:39:07_EDT_2019-RepeatProfiler/all_depth_cvs") #path-specific
 all_depth_csv = multmerge("all_depth_cvs")
 
-#set standard scale
+#set standard scale based on maximum depth across all references and samples
 max <- 0
 for (i in 2:NCOL(all_depth_csv)) {
   v <- as.vector(all_depth_csv[,i])
@@ -28,14 +32,14 @@ for (i in 2:NCOL(all_depth_csv)) {
   }
 }
 
-#determines number of plots per page based on number of samples
+#determines number of plots per page based all references and samples -- setting default to 8 for now
 l <- length(colnames(all_depth_csv))
 #args[1] <- l-1 #path-specific --> number of graphs
-if (l < 16) {
-  n <- l
-} else {
-  n <- round(l/2, 0)
-}
+#if (l < 10) {
+ # n <- l
+#} else {
+ # n <- 8)
+#}
 
 Plots_list <- list()
 
@@ -56,9 +60,9 @@ for(i in 2:NCOL(all_depth_csv)){
   Depth_column = d[i]
 
   if(Read1_first != Read2_first){
-    Title = paste(d[i], "                 ", "Read1:", Read1_first, "    Read2:", Read2_first, sep = "")
+    Title = paste(d[i], "   Read1: ", Read1_first, "   Read2: ", Read2_first, sep = "")
   }else if(Read1_first == Read2_first){
-    Title = paste(d[i], "                 ", "Read:", Read1_first)
+    Title = paste(d[i], "   Read: ", Read1_first)
   }
 
   df1 <- subset(all_depth_csv,select = c("Position", Depth_column))
@@ -74,16 +78,16 @@ for(i in 2:NCOL(all_depth_csv)){
     scale_colour_gradientn(name = "Depth", values = c(0, .20, .30, .50, .80, 1.0), colours = colors, limits = c(0, max), guide = "colourbar")+
     scale_fill_gradientn(name = "Depth", values = c(0, .20, .30, .50, .80, 1.0), colours = colors, limits = c(0, max), guide = "colourbar")+
     theme_bw()+ #to remove grey background
-    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+ #to remove gridlines
+    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+          plot.title = element_text(face = "bold"))+ #to remove gridlines and format title
     ggtitle(Title)
-
-  #print(horizontalPlot)
 
   if(N == as.numeric(args[1])) {
     Plots_list[[N]] <- horizontalPlot
-    All_plots <- ggarrange(plotlist = Plots_list, nrow = n, ncol = 1, align = "hv", common.legend = TRUE)
-    the_name = paste("all_graphs_scaled/", Depth_column, ".pdf", sep = "")
+    All_plots <- ggarrange(plotlist = Plots_list, nrow = 8, ncol = 1, align = "hv", common.legend = TRUE) #common.legend = TRUE creates a single legend for all graphs on a page; if you want a separate legend for each graph, set to FALSE
+    the_name = paste("refrences_wide_color_scaled_graphs/", Depth_column, ".pdf", sep = "")
     ggexport(All_plots, filename = the_name, width = 25, height = 25) #path-specific, uncomment the_name
+    dev.off() #fixes random Rplots.pdf (I think)
 
     #reset variables
     All_plots <- NULL

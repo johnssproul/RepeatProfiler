@@ -1,7 +1,9 @@
 #!/usr/bin/env Rscript
 
 args = commandArgs(trailingOnly=TRUE)
-#args[1] <- "aeruginosum_LIB0206ScoreAdaptTrimDeNovoMtGenome_contig_565.fa_002" #path-specific
+#args[1] <- "dmel_rDNA_ETS_Other_rDNA.fa_001" #path-specific
+
+#.libPaths(as.character(args[2])) #brew stuff
 
 library(ggplot2)
 
@@ -26,9 +28,9 @@ Read1_first = index_conv[name_first,1]
 Read2_first = index_conv[name_first,2]
 
 if(Read1_first != Read2_first){
-  Title = paste(args[1], "                 ", "Read1:",Read1_first, "    Read2:", Read2_first,sep = "")
+  Title=paste(args[1],"   Read1: ",Read1_first,"   Read2: ",Read2_first,sep = " ")
 }else if(Read1_first == Read2_first){
-  Title = paste(args[1], "                 ", "Read:",Read1_first)
+  Title=paste(args[1],"   Read: ",Read1_first,sep = " ")
 }
 
 
@@ -67,14 +69,14 @@ horizontalPlot <- ggplot(data = df1, aes(x = Position, y = Depth))+
   scale_colour_gradientn(name = "Depth", values = c(0, .20, .30, .50, .80, 1.0), colours = colors, limits = c(0, max), guide = "colourbar")+
   scale_fill_gradientn(name = "Depth", values = c(0, .20, .30, .50, .80, 1.0), colours = colors, limits = c(0, max), guide = "colourbar")+
   theme_bw()+ #to remove grey background
-  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+ #to remove gridlines
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        plot.title = element_text(size = 6, face = "bold"), axis.title = element_text(size = 6))+
   ggtitle(Title)
 
-#print(horizontalPlot)
-
-#Plot1name = paste("X1.png") #path-specific
-Plot1name = paste(as.character(args[1]), "/X1.png", sep="")
+#Plot1name = paste("Horizontally_colored.png") #path-specific
+Plot1name = paste(as.character(args[1]), "/Horizontally_colored.png", sep="")
 ggsave(as.character(Plot1name), horizontalPlot, units = "mm", width = 175, height = 50)
+cat("file saved to",  Plot1name)
 ########## Good Above ##########
 
 
@@ -102,18 +104,17 @@ verticalPlot<-ggplot(data = df2, aes(x = Position, xend = xend, y = Depth, yend 
   scale_colour_gradientn(name = "Depth", values = c(0, .20, .30, .50, .80, 1.0), colours = colors, limits = c(0, max), guide = "colourbar")+
   scale_fill_gradientn(name = "Depth", values = c(0, .20, .30, .50, .80, 1.0), colours = colors, limits = c(0, max), guide = "colourbar")+
   theme_bw()+ #to remove grey background
-  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+ #to remove gridlines
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        plot.title = element_text(size = 6, face = "bold"), axis.title = element_text(size = 6))+
   ggtitle(Title)
 
-#print(verticalPlot)
-
-#Plot2name = paste("X2.png") #path-specific
-Plot2name = paste(as.character(args[1]), "/X2.png", sep="")
+#Plot2name = paste("Vertically_colored.png") #path-specific
+Plot2name = paste(as.character(args[1]), "/Vertically_colored.png", sep="")
 ggsave(as.character(Plot2name), verticalPlot, units = "mm", width = 175, height = 50)
+cat("file saved to",  Plot2name)
 ########## Good Above ##########
 
 
-#TODO <-- (is this still an issue?) I tried to make plot 3 smoother by extending the window to 25. The window size should really be calculated individually for each reference based on the total length of the reference in order to keep graphics consistent looking
 ########## Plot 3 :: Preparations ##########
 df3.1 <- df1[2]
 
@@ -157,18 +158,15 @@ head(df3)
 ########## Plot 3 :: Solid Plot ##########
 print('Plot 3 :: Solid Plot')
 
-#TODO <-- do you want the solid plot to be a pdf?
-#pdf(file ="DepthPlot3.pdf", width=900, height=300)
-
 solidPlot <- ggplot(data = df3, aes(x = Position, y = Depth))+
   geom_area(fill="royalblue3")+
   theme_bw()+ #to remove grey background
-  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+ #to remove gridlines
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        plot.title = element_text(size = 6, face = "bold"), axis.title = element_text(size = 6))+
   ggtitle(Title)
 
-#print(solidPlot)
-
-#Plot3name = paste("X3.png") #path-specific
-Plot3name = paste(as.character(args[1]), "/X3.png", sep="")
+#Plot3name = paste("solid_colored.png") #path-specific
+Plot3name = paste(as.character(args[1]), "/solid_colored.png", sep="")
 ggsave(as.character(Plot3name), solidPlot, units = "mm", width = 175, height = 50)
+cat("file saved to",  Plot1name)
 ########## Good Above ##########

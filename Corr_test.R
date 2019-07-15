@@ -1,6 +1,8 @@
 args = commandArgs(trailingOnly = TRUE)
 #args[1] <- "temp_cvs" #path-specific
 
+#.libPaths(as.character(args[2])) brew stuff
+
 library(ggplot2)
 
 

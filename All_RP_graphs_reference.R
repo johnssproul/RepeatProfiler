@@ -1,4 +1,8 @@
 print("this is ALL_RP_GRAPHS_REFRERENCE")
+args = commandArgs(trailingOnly = TRUE)
+
+#print(as.character(args[1])) #brew stuff
+#.libPaths(as.character(args[1])) #brew stuff
 
 library(ggplot2)
 library(scales)
@@ -15,13 +19,13 @@ index_conv <- read.table("Index_conv.txt", header = TRUE, stringsAsFactors = FAL
 
 all_depth_csv = multmerge("temp_cvs")
 
-#determines number of plots per page based on number of samples
-l <- length(colnames(all_depth_csv))
-if (l < 16) {
-  n <- l
-} else {
-  n <- l/2
-}
+#determines number of plots per page based on number of samples -- setting default at 8 for now
+#l <- length(colnames(all_depth_csv))
+#if (l < 10) {
+# n <- l
+#} else {
+# n <- 8
+#}
 
 #set standard scale
 max <- 0
@@ -53,9 +57,9 @@ for(i in 2:NCOL(all_depth_csv)){
   Depth_column = d[i]
 
   if(Read1_first != Read2_first){
-    Title = paste(d[i], "                 ", "Read1:", Read1_first, "    Read2:", Read2_first,sep = "")
+    Title = paste(d[i], "   Read1: ", Read1_first, "   Read2: ", Read2_first,sep = "")
   }else if(Read1_first == Read2_first){
-    Title = paste(d[i], "                 ", "Read:", Read1_first)
+    Title = paste(d[i], "   Read: ", Read1_first)
   }
 
   df1 <- subset(all_depth_csv, select = c("Position", Depth_column))
@@ -71,13 +75,12 @@ for(i in 2:NCOL(all_depth_csv)){
     scale_colour_gradientn(name = "Depth", values = c(0, .20, .30, .50, .80, 1.0), colours = colors, limits = c(0, max), guide = "colourbar")+
     scale_fill_gradientn(name = "Depth", values = c(0, .20, .30, .50, .80, 1.0), colours = colors, limits = c(0, max), guide = "colourbar")+
     theme_bw()+ #to remove grey background
-    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+ #to remove gridlines
+    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+          plot.title = element_text(face = "bold"))+ #to remove gridlines and format title
     ggtitle(Title)
-
-  #print(horizontalPlot)
 
   Plots_list[[i-1]] <- horizontalPlot
 }
 
-All_plots <- ggarrange(plotlist = Plots_list, nrow = n, ncol = 1, align = "v", common.legend = TRUE)
-ggexport(All_plots, filename = "Plots_all_reads_combined.pdf", width = 25, height = 25)
+All_plots <- ggarrange(plotlist = Plots_list, nrow = 8, ncol = 1, align = "v", common.legend = TRUE) #common.legend = TRUE creates a single legend for all graphs on a page; if you want a separate legend for each graph, set to FALSE
+ggexport(All_plots, filename = "combined_horizontal_colored.pdf", width = 25, height = 25)

@@ -1,14 +1,15 @@
 multi_poly_names<-read.table("multi_poly_names.txt",header = TRUE,stringsAsFactors=FALSE)
+options(warn=-1)
 
 fraction_table<-multi_poly_names
 
 fraction_table$Read1<-NA
 fraction_table$Read2 <- NA
 fraction_table$fraction_of_unmatched <- NA
-fraction_table$Peaks_A <- NA
-fraction_table$Peaks_T <- NA
-fraction_table$Peaks_G <- NA
-fraction_table$Peaks_C <- NA
+fraction_table$Peaks_A <- ""
+fraction_table$Peaks_T <- ""
+fraction_table$Peaks_G <- ""
+fraction_table$Peaks_C <- ""
 
 index_conv<-read.table("Index_conv.txt",header = TRUE,stringsAsFactors=FALSE)
 
@@ -25,6 +26,10 @@ find_peaks <- function (x, m = 3){
   pks <- unlist(pks)
   pks
 }
+
+discover<-
+
+
 
 
 for (i in 1:NROW(multi_poly_names)) {
@@ -65,7 +70,6 @@ for (i in 1:NROW(multi_poly_names)) {
 
 
 #this is for Base A
-
 for (i in 1:NROW(multi_poly_names)) {
   
 
@@ -78,65 +82,60 @@ for (i in 1:NROW(multi_poly_names)) {
   
    m=NROW(multi_table)*0.1
 
- fraction_table[i,"Peaks_A"]<-paste(find_peaks(multi_table$CountA,m), sep = " ",collapse = " ")
+  for(t in 1:NROW(multi_table)){
+    
+    
+    cut_off=multi_table[t,2]*0.1
+    
+    if(multi_table[t,3]>cut_off){
+    
+        
+      fraction_table[i,"Peaks_A"]<-paste(t,fraction_table[i,"Peaks_A"],sep = " ",collapse = " ")
+      
+      
+    
+    }
+    
+    
+    if(multi_table[t,4]>cut_off){ #this is for Tbase
+      
+      
+      fraction_table[i,"Peaks_T"]<-paste(t,fraction_table[i,"Peaks_T"],sep = " ",collapse = " ")
+      
+      
+      
+    }
+    
+    if(multi_table[t,5]>cut_off){ #this is for G base
+      
+      
+      fraction_table[i,"Peaks_G"]<-paste(t,fraction_table[i,"Peaks_G"],sep = " ",collapse = " ")
+      
+      
+      
+    }
+    if(multi_table[t,6]>cut_off){ #this is for c base
+      
+      
+      fraction_table[i,"Peaks_C"]<-paste(t,fraction_table[i,"Peaks_C"],sep = " ",collapse = " ")
+      
+      
+      
+    }
+    
+    
+  }
   
-  
+   
+   
+   
+   
 }
 
-#this is for Base T
 
-for (i in 1:NROW(multi_poly_names)) {
-  
-  
-  
-  
-  
-  name_of_table_used<-paste("multi_poly/",multi_poly_names[i,1],".txt",sep = "")
-  
-  multi_table<-read.table(name_of_table_used,header=TRUE)
-  
-  m=NROW(multi_table)*0.1
 
-  fraction_table[i,"Peaks_T"]<-paste(find_peaks(multi_table$CountT,m), sep = " ",collapse = " ")
-  
-  
-}
-#this is for Base G
+##next part of code is ot find common peaks and report them
 
-for (i in 1:NROW(multi_poly_names)) {
-  
-  
-  
-  
-  
-  name_of_table_used<-paste("multi_poly/",multi_poly_names[i,1],".txt",sep = "")
-  
-  multi_table<-read.table(name_of_table_used,header=TRUE)
-  
-  m=NROW(multi_table)*0.1
-
-  fraction_table[i,"Peaks_G"]<-paste(find_peaks(multi_table$CountG,m), sep = " ",collapse = " ")
-  
-  
-}
-#this is for Base C
-
-for (i in 1:NROW(multi_poly_names)) {
-  
-  
-  
-  
-  
-  name_of_table_used<-paste("multi_poly/",multi_poly_names[i,1],".txt",sep = "")
-  
-  multi_table<-read.table(name_of_table_used,header=TRUE)
-  
-  m=NROW(multi_table)*0.1
-
-  fraction_table[i,"Peaks_C"]<-paste(find_peaks(multi_table$CountC,m), sep = " ",collapse = " ")
-  
-  
-}
 
 
 
@@ -390,7 +389,7 @@ if(fraction_table$Read1==fraction_table$Read2){
 
 
 
-write.csv(fraction_table,"age_analysis.csv",row.names = FALSE)
+write.csv(fraction_table,"variation_analysis.csv",row.names = FALSE)
 
 
 

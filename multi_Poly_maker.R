@@ -1,22 +1,23 @@
 args = commandArgs(trailingOnly = TRUE)
 
+#.libPaths(as.character(args[1])) #brew stuff
+
 library(ggplot2)
 library(reshape2)
 library(ggpubr)
 
 
-#multi_poly_names <- read.table("./Wed_Jul_10_08:09:48_EDT_2019/REsat1.fa_output/multi_poly_names.txt", header = TRUE, stringsAsFactors = FALSE) #path-specific
 multi_poly_names <- read.table("multi_poly_names.txt", header = TRUE, stringsAsFactors = FALSE)
 
 index_conv <- read.table("Index_conv.txt", header = TRUE, stringsAsFactors=FALSE)
 
 #determines number of plots per page based on number of samples; this can be changed however you want it
-l <- length(multi_poly_names$name_poly)
-if (l < 16) {
-  n <- l
-} else {
-  n <- l/2
-}
+#l <- length(multi_poly_names$name_poly)
+#if (l < 10) {
+# n <- l
+#} else {
+# n <- 8
+#}
 
 Plots_list <- list()
 
@@ -32,12 +33,11 @@ for (i in 1:NROW(multi_poly_names)) {
   Read2_first = index_conv[name_first,2]
 
   if(Read1_first != Read2_first){
-    Title = paste(multi_poly_names[i,1], "                 ", "Read1:", Read1_first, "    Read2:", Read2_first, sep = "")
+    Title = paste(multi_poly_names[i,1], "   Read1: ", Read1_first, "   Read2: ", Read2_first, sep = "")
   }else if(Read1_first == Read2_first){
-    Title = paste(multi_poly_names[i,1], "                 ", "Read:", Read1_first)
+    Title = paste(multi_poly_names[i,1], "   Read: ", Read1_first)
   }
 
-  #name_of_table_used <- paste("./Wed_Jul_10_08:09:48_EDT_2019/REsat1.fa_output/multi_poly/", multi_poly_names[i,1], ".txt", sep = "") #path-specific
   name_of_table_used <- paste("multi_poly/", multi_poly_names[i,1], ".txt", sep = "")
 
   base_counts <- read.table(name_of_table_used,header = TRUE)
@@ -60,13 +60,12 @@ for (i in 1:NROW(multi_poly_names)) {
     scale_fill_manual(values = c("gray", "red", "blue", "yellow", "green"))+
     scale_alpha_manual(values = c(0.35, 1.0, 1.0, 1.0, 1.0))+
     theme_bw()+ #to remove grey background
-    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+ #to remove gridlines
+    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+          plot.title = element_text(face = "bold"))+ #to remove gridlines and format title
     ggtitle(Title)
-
-  #print(polymorphPlot)
 
   Plots_list[[i]] <- polymorphPlot
 }
 
-All_plots <- ggarrange(plotlist = Plots_list, nrow = n, ncol = 1, align = "hv", common.legend = TRUE)
-ggexport(All_plots, filename = "all_Poly_reads_graphs_combinded.pdf", width = 25, height = 25)
+All_plots <- ggarrange(plotlist = Plots_list, nrow = 8, ncol = 1, align = "hv", common.legend = TRUE) #common.legend = TRUE creates a single legend for all graphs on a page; if you want a separate legend for each graph, set to FALSE
+ggexport(All_plots, filename = "combined_variation_plots.pdf", width = 25, height = 25)

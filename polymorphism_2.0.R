@@ -1,7 +1,9 @@
 #!/usr/bin/env Rscript
 
 args = commandArgs(trailingOnly = TRUE)
-#args[1] <- "REsat1.fa_001" #path-specific
+#args[1] <- "dmel_rDNA_ETS_Other_rDNA.fa_001" #path-specific
+
+#.libPaths(as.character(args[2])) #brew stuff
 
 library(ggplot2)
 library(reshape2)
@@ -18,12 +20,12 @@ Read1_first = index_conv[name_first,1]
 Read2_first = index_conv[name_first,2]
 
 if(Read1_first != Read2_first){
-  Title = paste(args[1], "                 ", "Read1:", Read1_first, "    Read2:", Read2_first,sep = "")
+  Title = paste(args[1], "   Read1: ", Read1_first, "   Read2: ", Read2_first,sep = "")
 } else if(Read1_first == Read2_first){
-  Title = paste(args[1], "                 ", "Read:", Read1_first)
+  Title = paste(args[1], "   Read: ", Read1_first)
 }
 
-#base_counts <- read.table("./Wed_Jul_10_08:09:48_EDT_2019/REsat1.fa_output/REsat1.fa_001/pileup_counted.txt", header = TRUE) #path-specific
+#base_counts <- read.table("./Mon_Jul_15_15:59:55_EDT_2019-RepeatProfiler/dmel_rDNA_ETS_Other_rDNA.fa_output/dmel_rDNA_ETS_Other_rDNA.fa_001/pileup_counted.txt", header = TRUE) #path-specific
 base_counts <- read.table("pileup_counted.txt", header = TRUE)
 head(base_counts[1])
 
@@ -44,10 +46,10 @@ polymorphPlot <- ggplot(base_countsRed.m, aes(x = Position, y = Depth, fill = Ba
   scale_fill_manual(values = c("gray", "red", "blue", "yellow", "green"))+
   scale_alpha_manual(values = c(0.35, 1.0, 1.0, 1.0, 1.0))+
   theme_bw()+ #to remove grey background
-  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+ #to remove gridlines
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        plot.title = element_text(size = 6, face = "bold"), axis.title = element_text(size = 6))+
   ggtitle(Title)
 
-#print(polymorphPlot)
-
-PlotRname = paste("X4.pdf", sep="")
+PlotRname = paste("Variation_plot.png", sep="")
 ggsave(as.character(PlotRname), polymorphPlot, units = "mm", width = 175, height = 50)
+cat("file saved to",  PlotRname)
