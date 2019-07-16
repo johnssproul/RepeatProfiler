@@ -67,7 +67,7 @@ Paired reads: _R1.fastq _R1.fastq.gz _R1.fq  _R1.fq.gz  _1.fastq _1.fastq.gz _1.
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _R2.fastq _R2.fastq.gz _R2.fq  _R2.fq.gz  _2.fastq _2.fastq.gz _2.fq  _2.fq.gz <br>
 Unpaired reads:  .fastq &nbsp;  .fastq.gz &nbsp;.fq &nbsp;  .fq.gz&nbsp;  .fastq.gz  &nbsp;  .fq
 
-review the sample input data set provided [here]. Also make sure all your files has Unix LF which means an empty line at the end of the file. This is standard among all linux and macOS text files
+Review the sample input data set provided [here]. Also make sure all your files has Unix LF which means an empty line at the end of the file. This is standard among all linux and macOS text files
 
 Also you can treat paired reads as unpaired by using the flag -u instead of -p. In case, if thats what you want. It will just look for the extention instead of _1/ _2/_R1/_R2 and the extention 
 
