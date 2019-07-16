@@ -43,7 +43,7 @@ echo "install.packages(c('ggplot2','ggpubr','scales','reshape2'), repos=\"https:
 After that you go to this directory in the terminal and run check it is working using  
 
 ```shbash 
-repeatprof 
+bash repeatprof 
 ```
 
 
