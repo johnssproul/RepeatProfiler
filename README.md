@@ -81,6 +81,7 @@ Also you can treat paired reads as unpaired by using the flag -u instead of -p. 
 `-usrprov <path of user_provided.txt>`  use this to provide path of user_provided.txt explained above. Default is current directory. look  below on how to prepare the user_provided.txt and what it is. 
 
 Type one of these 9 alignment settings for bowtie2. Default is `--very-sensitive`
+&nbsp;&nbsp;&nbsp;&nbsp;
 `--very-fast` 
 `--local`
 `--fast`
