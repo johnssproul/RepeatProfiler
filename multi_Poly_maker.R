@@ -1,3 +1,4 @@
+cat("Plotting Combined Variation Graphs... \n")
 args = commandArgs(trailingOnly = TRUE)
 
 #.libPaths(as.character(args[1])) #brew stuff

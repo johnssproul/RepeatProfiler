@@ -1,5 +1,6 @@
 #!/usr/bin/env Rscript
 
+cat("Plotting Variation Graph... \n")
 args = commandArgs(trailingOnly = TRUE)
 #args[1] <- "dmel_rDNA_ETS_Other_rDNA.fa_001" #path-specific
 
@@ -52,4 +53,4 @@ polymorphPlot <- ggplot(base_countsRed.m, aes(x = Position, y = Depth, fill = Ba
 
 PlotRname = paste("Variation_plot.png", sep="")
 ggsave(as.character(PlotRname), polymorphPlot, units = "mm", width = 175, height = 50)
-cat("file saved to",  PlotRname)
+cat("file saved to",  PlotRname, "\n")

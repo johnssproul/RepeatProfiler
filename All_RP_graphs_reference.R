@@ -1,4 +1,4 @@
-print("this is ALL_RP_GRAPHS_REFRERENCE")
+cat("Plotting Combined Samples Graphs... \n")
 args = commandArgs(trailingOnly = TRUE)
 
 #print(as.character(args[1])) #brew stuff

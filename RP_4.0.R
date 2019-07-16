@@ -9,6 +9,7 @@ library(ggplot2)
 
 
 ########## Prepping Data Frame ##########
+cat('Preparing Data Frame for Individual Graphs... \n')
 multmerge = function(mypath){
   filenames = list.files(path = mypath, full.names = TRUE)
   datalist = lapply(filenames, function(x){read.csv(file = x,header=T)})
@@ -62,7 +63,7 @@ if ((length(df1$Position) < 1000) || max(df1$Depth) < 800) {
 colors <- c("blue", "green3", "yellow", "orange", "red", "red")
 
 ########## Plot 1 :: Horizontal Color Ramp ##########
-print('Plot 1 :: Horizontal Color Ramp')
+cat('Plotting Horizontal Gradient Graph... \n')
 
 horizontalPlot <- ggplot(data = df1, aes(x = Position, y = Depth))+
   geom_bar(aes(color = Depth, fill = Depth), alpha = 1, stat = "identity", width = 1.0)+
@@ -76,18 +77,19 @@ horizontalPlot <- ggplot(data = df1, aes(x = Position, y = Depth))+
 #Plot1name = paste("Horizontally_colored.png") #path-specific
 Plot1name = paste(as.character(args[1]), "/Horizontally_colored.png", sep="")
 ggsave(as.character(Plot1name), horizontalPlot, units = "mm", width = 175, height = 50)
-cat("file saved to",  Plot1name)
+cat("file saved to",  Plot1name, "\n")
 ########## Good Above ##########
 
 
 ########## Prep for Plot 2 ##########
+cat('Prepping Vertical Gradient Graph... \n')
 #defines a function that splits the data for plot 2 by=n
 vals.fun<-function(y){
   seq(0, y, by=n)
 }
 
 vals <- lapply(df1[[2]], vals.fun)
-head(vals)
+#head(vals)
 y <- unlist(vals)
 mid <- rep(df1$Position, lengths(vals))
 
@@ -97,7 +99,7 @@ colnames(df2)[3] <- "Depth"
 
 
 ########## Plot 2 :: Vertical Color Ramp ##########
-print('Plot 2 :: Vertical Color Ramp')
+cat('Plotting Vertical Gradient Graph... \n')
 
 verticalPlot<-ggplot(data = df2, aes(x = Position, xend = xend, y = Depth, yend = yend, color = Depth))+
   geom_segment(size = 2)+
@@ -111,11 +113,12 @@ verticalPlot<-ggplot(data = df2, aes(x = Position, xend = xend, y = Depth, yend 
 #Plot2name = paste("Vertically_colored.png") #path-specific
 Plot2name = paste(as.character(args[1]), "/Vertically_colored.png", sep="")
 ggsave(as.character(Plot2name), verticalPlot, units = "mm", width = 175, height = 50)
-cat("file saved to",  Plot2name)
+cat("file saved to",  Plot2name, "\n")
 ########## Good Above ##########
 
 
 ########## Plot 3 :: Preparations ##########
+cat('Prepping Solid Graph... \n')
 df3.1 <- df1[2]
 
 #defines fun.split function that partitions the data into bins of size n; this can be changed however you want it
@@ -153,10 +156,10 @@ for (i in 1:length(df3$Depth)) {
 df3$Position <- pos
 names(df3)[1] <- paste("Depth")
 
-head(df3)
+#head(df3)
 
 ########## Plot 3 :: Solid Plot ##########
-print('Plot 3 :: Solid Plot')
+cat('Plotting Solid Graph... \n')
 
 solidPlot <- ggplot(data = df3, aes(x = Position, y = Depth))+
   geom_area(fill="royalblue3")+
@@ -168,5 +171,5 @@ solidPlot <- ggplot(data = df3, aes(x = Position, y = Depth))+
 #Plot3name = paste("solid_colored.png") #path-specific
 Plot3name = paste(as.character(args[1]), "/solid_colored.png", sep="")
 ggsave(as.character(Plot3name), solidPlot, units = "mm", width = 175, height = 50)
-cat("file saved to",  Plot1name)
+cat("file saved to",  Plot1name, "\n")
 ########## Good Above ##########

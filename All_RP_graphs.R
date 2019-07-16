@@ -1,5 +1,5 @@
 args = commandArgs(trailingOnly = TRUE)
-print("this is ALL_RP_GRAPHS SCRIPT")
+cat("Plotting Scaled Reference Graphs... \n")
 
 #print(as.character(args[2])) #brew stuff
 #.libPaths(as.character(args[2])) #brew stuff
@@ -36,9 +36,9 @@ for (i in 2:NCOL(all_depth_csv)) {
 l <- length(colnames(all_depth_csv))
 #args[1] <- l-1 #path-specific --> number of graphs
 #if (l < 10) {
- # n <- l
+# n <- l
 #} else {
- # n <- 8)
+# n <- 8)
 #}
 
 Plots_list <- list()
