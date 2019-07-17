@@ -55,46 +55,45 @@ bash repeatprof
 
 To generate a profile you need refrence sequence/sequences in fasta format for and paired or unpaired short sequence reads  
 
-a sample command 
-
+a sample profile command with madantory flags 
 ```sh
 repeatprof profile <-p for paired reads or  -u for unpaired> <the refrence sequence path > <path of the folder containing reads> [opitonal flags] 
 ```
+Supported input formats are shown in the table below:
 
-The refrence sequence needs to be in fasta format with any extention of .fa/.fasta/.txt
 
-The reads need to be in a folder and you need to provide the path of the folder and the tool will detect any read of formats supported:
-Paired reads: _R1.fastq _R1.fastq.gz _R1.fq  _R1.fq.gz  _1.fastq _1.fastq.gz _1.fq  _1.fq.gz <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; _R2.fastq _R2.fastq.gz _R2.fq  _R2.fq.gz  _2.fastq _2.fastq.gz _2.fq  _2.fq.gz <br>
-Unpaired reads:  .fastq &nbsp;  .fastq.gz &nbsp;.fq &nbsp;  .fq.gz&nbsp;  .fastq.gz  &nbsp;  .fq 
+| Type of input  |                                                
+|:--------------:|-------------------------|--------|----------|-------------|-------|-----------|
+| Paired Reads   | _R1.fastq | _R1.fastq.gz | _R1.fq | _1.fastq | _1.fastq.gz | _1.fq | _1.fq.gz |   
+|                | _R2.fastq | _R2.fastq.gz | _R2.fq | _2.fastq | _2.fastq.gz | _2.fq | _2.fq.gz |   
+| Unpaired Reads | .fq.gz    | .fastq.gz    | .fq    | .fastq   | .fastq      | .fq   | .fq.gz   |   
+| Reference      | .fa       | .fasta       | .txt   |          |             |       |          |  
+
+
 
 Review the sample input data set provided [here]. Also make sure all your files has Unix LF which means an empty line at the end of the file. This is standard among all linux and macOS text files
 
-Also you can treat paired reads as unpaired by using the flag -u instead of -p. In case, if thats what you want. It will just look for the extention instead of _1/ _2/_R1/_R2 and the extention 
+Also you can treat paired reads as unpaired by using the flag -u instead of -p. In case, if thats what you want.
 
 ###### Opitonal flags: 
-&nbsp;&nbsp;&nbsp;&nbsp;Optional flags can be used in any order after the madantory flags lisited above.
+| optional flag                        | usage                                                                                                                                                           |
+|--------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| -o <folder_path>                     | This will direct the final output folder  to the specified  folderr. Default: Current directory                                                                 |
+| -corr                                | this flag to make the correlation analysis. user_provided.txt is needed for the  correlation graph                                                              |
+| -usrprov <user_provided.txt path> | use this to provide path of user_provided.txt explained above. Default is current directory. look  below on how to prepare the user_provided.txt and what it is |
+| --very-sensitive                     | bowtie alignment setting. Default:--very-sensitive                                                                                                              |
+| --very-fast                          | bowtie alignment setting. Default:--very-sensitive                                                                                                              |
+| --local                              | bowtie alignment setting. Default:--very-sensitive                                                                                                              |
+| --fast                               | bowtie alignment setting. Default:--very-sensitive                                                                                                              |
+| --very-fast-local                    | bowtie alignment setting. Default:--very-sensitive                                                                                                              |
+| --fast-local                         | bowtie alignment setting. Default:--very-sensitive                                                                                                              |
+| --sensitive                          | bowtie alignment setting. Default:--very-sensitive                                                                                                              |
+| --very-sensitive                     | bowtie alignment setting. Default:--very-sensitive                                                                                                              |
+| --very-sensitive-local               | bowtie alignment setting. Default:--very-sensitive                                                                                                              |
+| --sensitive-local                    | bowtie alignment setting. Default:--very-sensitive                                                                                                              |
+| -k                                   | use this flag if you want to keep the sorted bam files of the alignments in the final output folder                                                             |
 
-`-o <folder_path>` &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   This will direct the final output folder  to the specified  folderr. Default: Current directory
 
-`-corr`  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   type this flag to make the correlation analysis. user_provided.txt is needed for the  correlation graph. 
-
-`-usrprov <path of user_provided.txt>`  use this to provide path of user_provided.txt explained above. Default is current directory. look  below on how to prepare the user_provided.txt and what it is. 
-
-Type one of these 9 alignment settings for bowtie2. Default is `--very-sensitive` <br>
-`--very-fast` <br>
-`--local`<br>
-`--fast`<br>
-`--very-fast-local`<br>
-`--fast-local`   <br>
-`--sensitive` <br>
-`--very-sensitive`<br>
-`--very-sensitive-local`  
-`--sensitive-local`<br>
-
-`-k`  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    use this flag if you want to keep the sorted bam files of the alignments in the final output folder
-
- 
  
 ##### Note: Dont include the <> when typing paths . It is just for illustration here. Also make sure all paths passed into the command have no blank. In addition, Default is  current directory means that if you didnt enter this flag it will just assume you have the input in the current directory 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
