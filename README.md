@@ -1,12 +1,12 @@
 ﻿
 # Repeat Profiler 
 
-A tool for generating, visualizing, and comparing repetitive DNA profiles. This tool helps to generate solid comparitive DNA profiles based on just short sample reads  and repeat reference  sequences.
+A tool for generating, visualizing, and comparing repetitive DNA profiles from short-read data. This tool helps to generate solid comparitive DNA profiles based on just short sample reads and repeat reference sequences.
 
 
 # Features:
 
- - Facilitates data visualization of repeat profiles using short read data
+  - Facilitates data visualization of repeat profiles using short read data
   - Produces publication quality graphs in R that simplify visual comparison of profiles. 
   - Outputs a table with summary statistics
   - Conducts correlation analysis of profiles shape across specified groups
@@ -29,14 +29,14 @@ repeatprof
 ```
 
 ### Alternative Installation
-If you dont like homebrew you can download [.zip] of the latest program version 
+As an alternative to homebrew you can download [.zip] of the latest program version 
 
-Make sure you have the  correct dependencies  if you are going with Alternative Installation:
+Make sure you have the correct dependencies if you are going with Alternative Installation:
  - bowtie2
  - samtools
  - python2
  - R
- - R packages: ggplot2,ggpubr,scales,reshape2
+ - R packages: ggplot2, ggpubr, scales, reshape2
 you can install requeired R packages by running this command  
 ```sh
 echo "install.packages(c('ggplot2','ggpubr','scales','reshape2'), repos=\"https://cran.rstudio.com\")" | R --no-save
@@ -53,7 +53,7 @@ bash repeatprof
 
 ##### Generating a  profile:
 
-To generate a profile you need refrence sequence/sequences in fasta format  for and  paired or unpaired short sequence reads  
+To generate a profile you need refrence sequence/sequences in fasta format for and paired or unpaired short sequence reads  
 
 a sample command 
 
@@ -61,9 +61,9 @@ a sample command
 repeatprof profile <-p for paired reads or  -u for unpaired> <the refrence sequence path > <path of the folder containing reads> [opitonal flags] 
 ```
 
-the refrence sequence needs to be in fasta format with any extention of .fa/.fasta/.txt
+The refrence sequence needs to be in fasta format with any extention of .fa/.fasta/.txt
 
-The reads need to be in a folder and you u need to provide the path of the folder and The tool will detect any read of formats supported:
+The reads need to be in a folder and you need to provide the path of the folder and the tool will detect any read of formats supported:
 Paired reads: _R1.fastq _R1.fastq.gz _R1.fq  _R1.fq.gz  _1.fastq _1.fastq.gz _1.fq  _1.fq.gz <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; _R2.fastq _R2.fastq.gz _R2.fq  _R2.fq.gz  _2.fastq _2.fastq.gz _2.fq  _2.fq.gz <br>
 Unpaired reads:  .fastq &nbsp;  .fastq.gz &nbsp;.fq &nbsp;  .fq.gz&nbsp;  .fastq.gz  &nbsp;  .fq 
