@@ -1,47 +1,48 @@
 ﻿
 # Repeat Profiler (This README is in the early draft stages of construction)
 
-A tool for generating, visualizing, and comparing repetitive DNA profiles from short-read data. This tool helps to generate solid comparitive DNA profiles based on just short sample reads and repeat reference sequences.
+A tool for generating, visualizing, and comparing repetitive DNA profiles from short-read data. This tool helps to generate solid comparative DNA profiles based on just short sample reads and repeat reference sequences. RepeatProfiler was developed specifically to facilitate study of repetitive DNA dynamics in groups lacking genomic resources; however, it may be useful in any application where extracting evolutionary signal from repeats is needed. The tool is most applicable to analyses that span short evolutionary time scales.
+
+
 
 
 # Features:
 
   - Facilitates data visualization of repeat profiles using short read data
   - Produces publication quality graphs in R that simplify visual comparison of profiles. 
-  - Outputs a table with summary statistics
-  - Conducts correlation analysis of profiles shape across specified groups
-  - Enables phylogenetic analysis using variation  present in profiles and generate phylip files
+  - Provides summary statistics related to repeat abundance, etc.
+  - Conducts comparative analysis of profiles shape across and within user specified groups
+  - Enables phylogenetic analysis using variation present in profiles
 
 
 
 ### Installation
-The easiest way to setup repeat profiler with all of its dependencies is through [Homebrew]. If you dont have homebrew yet, install it via on  [linux/WSL] and on [macOS]
+The easiest way to setup repeat profiler with all of its dependencies is through the package manager [Homebrew]. If you don’t have homebrew, it is available for installation on [linux/WSL] and on [macOS].
 
-After install homebrew succesfully, run this command:
+After homebrew is installed, run this command:
 ```
 brew install HounerX/homebrew-repo/repeatprof
 ```
 
-To test installation was succesful, try calling the program using...
+To test if the installation was successful, try calling the program using...
 
 ```sh
 repeatprof
 ```
 
 ### Alternative Installation
-As an alternative to homebrew you can download [.zip] of the latest program version 
-
-Make sure you have the correct dependencies if you are going with Alternative Installation:
+As an alternative to homebrew you can download [.zip] of the latest program version and install the dependencies separately. 
+Required dependencies are:
  - bowtie2
  - samtools
  - python2
  - R
  - R packages: ggplot2, ggpubr, scales, reshape2
-you can install requeired R packages by running this command  
+you can install required R packages by running this command  
 ```sh
 echo "install.packages(c('ggplot2','ggpubr','scales','reshape2'), repos=\"https://cran.rstudio.com\")" | R --no-save
 ```
-After that you go to this directory in the terminal and run check it is working using  
+After dependencies are installed, move to the unzipped directory containing the program in the terminal and run the following command to check that the program is working. The words “REPEAT PROFILER” should print to the screen.  
 
 ```sh 
 bash repeatprof 
@@ -51,16 +52,16 @@ bash repeatprof
 # Getting started:
 
 
-##### Generating a  profile:
+##### Input data:
 
-To generate a profile you need refrence sequence/sequences in fasta format for and paired or unpaired short sequence reads  
+To generate profiles you need one or more reference sequences in fasta format for and paired or unpaired short sequence reads  
 
-a sample profile command with madantory flags 
-```sh
-repeatprof profile <-p for paired reads or  -u for unpaired> <the refrence sequence path > <path of the folder containing reads> [opitonal flags] 
-```
+Reference sequences (one or more reference sequences of repeats in FASTA format)
+Sequence data (reads files from one or more samples, paired or unpaired formats are supported)
+
+For tips on obtaining reference sequences for groups that lack repeat reference libraries see “some section” below (or in the full tutorial). 
+
 Supported input formats are shown in the table below:
-
 
 |  Input |format   | format  | format  |format   | format  | format  | format|
 |---|---|---|---|---|---|---|---|
@@ -73,12 +74,17 @@ Supported input formats are shown in the table below:
 
 Review the sample input data set provided [here]. Also make sure all your files has Unix LF which means an empty line at the end of the file. This is standard among all linux and macOS text files
 
-Also you can treat paired reads as unpaired by using the flag -u instead of -p. In case, if thats what you want.
+##### Generating profiles:
 
-###### Opitonal flags: 
+a sample profile command with mandatory flags 
+```sh
+repeatprof profile <-p for paired reads or  -u for unpaired> <the reference sequence path > <path of the folder containing reads> [optional flags] 
+```
+
+###### Optional flags: 
 | optional flag                        | usage                                                                                                                                                           |
 |--------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| -o <folder_path>                     | This will direct the final output folder  to the specified  folderr. Default: Current directory                                                                 |
+| -o <folder_path>                     | This will direct the final output folder to the specified  folder. Default: Current directory                                                                 |
 | -corr                                | this flag to make the correlation analysis. user_provided.txt is needed for the  correlation graph                                                              |
 | -usrprov <user_provided.txt path> | use this to provide path of user_provided.txt explained above. Default is current directory. look  below on how to prepare the user_provided.txt and what it is |
 | --very-sensitive                     | bowtie alignment setting. Default:--very-sensitive                                                                                                              |
@@ -95,16 +101,18 @@ Also you can treat paired reads as unpaired by using the flag -u instead of -p. 
 
 
  
-##### Note: Dont include the <> when typing paths . It is just for illustration here. Also make sure all paths passed into the command have no blank. In addition, Default is  current directory means that if you didnt enter this flag it will just assume you have the input in the current directory 
+##### Note: Don't include the <> when typing paths . It is just for illustration here. Also make sure all paths passed into the command have no blank. In addition, Default is  current directory means that if you didn't enter this flag it will just assume you have the input in the current directory 
+
+
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-##### Prepearing user_provided.txt for -corr 
-Lets say you want to make a profiles for reads you prepeared and want them to include correlation graphs which shows how similiar/different   reads mapping depth are, but also some of these reads belong to a group (A) for example and other (B), so first 
+##### Preparing user_provided.txt for -corr 
+Lets say you want to make a profiles for reads you prepared and want them to include correlation graphs which shows how similar/different   reads mapping depth are, but also some of these reads belong to a group (A) for example and other (B), so first 
 run this command:
 ```sh
 repeatprof pre-corr < -u for unpaired reads  or -p paired reads  > <path reads folder>
 ```
 
-after running this command a  user_provided.txt will be generated based on your reads and all you have to do is to replace the placeholder 'temporary' with your own groups then run this command to verfiy that it is in the correct format and view the file
+after running this command a  user_provided.txt will be generated based on your reads and all you have to do is to replace the placeholder 'temporary' with your own groups then run this command to verify that it is in the correct format and view the file
 ```sh
 repeatprof pre-corr -v   
 ```
@@ -113,7 +121,7 @@ you need to have your edited user_provided.txt in the same directory you are run
 ##### Now you are all set for generating profiles with nice looking correlation groups graph and using the tool  . GOOD JOB !
 &nbsp;
 &nbsp;
-In case you terminated the run, you can use this command to clean up intermidate files created by the tool if you want 
+In case you terminated the run, you can use this command to clean up intermediate files created by the tool if you want 
 ```sh
 repeatprof clean   
 ```
@@ -127,9 +135,9 @@ In this section, I will walk you through a sample output/outputs generated by th
 
 **How to get the most out of the tool**
 
- - How to find good repeat refrence sequence if you dont have any based on your reads
+ - How to find good repeat reference sequence if you don’t have any based on your reads
  
- -  How to use the phylip formated file correctly and get the most out of the trees you generate. 
+ -  How to use the phylip formatted file correctly and get the most out of the trees you generate. 
  
 - How to get the most out of the tool and your data 
 
@@ -282,5 +290,6 @@ Based on the variation plots explained earlier, we were able to capture phylogen
    [PlOd]: <https://github.com/joemccann/dillinger/tree/master/plugins/onedrive/README.md>
    [PlMe]: <https://github.com/joemccann/dillinger/tree/master/plugins/medium/README.md>
    [PlGa]: <https://github.com/RahulHP/dillinger/blob/master/plugins/googleanalytics/README.md>
+
 
 
