@@ -1,5 +1,5 @@
 ﻿
-# Repeat Profiler 
+# Repeat Profiler (This README is in the early draft stages of construction)
 
 A tool for generating, visualizing, and comparing repetitive DNA profiles from short-read data. This tool helps to generate solid comparitive DNA profiles based on just short sample reads and repeat reference sequences.
 
