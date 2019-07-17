@@ -470,6 +470,11 @@ done
 
 
 fi # end of pile up
+
+mv temp_cvs $the_output #for testing
+mv multi_poly $the_output #for testing
+mv multi_poly_names.txt $the_output #for testing
+
 mv $the_output $The_folder
 rm -f folder_names.txt
 
@@ -513,11 +518,6 @@ rm -f The_summary.txt ref_temp.txt bowtie.log  *db.2*
 
 mv Refrences_used $The_folder
 mv all_depth_cvs $The_folder
-
-mv temp_cvs $The_folder #for testing
-mv multi_poly $The_folder #for testing
-mv multi_poly_names.txt $The_folder #for testing
-mv index_conv.txt $The_folder #for testing
 
 mv The_summary_final.csv Errors_README.log $The_folder 2> /dev/null
 rm -f  *Rplots*

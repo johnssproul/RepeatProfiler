@@ -1,41 +1,47 @@
 #!/usr/bin/env Rscript
 
-args = commandArgs(trailingOnly=TRUE)
-#args[1] <- "dmel_rDNA_ETS_Other_rDNA.fa_001" #path-specific
+args <- commandArgs(trailingOnly = TRUE)
+#args[1] <- 'erecta_CL101_TR_1_x_199_0nt.fa_002' #path-specific
 
 #.libPaths(as.character(args[2])) #brew stuff
 
 library(ggplot2)
 
 
-########## Prepping Data Frame ##########
-cat('Preparing Data Frame for Individual Graphs... \n')
-multmerge = function(mypath){
-  filenames = list.files(path = mypath, full.names = TRUE)
-  datalist = lapply(filenames, function(x){read.csv(file = x,header=T)})
+########## Preparing Dataframe ##########
+cat('Preparing data for individual plots of', args[1], '... \n')
+
+#merges all files located in 'mypath' into one dataframe
+multmerge <- function(mypath){
+  filenames <- list.files(path = mypath, full.names = TRUE)
+  datalist <- lapply(filenames, function(x){read.csv(file = x, header = T)})
   Reduce(function(x, y) {merge(x, y, all = TRUE)}, datalist)
 }
 
-index_conv <- read.table("Index_conv.txt", header = TRUE, stringsAsFactors = FALSE)
+#reads textfile containing names of reads
+index_conv <- read.table('Index_conv.txt', header = TRUE, stringsAsFactors = FALSE)
 
-all_depth_csv = multmerge("temp_cvs")
+#multimerge files in temp_cvs directory
+all_depth_csv <- multmerge('temp_cvs')
 
-name<-args[1]
-name_first <- strsplit(name, "_")
+#gets names of reads and stores as objects to be used for title
+name <- args[1]
+name_first <- strsplit(name, '_')
 name_first <- name_first[[1]]
 name_first <- as.numeric(name_first[length(name_first)])
 
-Read1_first = index_conv[name_first,1]
-Read2_first = index_conv[name_first,2]
+Read1_first <- index_conv[name_first,1]
+Read2_first <- index_conv[name_first,2]
 
 if(Read1_first != Read2_first){
-  Title=paste(args[1],"   Read1: ",Read1_first,"   Read2: ",Read2_first,sep = " ")
+  Title <- paste(args[1], '   Read1: ', Read1_first, '   Read2: ', Read2_first, sep = '')
 }else if(Read1_first == Read2_first){
-  Title=paste(args[1],"   Read: ",Read1_first,sep = " ")
+  Title <- paste(args[1], '   Read: ', Read1_first, sep = '')
 }
 
 
-########## Prep for Standard Scale and Data Set ##########
+########## Standard Scale and Sample's Dataframe ##########
+#calculates maximum depth based on all_depth_csv dataframe
 max <- 0
 for (i in 2:NCOL(all_depth_csv)) {
   v <- as.vector(all_depth_csv[,i])
@@ -47,91 +53,136 @@ for (i in 2:NCOL(all_depth_csv)) {
   }
 }
 
-Depth_column = make.names(args[1])
+#gets name of sample to be used when subsetting data
+Depth_column <- make.names(args[1])
 
-df1 <- subset(all_depth_csv, select = c("Position", Depth_column))
+#subsets all_depth_csv into dataframe containing position and depth for only one sample
+df1 <- subset(all_depth_csv, select = c('Position', Depth_column))
 df1 <- na.omit(df1)
-colnames(df1)[2] <- "Depth"
+colnames(df1)[2] <- 'Depth'
 
-#determines split based on number of positions; this can be changed however you want it -- this n value is also used for plot 3
-if ((length(df1$Position) < 1000) || max(df1$Depth) < 800) {
+#determines bin split based on number of positions; this n value is used for vertical gradient plot and the solid plot
+if ((length(df1$Position) < 1000) || max(df1$Depth) < 1000) {
   n <- 1
 } else {
   n <- 20
 }
 
-colors <- c("blue", "green3", "yellow", "orange", "red", "red")
 
-########## Plot 1 :: Horizontal Color Ramp ##########
-cat('Plotting Horizontal Gradient Graph... \n')
+########## Plot Aesthetics ##########
+#sets color scheme for gradient
+colors <- c('blue4', 'springgreen2', 'yellow', 'orange', 'red', 'red')
+
+#sets color gradient environment for gradient plots (horizontal and vertical)
+colorscale <- scale_colour_gradientn(name = 'Depth', values = c(0, .20, .40, .60, .80, 1.0), colours = colors, limits = c(0, max), guide = 'colourbar', aesthetics = c('colour', 'fill'))
+
+#sets plot theme and formatting
+tf <- theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), #to remove gridlines
+        plot.title = element_text(size = 6, face = 'bold'), axis.title = element_text(size = 6)) #formats plot title
+
+#sets caption for low coverage plots
+cap <- labs(caption = 'Low to No Coverage')
+
+
+########## Horizontal Gradient Plot ##########
+cat('Saving horizontal gradient plot of', args[1], '... \n')
 
 horizontalPlot <- ggplot(data = df1, aes(x = Position, y = Depth))+
-  geom_bar(aes(color = Depth, fill = Depth), alpha = 1, stat = "identity", width = 1.0)+
-  scale_colour_gradientn(name = "Depth", values = c(0, .20, .30, .50, .80, 1.0), colours = colors, limits = c(0, max), guide = "colourbar")+
-  scale_fill_gradientn(name = "Depth", values = c(0, .20, .30, .50, .80, 1.0), colours = colors, limits = c(0, max), guide = "colourbar")+
+  geom_bar(aes(color = Depth, fill = Depth), alpha = 1, stat = 'identity', width = 1.0)+
+  colorscale+
   theme_bw()+ #to remove grey background
-  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-        plot.title = element_text(size = 6, face = "bold"), axis.title = element_text(size = 6))+
-  ggtitle(Title)
+  tf+
+  ggtitle(Title) #sets plot title
 
-#Plot1name = paste("Horizontally_colored.png") #path-specific
-Plot1name = paste(as.character(args[1]), "/Horizontally_colored.png", sep="")
-ggsave(as.character(Plot1name), horizontalPlot, units = "mm", width = 175, height = 50)
-cat("file saved to",  Plot1name, "\n")
-########## Good Above ##########
-
-
-########## Prep for Plot 2 ##########
-cat('Prepping Vertical Gradient Graph... \n')
-#defines a function that splits the data for plot 2 by=n
-vals.fun<-function(y){
-  seq(0, y, by=n)
+if(max(df1$Depth) < 1) {
+  horizontalPlot <- horizontalPlot+ cap
 }
 
+#horizontalPlot #testing
+
+#Plot1name <- paste('./Test_plots/Horizontally_colored.png') #path-specific
+Plot1name <- paste(as.character(args[1]), '/Horizontally_colored.png', sep='')
+ggsave(as.character(Plot1name), horizontalPlot, units = 'mm', width = 175, height = 50)
+cat('file saved to',  Plot1name, '\n')
+
+
+########## Prep for Vertical Gradient Plot ##########
+cat('Preparing vertical gradient plot data for',  args[1], '... \n')
+#defines a function that splits the depth for vertical plot by=n
+vals.fun <- function(y){
+  seq(0, y, by = n)
+}
+
+#applies vals.fun function (defined above) to df1[[2]] (= depth) and store as vals
 vals <- lapply(df1[[2]], vals.fun)
-#head(vals)
+
+#unlists vals to make y a vector of numbers (because vals is a list of lists, rather than a single vector)
 y <- unlist(vals)
-mid <- rep(df1$Position, lengths(vals))
 
-df2 <- data.frame(x = mid-0.5, xend = mid+0.5, y = y, yend = y)
-colnames(df2)[1] <- "Position"
-colnames(df2)[3] <- "Depth"
+#creates object pos which has the same length as y (all elements of each list in vals) and has respective (and extrapolated) values from df1$Position
+pos <- rep(df1$Position, lengths(vals))
+
+#creates dataframe setting datapoints for each rectangle that will be colored in vertical graph (x and xend define length of segment, y and y end define height of segment)
+df2 <- data.frame(x = pos-1, xend = pos, y = y-1, yend = y)
+#since x=pos-1 and y=y-1, goes through df2 and sets any x=-1 or y=-1 values to 0 (otherwise the axes would start at -1 and be grey)
+for(i in 1:length(df2$x)) {
+  if(df2$y[[i]] < 0) {
+    df2$y[[i]] <- 0
+  }
+  if(df2$x[[i]] < 0) {
+    df2$x[[i]] <- 0
+  }
+}
+
+#renames columns 1 and 3 in df2 so that the x-axis and y-axis are labelled correctly
+colnames(df2)[1] <- 'Position'
+colnames(df2)[3] <- 'Depth'
+
+#sets size of segment based on maximum depth of sample
+if(max(df2$yend) < 30) {
+  s <- 1
+} else {
+  s <- .3
+}
 
 
-########## Plot 2 :: Vertical Color Ramp ##########
-cat('Plotting Vertical Gradient Graph... \n')
+########## Vertical Gradient Plot ##########
+cat('Saving vertical gradient plot of', args[1], '... \n')
 
-verticalPlot<-ggplot(data = df2, aes(x = Position, xend = xend, y = Depth, yend = yend, color = Depth))+
-  geom_segment(size = 2)+
-  scale_colour_gradientn(name = "Depth", values = c(0, .20, .30, .50, .80, 1.0), colours = colors, limits = c(0, max), guide = "colourbar")+
-  scale_fill_gradientn(name = "Depth", values = c(0, .20, .30, .50, .80, 1.0), colours = colors, limits = c(0, max), guide = "colourbar")+
+verticalPlot <- ggplot(data = df2, aes(x = Position, xend = xend, y = Depth, yend = yend, color = Depth))+
+  geom_segment(size = s)+
+  colorscale+
   theme_bw()+ #to remove grey background
-  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-        plot.title = element_text(size = 6, face = "bold"), axis.title = element_text(size = 6))+
-  ggtitle(Title)
+  tf+
+  ggtitle(Title) #sets plot title
 
-#Plot2name = paste("Vertically_colored.png") #path-specific
-Plot2name = paste(as.character(args[1]), "/Vertically_colored.png", sep="")
-ggsave(as.character(Plot2name), verticalPlot, units = "mm", width = 175, height = 50)
-cat("file saved to",  Plot2name, "\n")
-########## Good Above ##########
+if(max(df1$Depth) < 1) {
+  verticalPlot <- verticalPlot+ cap
+}
+
+#verticalPlot #testing
+
+#Plot2name <- paste('./Test_plots/Vertically_colored.png') #path-specific
+Plot2name <- paste(as.character(args[1]), '/Vertically_colored.png', sep='')
+ggsave(as.character(Plot2name), verticalPlot, units = 'mm', width = 175, height = 50)
+cat('file saved to',  Plot2name, '\n')
 
 
-########## Plot 3 :: Preparations ##########
-cat('Prepping Solid Graph... \n')
+########## Prep for Solid Graph ##########
+cat('Preparing solid plot data for', args[1], '... \n')
+#create new dataframe containing just depth column
 df3.1 <- df1[2]
 
-#defines fun.split function that partitions the data into bins of size n; this can be changed however you want it
+#defines a function that partitions the data into bins of size n
 fun.split <- function(x) {
   split(x, ceiling(seq_along(x)/n))
 }
 
 if(n != 1) {
-  #use lapply to loop through each vector in df1 and execute the function, fun.split
-  #this will split each vector into bins with the specified value in each bin.
+  #use lapply to loop through each vector in df3.1, apply fun.split, and create a list of lists
   df3.2 <- lapply(df3.1, fun.split)
 
-  ##loops through the bins in df and returns a mean for each bin
+  #loops through the bins in df3.2 and returns a mean for each bin
   sp.names3 <- names(df3.2) #makes an object that consists of the names in df3.2, which are the species names
   means3 <- as.list(rep(NA, length(sp.names3))) #makes an empty list the same length as sp.names; rep replicates the data --> so this line (I think) is making a list with the same length as depth3, but all the values are NA
   names(means3) <- names(df3.2) #sets names in means3 to same as those in df3.2
@@ -147,29 +198,31 @@ if(n != 1) {
   df3 <- df3.1
 }
 
-#creates a vector for positions
+#creates a vector for positions and adds to df3
 pos <- NULL
 for (i in 1:length(df3$Depth)) {
   pos[i] <- (i*n)
 }
 
 df3$Position <- pos
-names(df3)[1] <- paste("Depth")
 
-#head(df3)
 
 ########## Plot 3 :: Solid Plot ##########
-cat('Plotting Solid Graph... \n')
+cat('Saving solid plot of', args[1], '... \n')
 
 solidPlot <- ggplot(data = df3, aes(x = Position, y = Depth))+
-  geom_area(fill="royalblue3")+
+  geom_area(fill = 'royalblue3')+
   theme_bw()+ #to remove grey background
-  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-        plot.title = element_text(size = 6, face = "bold"), axis.title = element_text(size = 6))+
+  tf+
   ggtitle(Title)
 
-#Plot3name = paste("solid_colored.png") #path-specific
-Plot3name = paste(as.character(args[1]), "/solid_colored.png", sep="")
-ggsave(as.character(Plot3name), solidPlot, units = "mm", width = 175, height = 50)
-cat("file saved to",  Plot1name, "\n")
-########## Good Above ##########
+if(max(df1$Depth) < 1) {
+  solidPlot <- solidPlot+ cap
+}
+
+#solidPlot #testing
+
+#Plot3name <- paste('./Test_plots/Solid_colored.png') #path-specific
+Plot3name <- paste(as.character(args[1]), '/solid_colored.png', sep='')
+ggsave(as.character(Plot3name), solidPlot, units = 'mm', width = 175, height = 50)
+cat('file saved to',  Plot1name, '\n')
