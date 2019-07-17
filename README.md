@@ -62,8 +62,8 @@ repeatprof profile <-p for paired reads or  -u for unpaired> <the refrence seque
 Supported input formats are shown in the table below:
 
 
-| Type of input  |                                                
-|:--------------:|-------------------------|--------|----------|-------------|-------|-----------|
+| optional flag                        | usage    
+|--------------------------------------|---------------------------------------------------------|
 | Paired Reads   | _R1.fastq | _R1.fastq.gz | _R1.fq | _1.fastq | _1.fastq.gz | _1.fq | _1.fq.gz |   
 |                | _R2.fastq | _R2.fastq.gz | _R2.fq | _2.fastq | _2.fastq.gz | _2.fq | _2.fq.gz |   
 | Unpaired Reads | .fq.gz    | .fastq.gz    | .fq    | .fastq   | .fastq      | .fq   | .fq.gz   |   
