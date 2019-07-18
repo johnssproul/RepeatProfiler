@@ -5,7 +5,7 @@ rm -f *.out *.bam *fofn* Errors_README.txt
 
 
 currentDate=`date`
-currentDate=`tr ' ' '_' <<<"$currentDate"`
+currentDate=`tr ' :' '_' <<<"$currentDate"`
 rm -f Errors_README.txt
 #echo $currentDate
 
