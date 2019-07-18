@@ -1,8 +1,6 @@
 title: RepeatProfiler
 #author: 
 #email:
-description:
-This is a tool for generating, visualizing, and comparing repetitive DNA profiles from short-read data. 
-RepeatProfiler helps to generate solid comparitive DNA profiles based on just short sample reads and repeat reference sequences.
+description: This is a tool for generating, visualizing, and comparing repetitive DNA profiles from short-read data. RepeatProfiler helps to generate solid comparitive DNA profiles based on just short sample reads and repeat reference sequences.
 
 theme: jekyll-theme-hacker
