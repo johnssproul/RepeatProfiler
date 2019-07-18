@@ -613,32 +613,41 @@ fi
 if [ "$1" == "-h" ]; then
 echo ""
 
-echo "a sample command for profiling will be:"
+echo "Usage:"
 echo "repeatprof profile <-p for paired reads or  -u for unpaired> <the refrence sequence path > <path of the folder containing reads> [opitonal flags]"
 echo ""
 echo "optional flags:"
-echo "-o <folder_path>	use to specifiy an directory where the final output file  be directed to. Default: current directory"
-echo "			This will direct the final output folder  to this specifiy folder"
-echo "-corr		        type this flag to make the correlation analysis. user_provided.txt is needed for the correlation graph. Please refer to the github page for more info about this or look below"
-echo "--very-fast | --local | --fast " 
-echo "--very-fast-local | --fast-local  type one of these 9 alignment settings for bowtie2. Default is  --very-sensitive"
-echo "-sensitive | --very-sensitive "
-echo "--very-sensitive-local | --sensitive-local  "
-echo "-k	use this flag if you want to keep the sorted bam files of the alignments in the final output folder"
+echo "-o <folder_path>		use to specifiy an directory where the final output file  be directed to. Default: current directory"
+echo "-corr				type this flag to make the correlation analysis. sample_groups.txt is needed for the correlation graph. Please refer to the github page for more info this"
+echo "--very-sensitive		bowtie alignment setting. Default:--very-sensitive"
+echo "--very-fast			bowtie alignment setting. Default:--very-sensitive"
+echo "--local				bowtie alignment setting. Default:--very-sensitive"
+echo "--fast				bowtie alignment setting. Default:--very-sensitive"
+echo "--very-fast-local		bowtie alignment setting. Default:--very-sensitive"
+echo "--fast-local			bowtie alignment setting. Default:--very-sensitive"
+echo "--sensitive			bowtie alignment setting. Default:--very-sensitive"
+echo "--very-sensitive		bowtie alignment setting. Default:--very-sensitive"
+echo "--very-sensitive-local	        bowtie alignment setting. Default:--very-sensitive"
+echo "--sensitive-local		bowtie alignment setting. Default:--very-sensitive"
+echo "-k				use this flag if you want to keep the sorted bam files of the alignments in the final output folder"
 
-
+echo "-usrprov <sample_groups.txt path> use this flag to specify path of sample_groups.txt. Default: current directory"
 
 echo ""
 
 
 
-echo "Supported read formats:"
+echo "Supported input formats:"
 echo "Paired reads: _R1.fastq _R1.fastq.gz _R1.fq  _R1.fq.gz  _1.fastq _1.fastq.gz _1.fq  _1.fq.gz  "
 echo "              _R2.fastq _R2.fastq.gz _R2.fq  _R2.fq.gz  _2.fastq _2.fastq.gz _2.fq  _2.fq.gz  "
 echo "Unpaired reads:  .fastq .fastq.gz .fq  .fq.gz  .fastq .fastq.gz .fq"
-echo "Supported refrence  formats:"
+echo "reference:	.fa .fasta .txt "
+
+echo ""
+
 echo "refrences need to be in fasta format. They can be multi-sequence or single sequence fasta file."
 
+echo ""
 
 
 
@@ -648,9 +657,14 @@ echo "refrences need to be in fasta format. They can be multi-sequence or single
 
 
 echo "--------------------------------other usages: "
+echo ""
 
-echo "repeatprof pre-corr <-u for unpaired reads  or -p paired reads  > <path of the folder containing reads> use this command to help prepare user_provided.txt for correlation graph produced by -corr flag in profile "
-echo "repeatprof pre-corr -v  use this command to review your edited user_provided.txt with your desired groups. This ensures that it is still in the correct file format."
+echo "repeatprof pre-corr <-u for unpaired reads  or -p paired reads> <path of the folder containing reads> use this command to help prepare sample_groups.txt for correlation graph produced by -corr flag in profile "
+echo ""
+
+echo "repeatprof pre-corr -v  use this command to review your edited sample_groups.txt with your desired groups. This ensures that it is still in the correct file format. Need to be in same directory as file"
+echo ""
+
 echo "repeatprof clean		use this command to cleanup a broken/terminated run"
 
 echo ""
