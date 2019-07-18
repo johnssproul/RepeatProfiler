@@ -1,7 +1,7 @@
 ﻿
 # Repeat Profiler (This README is in the early draft stages of construction)
 
-A tool for generating, visualizing, and comparing repetitive DNA profiles from short-read data. This tool helps to generate solid comparative DNA profiles based on just short sample reads and repeat reference sequences. RepeatProfiler was developed specifically to facilitate study of repetitive DNA dynamics in groups lacking genomic resources; however, it may be useful in any application where extracting evolutionary signal from repeats is needed. The tool is most applicable to analyses that span short evolutionary time scales.
+A tool for generating, visualizing, and comparing repetitive DNA profiles from short-read data. This tool helps to generate solid comparative DNA profiles based on just short sample reads and repeat reference sequences. RepeatProfiler is developed specifically to facilitate study of repetitive DNA dynamics over short evolutionary time scales in groups lacking genomic resources; however, it may be useful in any application where extracting signal from repetitive sequences is needed.
 
 
 
@@ -24,7 +24,7 @@ After homebrew is installed, run this command:
 brew install HounerX/homebrew-repo/repeatprof
 ```
 
-To test if the installation was successful, try calling the program using...
+To test if the installation was successful, try calling the program at the command line using:
 
 ```sh
 repeatprof
@@ -38,7 +38,7 @@ Required dependencies are:
  - python2
  - R
  - R packages: ggplot2, ggpubr, scales, reshape2
-you can install required R packages by running this command  
+you can install required R packages by running this command:  
 ```sh
 echo "install.packages(c('ggplot2','ggpubr','scales','reshape2'), repos=\"https://cran.rstudio.com\")" | R --no-save
 ```
