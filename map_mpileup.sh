@@ -1,36 +1,30 @@
 #!/bin/bash
 
 
-REF=$1 #needs to be generalized eventually for multiple reference pipeline
+REF=$1 #the refrence name is passed from the repeatprof script 
 
-BASE="refbase_" #****Need to fix for multiple reference pipeline
-if [ "$2" == "" ]; then
-
-reads=`pwd`
-
-fi
-if [ "$2" != "" ]; then
-
-reads=$2 #makes variable = output of system pwd command
+BASE="refbase_" #this is for the indexed refrence files that was built by bowtie2-build command in the repeatprof 
 
 
-fi
+reads=$2 #the reads path is passed from repeatprof  
 
-DIR=`pwd`
+
+
+
+DIR=`pwd` #this is just the current dictionary 
 
 #MAXRef=`wc -l < RefList.txt` #this will need to be fixed if we make the script loop through multiple reference sequences. it will ideally count how many there are and use the number to control loop iteration.
 #echo "Number of reference sequences detected:"
 #echo $MAXRef
 
-#makes .txt files containing file names for all R1, R2, and .fa reference files. adds DIR to a slash and wildcard search for a given file type
-if [ $3 = "-p" ]; then
+if [ $3 = "-p" ]; then #if user specified paired data  then look for this 
 
 ls ${reads}/*_R1.fastq ${reads}/*_R1.gz ${reads}/*_R1.fq ${reads}/*_R1.fq.gz  ${reads}/*_1.fq ${reads}/*_1.fq.gz ${reads}/*_1.gz ${reads}/*_1.fastq > fofn1.txt 2>/dev/null
 
 ls ${reads}/*_R2.fastq ${reads}/*_R2.gz ${reads}/*_R2.fq ${reads}/*_R2.fq.gz  ${reads}/*_2.fq.gz  ${reads}/*_2.fq ${reads}/*_2.gz ${reads}/*_2.fastq > fofn2.txt 2>/dev/null
 
 fi
-if [ $3 = "-u" ]; then
+if [ $3 = "-u" ]; then #if user specified unpaired data  then look for that. We use it double here because rest of the code was built on paired data, but dont worry it gets dealt with later
 
 ls ${reads}/*.fastq ${reads}/*.gz ${reads}/*.fq ${reads}/*.fq.gz    > fofn1.txt 2>/dev/null
 
@@ -39,14 +33,14 @@ ls ${reads}/*.fastq ${reads}/*.gz ${reads}/*.fq  ${reads}/*.fq.gz  > fofn2.txt 2
 fi
 
 
+#we check if the lines of the fofn for pair 1 is equal to lines fofn of pair 2 if not then give an error because that mean user has missing data if paired  
 
-
-reads1_check=`cat fofn1.txt | wc -l`
+reads1_check=`cat fofn1.txt | wc -l` 
 reads2_check=`cat fofn2.txt | wc -l `
 
 
 
-if [[ $reads1_check == 0 && $reads2_check == 0 ]];then
+if [[ $reads1_check == 0 && $reads2_check == 0 ]];then #if both are empty then there was no reads of correct format to begin with 
 echo ""
 
 echo "The path of a file of  paired  read  provided doesnt contain any paired read that has correct format."| tee -a Errors_README.log
@@ -74,17 +68,16 @@ N=1 #initiates a counter
 echo "mapping reads"
 #loops through all read pairs and makes a variable of file names for each pair to feed to bowtie, calls bowtie to map reads, then converts output to .bam and sorts .bam with samtools 
 
-echo "Read1	Read2	index" > Index_conv.txt  
+echo "Read1	Read2	index" > Index_conv.txt   #builds index_conv which is used in Rscripts  
 
-while ((N<=MAX)) 
-	#if ((count<=max))
+while ((N<=MAX))  
 do
 
-	F=`printf "%03d\n" $N`
-	READ1="$(sed "${N}q;d" fofn1.txt)"
+	F=`printf "%03d\n" $N` #this puts the number in format 001 for example 
+	READ1="$(sed "${N}q;d" fofn1.txt)" 
 	READ2="$(sed "${N}q;d" fofn2.txt)"
 	
-	Read1name=$(awk -F "/" '{print $NF}' <<< $READ1)
+	Read1name=$(awk -F "/" '{print $NF}' <<< $READ1) #seprates the read name on / and gets the last thing sperated  
 	Read2name=$(awk -F "/" '{print $NF}' <<< $READ2)
 	echo "index= $F" >> ReadMe.txt
 	echo "$Read1name	$Read2name	$F" >> Index_conv.txt  
@@ -99,18 +92,16 @@ fi
 
 	
 	echo "---------------------------------------------" >> ReadMe.txt
-REF_name=$(awk -F "/" '{print $NF}' <<< $REF)
+REF_name=$(awk -F "/" '{print $NF}' <<< $REF) 
 
-	#READ3="$(sed "${N}q;d" fofn2.txt)" ###This is exactly the same as the previous command. It really needs to meet the needs of the -x command (find some clever way to make a unique base file name for each reference sequence)
 	
 	echo $READ1
 	echo $READ2	
-	#echo $BASE
 
-if [ $3 = "-p" ]; then
+if [ $3 = "-p" ]; then #if data is paired then run this  
 
 	(bowtie2 -p $4 -x $BASE -1 $READ1 -2 $READ2 $5    | samtools view -bS -h -F 4 /dev/stdin |  samtools sort -o  ${F}_sorted.bam  /dev/stdin) 2> bowtie.log
-retval=$?
+retval=$? #catches exit code to check for error
 
 samtools sort -n -o namesort.bam ${F}_sorted.bam
 
@@ -128,10 +119,10 @@ rm -f  positionsort.bam fixmate.bam namesort.bam
 
 
 fi
-if [ $3 = "-u" ]; then
+if [ $3 = "-u" ]; then #if data is unpaired then run that 
 
 (bowtie2 -p $4 -x $BASE -U $READ1 $5   | samtools view -bS -h -F 4 /dev/stdin | samtools sort -o ${F}_sorted.bam /dev/stdin) 2> bowtie.log
-retval=$?
+retval=$? #catches exit code to check for error 
 
 samtools sort -n -o namesort.bam ${F}_sorted.bam
 
@@ -150,7 +141,7 @@ rm -f  positionsort.bam fixmate.bam namesort.bam
 
 fi
 
-if [ $retval -ne 0 ]; then
+if [ $retval -ne 0 ]; then #if bowtie or samtools gave an error this will chatch  and terminate 
 echo "Something is wrong with bowtie2 parameters you inputed. Please revise it"
 
 exit 1
@@ -158,7 +149,7 @@ fi
 
 
 
-	#does read mapping in bowtie, uses samtools to covert output to .bam, and sort .bam file. 
+#does read mapping in bowtie, uses samtools to covert output to .bam, and sort .bam file. 
 
 allreads=`head -n 1 bowtie.log | grep -Eo '[+-]?[0-9]+([.][0-9]+)?'`
 aligned=`tail -n 1 bowtie.log | grep -Eo '[+-]?[0-9]+([.][0-9]+)?'`
@@ -172,7 +163,6 @@ done #< RefList2.txt
 
 
 ls ${DIR}/*.bam > fofn_bam.txt 
-#echo -e "\n\nDONE!!"
 
 MAX2=`wc -l < fofn1.txt` #this probably doesn't need to be there.
 
@@ -186,11 +176,7 @@ do
 	echo "calculating read depth at each position"
 	
 	samtools mpileup -f $REF -q 0 -Q 0 -d 0 -A -o ${F}_pileup.out -O ${F}_sorted.bam
-	
-	#samtools depth -aa -d 0 ${N}_sorted.bam > ${N}_mapped.depth.txt	
-
-	#echo -e "$count \c"z
-	#sleep 1 	
+ 	
 	((N ++))
 
 done #< RefList2.txt
