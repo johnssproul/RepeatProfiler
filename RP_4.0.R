@@ -78,7 +78,7 @@ df1.max <- max(df1$Depth)
 if ((length(df1$Position) < 300) || df1.max < 1000){
   n <- 1
 } else {
-  n <- 2
+  n <- 10
 }
 
 
