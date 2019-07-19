@@ -1,9 +1,11 @@
 args <- commandArgs(trailingOnly = TRUE)
-cat('Plotting Combined Variation Graphs... \n')
+
+cat('Saving combined variation plots... \n') #could we possibly get the name of the reference?
 
 #.libPaths(as.character(args[1])) #brew stuff
 
 library(ggplot2)
+
 
 #code if plots per page or file type specified
 if (is.null(args[2]) || is.na(args[2])) { #if nothing is specified, set defaults
@@ -25,6 +27,11 @@ if (is.null(args[2]) || is.na(args[2])) { #if nothing is specified, set defaults
   n <- args[2] #assume args[2] is plots per page
   ft <- args[3] #assume args[3] is file type
 }
+
+#for handling low coverage plots
+img <- png::readPNG('./images/watermark.png')
+cap <- labs(caption = 'The coverage of this graph is too low to properly plot it.') #sets caption for low coverage plots
+wm <- ggpubr::background_image(img) #for watermark
 
 #reads textfile containing names indexed samples (?)
 #multi.poly.names <- read.table('./erecta_CL9_TR_1_x_6687_0nt.fa_output/multi_poly_names.txt', header = TRUE, stringsAsFactors = FALSE) #path-specific
@@ -82,9 +89,15 @@ for (i in 1:NROW(multi.poly.names)) {
           plot.title = element_text(face = 'bold'))+ #to remove gridlines and format title
     ggtitle(t)
 
+  #low coverage marker
+  if(max(base.counts$Depth) < 1) {
+    polymorphPlot <- polymorphPlot+ wm+ cap
+  }
+
   plots[[i]] <- polymorphPlot
 }
 
 allplots <- ggpubr::ggarrange(plotlist = plots, nrow = n, ncol = 1, align = 'hv', common.legend = TRUE) #common.legend = TRUE creates a single legend for all graphs on a page; if you want a separate legend for each graph, set to FALSE
+#file <- paste('./Test_plots/Variation_Reference_Combined', ft, sep = '') #path-specific
 file <- paste('combined_variation_colored', ft, sep = '')
 ggpubr::ggexport(allplots, filename = file, width = 25, height = 25)

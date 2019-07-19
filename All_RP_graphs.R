@@ -1,5 +1,6 @@
 args <- commandArgs(trailingOnly = TRUE)
-cat('Saving Scaled Reference Plots (Horizontal)... \n')
+
+cat('Saving scaled over all references plots (horizontal gradient)... \n')
 
 #print(as.character(args[2])) #brew stuff
 #.libPaths(as.character(args[2])) #brew stuff
@@ -28,6 +29,9 @@ if (is.null(args[2]) || is.na(args[2])) { #if nothing is specified, set defaults
   ft <- args[3] #assume args[3] is file type
 }
 
+#get watermark image
+img <- png::readPNG('./images/watermark.png')
+
 #merges all files located in 'mypath' into one dataframe
 multmerge <- function(mypath){
   filenames <- list.files(path = mypath, full.names = TRUE)
@@ -39,16 +43,11 @@ multmerge <- function(mypath){
 index.conv <- read.table('Index_conv.txt', header = TRUE, stringsAsFactors = FALSE)
 
 #multimerge files in all_depth_cvs directory
-#all.depth.csv <- multmerge('./all_depth_cvs') #path-specific
 all.depth.csv <- multmerge('all_depth_cvs')
 
-#args[1] <- length(colnames(all.depth.csv))-1 #path-specific --> number of graphs
+args[1] <- length(colnames(all.depth.csv))-1 #path-specific --> number of graphs
 
-plots <- list()
-
-
-########## Standard Scale and Sample's Dataframe ##########
-#calculates maximum depth based on all.depth.csv dataframe
+#standard scale based on calculations of maximum depth from all.depth.csv dataframe
 max <- 0
 for (i in 2:NCOL(all.depth.csv)) {
   v <- as.vector(all.depth.csv[,i])
@@ -62,24 +61,18 @@ for (i in 2:NCOL(all.depth.csv)) {
 
 
 ########## Plot Aesthetics ##########
-#sets color scheme for gradient
-colors <- c('blue4', 'springgreen2', 'yellow', 'orange', 'red', 'red')
-
-#sets color gradient environment for gradient plots (horizontal and vertical)
-colorscale <- scale_colour_gradientn(name = 'Depth', values = c(0, .20, .40, .60, .80, 1.0), colours = colors, limits = c(0, max), guide = 'colourbar', aesthetics = c('colour', 'fill'))
-
-#sets plot theme and formatting
+colors <- c('blue4', 'springgreen2', 'yellow', 'orange', 'red', 'red') #sets color scheme for gradient
+cs <- scale_colour_gradientn(name = 'Depth', values = c(0, .20, .40, .60, .80, 1.0), colours = colors, limits = c(0, max), guide = 'colourbar', aesthetics = c('colour', 'fill')) #sets color gradient environment for gradient plots (horizontal and vertical)
 tf <- theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), #to remove gridlines
-            plot.title = element_text(size = 10, face = 'bold'), axis.title = element_text(size = 10)) #formats plot title
-
-#formats legend
-tl <- theme(legend.text = element_text(size = 6))
-
-#sets caption for low coverage plots
-cap <- labs(caption = 'Low to No Coverage')
+            plot.title = element_text(size = 6, face = 'bold'), axis.title = element_text(size = 6)) #formats plot title
+tl <- theme(legend.text = element_text(size = 6)) #formats legend
+cap <- labs(caption = 'The coverage of this graph is too low to properly plot it.') #sets caption for low coverage plots
+wm <- ggpubr::background_image(img) #for watermark
 
 
 ########## Plotting Loop ##########
+plots <- list()
+
 N = 1
 for(i in 2:NCOL(all.depth.csv)){
   print(i-1)
@@ -112,22 +105,20 @@ for(i in 2:NCOL(all.depth.csv)){
   ########## Horizontal Gradient Plot ##########
   horizontalPlot <- ggplot(data = df1, aes(x = Position, y = Depth))+
     geom_bar(aes(color = Depth, fill = Depth), alpha = 1, stat = 'identity', width = 1.0)+
-    colorscale+
-    theme_bw()+ #to remove grey background
-    tf+
-    tl+
-    ggtitle(t) #sets plot title
+    cs+ theme_bw()+ #to remove grey background
+    tf+ tl+ ggtitle(t) #sets plot title
 
+  #low coverage marker
   if(max(df1$Depth) < 1) {
-    horizontalPlot <- horizontalPlot+ cap
+    horizontalPlot <- horizontalPlot+ wm+ cap
   }
 
   #if last graph has been plotted, save pdf; else continuing plotting
   if(N == as.numeric(args[1])) {
     plots[[N]] <- horizontalPlot
     allplots <- ggpubr::ggarrange(plotlist = plots, nrow = n, ncol = 1, align = 'hv', common.legend = TRUE) #common.legend = TRUE creates a single legend for all graphs on a page; if you want a separate legend for each graph, set to FALSE
-    the.name = paste('refrences_wide_color_scaled_graphs/', depth.column, '.pdf', sep = '')
-    #the.name = paste('refrences_wide_color_scaled_graphs', ft, sep = '') #path-specific
+    #the.name = paste('./Test_plots/Horizontal_All_Combined', ft, sep = '') #path-specific
+    the.name = paste('refrences_wide_color_scaled_graphs/', depth.column, ft, sep = '')
     ggpubr::ggexport(allplots, filename = the.name, width = 25, height = 25)
 
     #reset variables
@@ -139,3 +130,9 @@ for(i in 2:NCOL(all.depth.csv)){
     N = N + 1
   }
 }
+
+# NOTE: Thie warning message may appear:
+# In UseMethod("depth") :
+#   no applicable method for 'depth' applied to an object of class "NULL"
+# Apparently it is an "overuse" of ggplot, which makes sense if there are a large number of plots produced.
+# I have not found this to be a problem in exporting the plots, although it may cause some issues I am not yet aware of.

@@ -1,22 +1,29 @@
 #!/usr/bin/env Rscript
-
 args <- commandArgs(trailingOnly = TRUE)
-#args[1] <- 'erecta_CL9_TR_1_x_6687_0nt.fa_001' #path-specific
-cat('Plotting Variation Graph... \n')
+#args[1] <- 'erecta_CL1_TR_1_x_181_0nt.fa_011' #path-specific
 
-library(ggplot2)
+cat('Saving variation plot...', args[1], '... \n')
 
 #.libPaths(as.character(args[2])) #brew stuff
 
+library(ggplot2)
+
+
 #code if file type specified
-if(is.null(args[2]) || is.na(args[2])) {
+if(is.null(args[3]) || is.na(args[3])) {
   ft <- '.png'
-} else if (grepl('.', args[2], fixed = TRUE)){
-  ft <- args[2]
+} else if (grepl('.', args[3], fixed = TRUE)){
+  ft <- args[3]
 } else {
   print('Invalid input. Setting file type to default: ".png"')
   ft <- '.png'
 }
+
+#for handling low coverage plots
+img <- png::readPNG('./images/watermark.png')
+cap <- labs(caption = 'The coverage of this graph is too low to properly plot it.') #sets caption for low coverage plots
+wm <- ggpubr::background_image(img) #for watermark
+
 
 #reads textfile containing names of reads
 index.conv <- read.table('Index_conv.txt', header = TRUE, stringsAsFactors = FALSE)
@@ -37,7 +44,7 @@ if(read1.first != read2.first){
 }
 
 #creates dataframe of counts for bases
-#base.counts <- read.table('./erecta_CL9_TR_1_x_6687_0nt.fa_output/erecta_CL9_TR_1_x_6687_0nt.fa_001/pileup_counted.txt', header = TRUE) #path-specific
+#base.counts <- read.table('./erecta_CL1_TR_1_x_181_0nt.fa_output/erecta_CL1_TR_1_x_181_0nt.fa_011/pileup_counted.txt', header = TRUE) #path-specific
 base.counts <- read.table('pileup_counted.txt', header = TRUE)
 head(base.counts[1])
 
@@ -61,11 +68,17 @@ polymorphPlot <- ggplot(base.countsRed.m, aes(x = Position, y = Depth, fill = Ba
   theme_bw()+ #to remove grey background
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         plot.title = element_text(size = 6, face = 'bold'), axis.title = element_text(size = 6))+
+  theme(legend.text = element_text(size = 6))+ #formats legend
   ggtitle(t)
+
+#low coverage marker
+if(max(base.counts$Depth) < 1) {
+  polymorphPlot <- polymorphPlot+ wm+ cap
+}
 
 #polymorphPlot #testing
 
-#PlotRname <- paste('./Test_plots/Variation_plot', ft, sep='') #path-specific
-PlotRname <- paste('Variation_plot', ft, sep='')
-ggsave(as.character(PlotRname), polymorphPlot, units = 'mm', width = 175, height = 50)
-cat('file saved to',  PlotRname, '\n')
+#plot.name <- paste('./Test_plots/Variation_plot', ft, sep='') #path-specific
+plot.name <- paste('Variation_plot', ft, sep='')
+ggsave(as.character(plot.name), polymorphPlot, units = 'mm', width = 175, height = 50)
+cat('file saved to',  plot.name, '\n')

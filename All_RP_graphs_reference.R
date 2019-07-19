@@ -1,5 +1,6 @@
 args <- commandArgs(trailingOnly = TRUE)
-cat('Saving Combined Samples Plots... \n')
+
+cat('Saving scaled per reference plots (horizontal gradient)... \n')
 
 #print(as.character(args[1])) #brew stuff
 #.libPaths(as.character(args[1])) #brew stuff
@@ -35,17 +36,15 @@ multmerge <- function(mypath){
   Reduce(function(x, y) {merge(x, y, all = TRUE)}, datalist)
 }
 
+#get watermark image
+img <- png::readPNG('./images/watermark.png')
+
 #reads textfile containing names of reads
 index.conv <- read.table('Index_conv.txt', header = TRUE, stringsAsFactors = FALSE)
 
 #multimerge files in temp_cvs directory
-#all.depth.csv <- multmerge('temp_cvs_1') #path-specific
 all.depth.csv <- multmerge('temp_cvs')
 
-plots <- list()
-
-
-########## Standard Scale and Sample's Dataframe ##########
 #calculates maximum depth based on all.depth.csv dataframe
 max <- 0
 for (i in 2:NCOL(all.depth.csv)) {
@@ -60,25 +59,18 @@ for (i in 2:NCOL(all.depth.csv)) {
 
 
 ########## Plot Aesthetics ##########
-#sets color scheme for gradient
-colors <- c('blue4', 'springgreen2', 'yellow', 'orange', 'red', 'red')
-
-#sets color gradient environment for gradient plots (horizontal and vertical)
-colorscale <- scale_colour_gradientn(name = 'Depth', values = c(0, .20, .40, .60, .80, 1.0), colours = colors, limits = c(0, max), guide = 'colourbar', aesthetics = c('colour', 'fill'))
-
-#sets plot theme and formatting
+colors <- c('blue4', 'springgreen2', 'yellow', 'orange', 'red', 'red') #sets color scheme for gradient
+cs <- scale_colour_gradientn(name = 'Depth', values = c(0, .20, .40, .60, .80, 1.0), colours = colors, limits = c(0, max), guide = 'colourbar', aesthetics = c('colour', 'fill')) #sets color gradient environment for gradient plots (horizontal and vertical)
 tf <- theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), #to remove gridlines
-            plot.title = element_text(size = 10, face = 'bold'), axis.title = element_text(size = 10)) #formats plot title
-
-#formats legend
-tl <- theme(legend.text = element_text(size = 6))
-
-#sets caption for low coverage plots
-cap <- labs(caption = 'Low Coverage')
-
+            plot.title = element_text(size = 6, face = 'bold'), axis.title = element_text(size = 6)) #formats plot title
+tl <- theme(legend.text = element_text(size = 6)) #formats legend
+cap <- labs(caption = 'The coverage of this graph is too low to properly plot it.') #sets caption for low coverage plots
+wm <- ggpubr::background_image(img) #for watermark
 
 
 ########## Plotting Loop ##########
+plots <- list()
+
 for(i in 2:NCOL(all.depth.csv)){
   print(i-1)
 
@@ -110,19 +102,18 @@ for(i in 2:NCOL(all.depth.csv)){
   ########## Horizontal Gradient Plot ##########
   horizontalPlot <- ggplot(data = df1, aes(x = Position, y = Depth))+
     geom_bar(aes(color = Depth, fill = Depth), alpha = 1, stat = 'identity', width = 1.0)+
-    colorscale+
-    theme_bw()+ #to remove grey background
-    tf+
-    tl+
-    ggtitle(t) #sets plot title
+    cs+ theme_bw()+ #to remove grey background
+    tf+ tl+ ggtitle(t) #sets plot title
 
+  #low coverage marker
   if(max(df1$Depth) < 1) {
-    horizontalPlot <- horizontalPlot+ cap
+    horizontalPlot <- horizontalPlot+ wm+ cap
   }
 
   plots[[i-1]] <- horizontalPlot
 }
 
 allplots <- ggpubr::ggarrange(plotlist = plots, nrow = n, ncol = 1, align = 'hv', common.legend = TRUE) #common.legend = TRUE creates a single legend for all graphs on a page; if you want a separate legend for each graph, set to FALSE
+#file <- paste('./Test_plots/Horizontal_Reference_Combined', ft, sep = '') #path-specific
 file <- paste('combined_horizontal_colored', ft, sep = '')
 ggpubr::ggexport(allplots, filename = file, width = 25, height = 25)
