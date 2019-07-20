@@ -626,7 +626,7 @@ for (i in 1:NROW(Polyarray)) {
     name_full<-strsplit(name_full,"_")
     name_full<-name_full[[1]]
     
-    name_full[length(name_full)]<- paste(Read1_name,Read2_name,sep = "/")
+    name_full[length(name_full)]<- paste(Read1_name,Read2_name,sep = "_")
     
     name_full=paste(name_full,collapse="_")
     
