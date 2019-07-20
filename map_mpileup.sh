@@ -23,12 +23,17 @@ ls ${reads}/*_R1.fastq ${reads}/*_R1.gz ${reads}/*_R1.fq ${reads}/*_R1.fq.gz  ${
 
 ls ${reads}/*_R2.fastq ${reads}/*_R2.gz ${reads}/*_R2.fq ${reads}/*_R2.fq.gz  ${reads}/*_2.fq.gz  ${reads}/*_2.fq ${reads}/*_2.gz ${reads}/*_2.fastq > fofn2.txt 2>/dev/null
 
+
 fi
 if [ $3 = "-u" ]; then #if user specified unpaired data  then look for that. We use it double here because rest of the code was built on paired data, but dont worry it gets dealt with later
 
-ls ${reads}/*.fastq ${reads}/*.gz ${reads}/*.fq ${reads}/*.fq.gz    > fofn1.txt 2>/dev/null
+ls ${reads}/*.fastq ${reads}/*.gz ${reads}/*.fq     > fofn1.txt 2>/dev/null
 
-ls ${reads}/*.fastq ${reads}/*.gz ${reads}/*.fq  ${reads}/*.fq.gz  > fofn2.txt 2>/dev/null
+ls ${reads}/*.fastq ${reads}/*.gz ${reads}/*.fq    > fofn2.txt 2>/dev/null
+
+
+
+
 
 fi
 
@@ -94,9 +99,16 @@ fi
 	echo "---------------------------------------------" >> ReadMe.txt
 REF_name=$(awk -F "/" '{print $NF}' <<< $REF) 
 
-	
+	if [ $3 = "-p" ]; then
 	echo $READ1
 	echo $READ2	
+fi
+if [ $3 = "-u" ]; then
+	echo $READ1
+fi
+
+	
+		
 
 if [ $3 = "-p" ]; then #if data is paired then run this  
 

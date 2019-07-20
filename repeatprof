@@ -1,28 +1,7 @@
 #!/bin/bash
 
 #we will miss you pileup :( 
-rm -f *.out *.bam *fofn* Errors_README.txt
-
-
-currentDate=`date`
-currentDate=`tr ' :' '_' <<<"$currentDate"`
-rm -f Errors_README.txt
-#echo $currentDate
-
-
 commands=$@ 
-
-#echo "$(brew --cellar repeat)/$(brew list --versions repeat | tr ' ' '\n' | tail -1)/lib this lists all version paths 
-
-#brew link --overwrite >/dev/null 2>&1  #brew stuff
-
-
-#mydir=`echo "$(brew --cellar repeatprof)/0.9/libexec"` #brew stuff
-
-#R_packages=`echo "$(brew --cellar repeatprof)/0.9/R_packages"` #brew stuff
-
-
-mydir=`pwd`
 
 num_commands=`echo $commands | wc -w ` #gets the number  of commands 
 
@@ -40,6 +19,27 @@ echo "|  \ |___ |    |___ |  |  |     |    |  \ |__| |    | |___ |___ |  \ "
 exit 1
 
 fi
+
+rm -f -r  *.out *.bam *fofn* Errors_README.txt #images-RP #brew stuff
+
+currentDate=`date`
+currentDate=`tr ' :' '_' <<<"$currentDate"`
+rm -f Errors_README.txt
+#echo $currentDate
+
+
+
+
+#brew link --overwrite >/dev/null 2>&1  #brew stuff
+
+
+#mydir=`echo "$(brew --cellar repeatprof)/0.9/libexec"` #brew stuff
+
+#R_packages=`echo "$(brew --cellar repeatprof)/0.9/R_packages"` #brew stuff
+
+#images=`echo "$(brew --cellar repeatprof)/0.9/images-RP"`  #brew stuff
+
+mydir=`pwd` #comment when running it for brew 
 
 
 
@@ -63,10 +63,11 @@ fi
 
 
 
-
+currentdir=`pwd`
 
 if [ "$1" == "profile" ]; then  # check if the second parameter is profile, If yes then preform profiling stuff 
 
+# cp -r $images $currentdir #brew stuff
 if  [[ $2 == "-u" ]] ||  [[ $2  ==  "-p" ]]; then # check if the user inputed -u or -p if not give him an error as it is a madantory command
 
 echo "" > /dev/null
@@ -408,7 +409,7 @@ Rscript $mydir/fraction_bases.R  > Closely_related_reads_analysis.txt
 mv phylip.phy $the_output
 
 mv *variation_analysis* $the_output
-mv Closely_related_reads_analysis.txt $the_output
+rm -f Closely_related_reads_analysis.txt #mv Closely_related_reads_analysis.txt $the_output
 
 
 
@@ -418,21 +419,22 @@ mv Closely_related_reads_analysis.txt $the_output
 
 if [[ $@  ==  *"-corr"* ]]; then #if the user enter -corr check for user_provided.txt is in the same directory then run it and see if there is errors and run it 
 
+rm -f  R_correlation_errors.txt
+
 if [[ !(-f user_provided.txt) ]]; then
 
-echo "user_provided.txt wasnt provided, so the graph of correlation between reads for a refrence  wont be produced. Only the matrix." >> Errors_README.log
+echo "user_provided.txt wasnt provided, so the graph of correlation between reads for a refrence  wont be produced. Only the matrix." > R_correlation_errors.txt
 
 fi
 
-Rscript $mydir/Corr_test.R $the_output $R_packages 2> R_correlation_errors.txt
+
+Rscript $mydir/Corr_test.R $the_output $R_packages  2> /dev/null
 
 
-if [ -s R_correlation_errors.txt ]
-then
-        rm -f R_correlation_errors.txt
-else
-mv R_correlation_errors.txt $the_output
+if [ -f R_correlation_errors.txt ]; then 
 
+
+mv R_correlation_errors.txt $the_output 
 fi
 
 
@@ -513,8 +515,8 @@ mv The_summary_final.csv Errors_README.log $The_folder 2> /dev/null
 rm -f  *Rplots*	
 
 rm -f  *fofn* *.out *.bam all_refs.fa
-
-rm -f -r multi_poly multi_poly_names.txt #Index_conv.txt #comment when testing
+#rm -f -r images-RP  #brew stuff 
+rm -f -r multi_poly multi_poly_names.txt Index_conv.txt #comment when testing
 
 #design of the cow was borrowed from the famous cowsay package 
 
@@ -563,9 +565,9 @@ reads2_check=`cat fofn2.txt | wc -l `
 fi
 if [ $2 = "-u" ]; then
 
-ls ${reads}/*.fastq ${reads}/*.gz ${reads}/*.fq ${reads}/*.fq.gz    > fofn1.txt 2>/dev/null
+ls ${reads}/*.fastq ${reads}/*.gz ${reads}/*.fq     > fofn1.txt 2>/dev/null
 
-ls ${reads}/*.fastq ${reads}/*.gz ${reads}/*.fq  ${reads}/*.fq.gz  > fofn2.txt 2>/dev/null
+ls ${reads}/*.fastq ${reads}/*.gz ${reads}/*.fq    > fofn2.txt 2>/dev/null
 
 
 
@@ -605,7 +607,7 @@ Rscript $mydir/user_supplied_maker.R $2
 fi
 
 if [ "$1" == "clean" ]; then
-rm -f -r *bam *fofn* *.out* *multi_poly_names* *_output* *_conv* *summary* *bt2* *ref_temp* *bowtie.log* *ReadMe* *_cvs* *_temp* *db.2* *Rplots* all_refs.fa Refrences_used
+rm -f -r *bam *fofn* *.out* *multi_poly_names* *_output* *_conv* *summary* *bt2* *ref_temp* *bowtie.log* *ReadMe* *_cvs* *_temp* *db.2* *Rplots* all_refs.fa Refrences_used #images-RP #brew stuff
 echo "remians of a broken run were cleaned successfuly "
 fi
 if [ "$1" == "-h" ]; then
@@ -616,7 +618,7 @@ echo "repeatprof profile <-p for paired reads or  -u for unpaired> <the refrence
 echo ""
 echo "optional flags:"
 echo "-o <folder_path>		use to specifiy an directory where the final output file  be directed to. Default: current directory"
-echo "-corr				type this flag to make the correlation analysis. sample_groups.txt is needed for the correlation graph. Please refer to the github page for more info this"
+echo "-corr				type this flag to make the correlation analysis. user_provided.txt is needed for the correlation graph. Please refer to the github page for more info this"
 echo "--very-sensitive		bowtie alignment setting. Default:--very-sensitive"
 echo "--very-fast			bowtie alignment setting. Default:--very-sensitive"
 echo "--local				bowtie alignment setting. Default:--very-sensitive"
@@ -629,17 +631,18 @@ echo "--very-sensitive-local	        bowtie alignment setting. Default:--very-se
 echo "--sensitive-local		bowtie alignment setting. Default:--very-sensitive"
 echo "-k				use this flag if you want to keep the sorted bam files of the alignments in the final output folder"
 
-echo "-usrprov <sample_groups.txt path> use this flag to specify path of sample_groups.txt. Default: current directory"
+echo "-usrprov <user_provided.txt path> use this flag to specify path of user_provided.txt. Default: current directory"
 
 echo ""
 
 
 
 echo "Supported input formats:"
+echo "reference:	.fa .fasta .txt "
+
 echo "Paired reads: _R1.fastq _R1.fastq.gz _R1.fq  _R1.fq.gz  _1.fastq _1.fastq.gz _1.fq  _1.fq.gz  "
 echo "              _R2.fastq _R2.fastq.gz _R2.fq  _R2.fq.gz  _2.fastq _2.fastq.gz _2.fq  _2.fq.gz  "
 echo "Unpaired reads:  .fastq .fastq.gz .fq  .fq.gz  .fastq .fastq.gz .fq"
-echo "reference:	.fa .fasta .txt "
 
 echo ""
 
@@ -657,10 +660,10 @@ echo ""
 echo "--------------------------------other usages: "
 echo ""
 
-echo "repeatprof pre-corr <-u for unpaired reads  or -p paired reads> <path of the folder containing reads> use this command to help prepare sample_groups.txt for correlation graph produced by -corr flag in profile "
+echo "repeatprof pre-corr <-u for unpaired reads  or -p paired reads> <path of the folder containing reads> use this command to help prepare user_provided.txt for correlation graph produced by -corr flag in profile "
 echo ""
 
-echo "repeatprof pre-corr -v  use this command to review your edited sample_groups.txt with your desired groups. This ensures that it is still in the correct file format. Need to be in same directory as file"
+echo "repeatprof pre-corr -v  use this command to review your edited user_provided.txt with your desired groups. This ensures that it is still in the correct file format. Need to be in same directory as file"
 echo ""
 
 echo "repeatprof clean		use this command to cleanup a broken/terminated run"

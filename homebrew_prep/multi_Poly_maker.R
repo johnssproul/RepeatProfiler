@@ -1,76 +1,106 @@
-args = commandArgs(trailingOnly = TRUE)
-.libPaths(as.character(args[1]))
+args <- commandArgs(trailingOnly = TRUE)
 
+cat('Saving combined variation plots... \n') #could we possibly get the name of the reference?
 
-
+.libPaths(as.character(args[1])) #brew stuff
 
 library(ggplot2)
-library(reshape2)
-library(ggpubr)
 
 
-#multi_poly_names <- read.table("./Wed_Jul_10_08:09:48_EDT_2019/REsat1.fa_output/multi_poly_names.txt", header = TRUE, stringsAsFactors = FALSE) #path-specific
-multi_poly_names <- read.table("multi_poly_names.txt", header = TRUE, stringsAsFactors = FALSE)
+#code if plots per page or file type specified
+n <- 8
+ft <- '.pdf'
+# 
+# if (is.null(args[2]) || is.na(args[2])) { #if nothing is specified, set defaults
+#   n <- 8
+#   ft <- '.pdf'
+# } else if(is.null(args[3]) || is.na(args[3])) { #if nothing is specified for arg[3]
+#   if(grepl('.', args[2], fixed = TRUE)) {
+#     n <- 8
+#     ft <- args[2] #args[2] is file type
+#   } else if (!is.na(as.numeric(args[2]))){
+#     n <- args[2] #args[2] is plots per page
+#     ft <- '.pdf'
+#   } else {
+#     print('Invalid input. Setting plots per page and file type to default: 8 and ".pdf", respectively')
+#     n <- 8
+#     ft <- '.pdf'
+#   }
+# } else {
+#   n <- args[2] #assume args[2] is plots per page
+#   ft <- args[3] #assume args[3] is file type
+# }
 
-index_conv <- read.table("Index_conv.txt", header = TRUE, stringsAsFactors=FALSE)
+#for handling low coverage plots
+img <- png::readPNG('./images-RP/watermark.png')
+cap <- labs(caption = 'The coverage of this graph is too low to properly plot it.') #sets caption for low coverage plots
+wm <- ggpubr::background_image(img) #for watermark
 
-#determines number of plots per page based on number of samples; this can be changed however you want it
-l <- length(multi_poly_names$name_poly)
-if (l < 16) {
-  n <- l
-} else {
-  n <- l/2
-}
+#reads textfile containing names indexed samples (?)
+#multi.poly.names <- read.table('./erecta_CL9_TR_1_x_6687_0nt.fa_output/multi_poly_names.txt', header = TRUE, stringsAsFactors = FALSE) #path-specific
+multi.poly.names <- read.table('multi_poly_names.txt', header = TRUE, stringsAsFactors = FALSE)
 
-Plots_list <- list()
+#reads textfile containing names of reads
+index.conv <- read.table('Index_conv.txt', header = TRUE, stringsAsFactors=FALSE)
 
-for (i in 1:NROW(multi_poly_names)) {
+plots <- list()
+
+########## Plotting Loop ##########
+for (i in 1:NROW(multi.poly.names)) {
   print(i)
 
-  name <- multi_poly_names[i,1]
-  name_first <- strsplit(name, "_")
-  name_first <- name_first[[1]]
-  name_first <- as.numeric(name_first[length(name_first)])
+  #gets names of reads and stores as objects to be used for title
+  name <- multi.poly.names[i,1]
+  name.first <- strsplit(name, '_')
+  name.first <- name.first[[1]]
+  name.first <- as.numeric(name.first[length(name.first)])
 
-  Read1_first = index_conv[name_first,1]
-  Read2_first = index_conv[name_first,2]
+  read1.first <- index.conv[name.first,1]
+  read2.first <- index.conv[name.first,2]
 
-  if(Read1_first != Read2_first){
-    Title = paste(multi_poly_names[i,1], "                 ", "Read1:", Read1_first, "    Read2:", Read2_first, sep = "")
-  }else if(Read1_first == Read2_first){
-    Title = paste(multi_poly_names[i,1], "                 ", "Read:", Read1_first)
+  if(read1.first != read2.first){
+    t <- paste(multi.poly.names[i,1], '   Read1: ', read1.first, '   Read2: ', read2.first, sep = '')
+  }else if(read1.first == read2.first){
+    t <- paste(multi.poly.names[i,1], '   Read: ', read1.first, sep = '')
   }
 
-  #name_of_table_used <- paste("./Wed_Jul_10_08:09:48_EDT_2019/REsat1.fa_output/multi_poly/", multi_poly_names[i,1], ".txt", sep = "") #path-specific
-  name_of_table_used <- paste("multi_poly/", multi_poly_names[i,1], ".txt", sep = "")
+  name.of.table.used <- paste('multi_poly/', multi.poly.names[i,1], '.txt', sep = '')
 
-  base_counts <- read.table(name_of_table_used,header = TRUE)
-  head(base_counts[1])
+  #creates dataframe of counts for bases
+  base.counts <- read.table(name.of.table.used, header = TRUE)
+  head(base.counts[1])
 
-  base_countsRed <- base_counts[1:6]
-  head(base_countsRed)
+  #creates new dataframe based on base.counts, but not including depth column
+  base.countsRed <- base.counts[1:6]
+  head(base.countsRed)
 
   #makes a stacked bar chart taken form: https://stackoverflow.com/questions/21236229/stacked-bar-chart
   #melt takes data with the same position and stacks it as a set of columns into a single column of data
-  base_countsRed.m <- melt(base_countsRed, id.vars = "Position")
-  head(base_countsRed.m)
-  colnames(base_countsRed.m)[2] <- "Bases"
-  colnames(base_countsRed.m)[3] <- "Depth"
+  base.countsRed.m <- reshape2::melt(base.countsRed, id.vars = 'Position')
+  head(base.countsRed.m)
+  colnames(base.countsRed.m)[2] <- 'Bases'
+  colnames(base.countsRed.m)[3] <- 'Depth'
 
-  length(base_countsRed.m$variable)
+  length(base.countsRed.m$variable)
 
-  polymorphPlot <- ggplot(base_countsRed.m, aes(x = Position, y = Depth, fill = Bases, alpha = Bases))+
+  polymorphPlot <- ggplot(base.countsRed.m, aes(x = Position, y = Depth, fill = Bases, alpha = Bases))+
     geom_bar(stat = 'identity', width = 1.0)+
-    scale_fill_manual(values = c("gray", "red", "blue", "yellow", "green"))+
+    scale_fill_manual(values = c('grey', 'red', 'blue', 'yellow', 'green'))+
     scale_alpha_manual(values = c(0.35, 1.0, 1.0, 1.0, 1.0))+
     theme_bw()+ #to remove grey background
-    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+ #to remove gridlines
-    ggtitle(Title)
+    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+          plot.title = element_text(face = 'bold'))+ #to remove gridlines and format title
+    ggtitle(t)
 
-  #print(polymorphPlot)
+  #low coverage marker
+  if(max(base.counts$Depth) < 1) {
+    polymorphPlot <- polymorphPlot+ wm+ cap
+  }
 
-  Plots_list[[i]] <- polymorphPlot
+  plots[[i]] <- polymorphPlot
 }
 
-All_plots <- ggarrange(plotlist = Plots_list, nrow = n, ncol = 1, align = "hv", common.legend = TRUE)
-ggexport(All_plots, filename = "combined_variation_plots.pdf", width = 25, height = 25)
+allplots <- ggpubr::ggarrange(plotlist = plots, nrow = n, ncol = 1, align = 'hv', common.legend = TRUE) #common.legend = TRUE creates a single legend for all graphs on a page; if you want a separate legend for each graph, set to FALSE
+#file <- paste('./Test_plots/Variation_Reference_Combined', ft, sep = '') #path-specific
+file <- paste('combined_variation_colored', ft, sep = '')
+ggpubr::ggexport(allplots, filename = file, width = 25, height = 25)

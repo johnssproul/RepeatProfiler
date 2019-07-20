@@ -14,7 +14,7 @@ The_refrence_size = int(sys.argv[3])
 countedFile_multi = "multi_poly/" + sys.argv[2] + ".txt"
 # Open input file for reading, 'r' is "read mode"
 # InFile = open(InFileName, 'r')
-
+print ("counting bases and preparing files for Rscripts from samtools  pileup .out file")
 with open(OutFileName, "w") as OutFile:
     # DepthList = [ ]
 
@@ -54,7 +54,7 @@ with open(OutFileName, "w") as OutFile:
     Fixing = 1
     for Position in sorted(
             Dict.keys()):  # loops through keys (position) in dictionary and counts the number of each base in the 0th element stored as a value in the dictionary. * count in coverage, ',' and '.' are the characters that indicate the base matches the reference sequence.
-        print(" pos:" + str(Fixing) + "    " + str(Position))
+        #print(" pos:" + str(Fixing) + "    " + str(Position))
 
         while Fixing != Position:
             OutputString = "%s  %d  %d  %d  %d  %d  %s" % (str(Fixing), 0, 0, 0, 0, 0, "0")
@@ -76,9 +76,9 @@ with open(OutFileName, "w") as OutFile:
         # unlike the print command, write requires manual new line command, this prints one element to file in a single column
         OutputString = "%s  %d  %d  %d  %d  %d  %s" % (Position, NumF, NumA, NumT, NumG, NumC, Dict[Position][1])
         OutFile.write(OutputString + "\n")
-    print('so long')
+    #print('so long')
     while Fixing != The_refrence_size:
-        print("in whileloop")
+        #print("in whileloop")
         OutputString = "%s  %d  %d  %d  %d  %d  %s" % (str(Fixing), 0, 0, 0, 0, 0, "0")
         OutFile.write(OutputString + "\n")
         Fixing = Fixing + 1
@@ -188,7 +188,7 @@ with open(countedFile_multi, "w") as OutFile:
     Fixing = 1
     for Position in sorted(
             Dict.keys()):  # loops through keys (position) in dictionary and counts the number of each base in the 0th element stored as a value in the dictionary. * count in coverage, ',' and '.' are the characters that indicate the base matches the reference sequence.
-        print(" pos:" + str(Fixing) + "    " + str(Position))
+        #print(" pos:" + str(Fixing) + "    " + str(Position))
 
         while Fixing != Position:
             OutputString = "%s  %d  %d  %d  %d  %d  %s" % (str(Fixing), 0, 0, 0, 0, 0, "0")
@@ -210,9 +210,9 @@ with open(countedFile_multi, "w") as OutFile:
         # unlike the print command, write requires manual new line command, this prints one element to file in a single column
         OutputString = "%s  %d  %d  %d  %d  %d  %s" % (Position, NumF, NumA, NumT, NumG, NumC, Dict[Position][1])
         OutFile.write(OutputString + "\n")
-    print('so long')
+    #print('so long')
     while Fixing != The_refrence_size:
-        print("in whileloop")
+        #print("in whileloop")
         OutputString = "%s  %d  %d  %d  %d  %d  %s" % (str(Fixing), 0, 0, 0, 0, 0, "0")
         OutFile.write(OutputString + "\n")
         Fixing = Fixing + 1

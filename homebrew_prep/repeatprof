@@ -1,32 +1,11 @@
 #!/bin/bash
 
 #we will miss you pileup :( 
-rm -f *.out *.bam *fofn* Errors_README.txt
-
-
-currentDate=`date`
-currentDate=`tr ' ' '_' <<<"$currentDate"`
-rm -f Errors_README.txt
-#echo $currentDate
-
-
 commands=$@ 
 
-#echo "$(brew --cellar repeat)/$(brew list --versions repeat | tr ' ' '\n' | tail -1)/lib this lists all version paths 
+num_commands=`echo $commands | wc -w ` #gets the number  of commands 
 
-brew link --overwrite >/dev/null 2>&1  #brew stuff
-
-
-mydir=`echo "$(brew --cellar repeatprof)/0.9/libexec"` #brew stuff
-
-R_packages=`echo "$(brew --cellar repeatprof)/0.9/R_packages"`
-
-
-#mydir=`pwd`
-
-num_commands=`echo $commands | wc -w `
-
-if ((num_commands == 0 ))
+if ((num_commands == 0 )) # if no commands entered, show this 
  then
 echo "RepeatProfiler v 0.9 -prerelease- x New x Beginning x "
 echo "please use -h flag to view help menu for how to use this tool"
@@ -41,12 +20,33 @@ exit 1
 
 fi
 
+rm -f -r  *.out *.bam *fofn* Errors_README.txt images-RP
+
+currentDate=`date`
+currentDate=`tr ' :' '_' <<<"$currentDate"`
+rm -f Errors_README.txt
+#echo $currentDate
+
+
+
+
+brew link --overwrite >/dev/null 2>&1  #brew stuff
+
+
+mydir=`echo "$(brew --cellar repeatprof)/0.9/libexec"` #brew stuff
+
+R_packages=`echo "$(brew --cellar repeatprof)/0.9/R_packages"` #brew stuff
+
+images=`echo "$(brew --cellar repeatprof)/0.9/images-RP"` 
+
+#mydir=`pwd` #comment when running it for brew 
 
 
 
 
 
-if  [[ $1 == "profile" ]] ||  [[ $1  ==  "clean" ]] || [[ $1 ==  "-h" ]] || [[ $1 == "pre-corr" ]]; then
+
+if  [[ $1 == "profile" ]] ||  [[ $1  ==  "clean" ]] || [[ $1 ==  "-h" ]] || [[ $1 == "pre-corr" ]]; then  # check if the 2nd parameter is any of these. If not, terminate the program and tell the user.
 
 echo "" > /dev/null
 
@@ -63,12 +63,11 @@ fi
 
 
 
+currentdir=`pwd`
 
-
-
-if [ "$1" == "profile" ]; then
-
-if  [[ $2 == "-u" ]] ||  [[ $2  ==  "-p" ]]; then
+if [ "$1" == "profile" ]; then  # check if the second parameter is profile, If yes then preform profiling stuff 
+cp -r $images $currentdir
+if  [[ $2 == "-u" ]] ||  [[ $2  ==  "-p" ]]; then # check if the user inputed -u or -p if not give him an error as it is a madantory command
 
 echo "" > /dev/null
 
@@ -81,7 +80,7 @@ exit 1
 
 fi 
 
-if (( num_commands < 4 ))
+if (( num_commands < 4 )) #If commands are less than 4 (which is number of the 4 madantory flags for profile)
  then
 
 echo "Not all madantory flags were used. please review a sample usage using  the  -h flag to view help menu"
@@ -90,14 +89,14 @@ exit 1
 
 fi
 
-commands=$@
-array=(${commands})
-index=0
+commands=$@ #this gets all paremertes of a command. It is a shell thing
+array=(${commands})   # this is able to put a string sperated by spaces in an array, so this basically put the parameters in array
+index=0 # this keep track of the index while looping through array by element.
 
-for t in "${array[@]}"
+for t in "${array[@]}"  #for each element in the array 
 do
 
-if [[ $t  ==  "-o" ]]; then
+if [[ $t  ==  "-o" ]]; then # this if statement says if the flag in the array is -o  (stands for output folder directory ) then check for the next element in the array 
 	((index ++))
 
 	the_path=${array[index]}
@@ -122,11 +121,12 @@ if [[ $t  ==  "-o" ]]; then
 
 done
 
+# all the flag  checks are done in the same way for optional flag  as the example i explained above ^
 
 array=(${commands})
 index=0
 
-for p in "${array[@]}"
+for p in "${array[@]}"  
 do
 if [[ $p  ==  "-usrprov" ]]; then
 	((index ++))
@@ -156,11 +156,13 @@ done
 
 
 
-The_folder="$currentDate-RepeatProfiler"
-mkdir $The_folder
 
 
-BASE="refbase_"
+The_folder="$currentDate-RepeatProfiler" 
+mkdir $The_folder # this creates the main output folder u see at the end 
+
+
+BASE="refbase_" #this is just for the naming of the refrence index made by bowtie2-build, so it can be detected later when aligning using bowtie2
 commands=$@ 
 
 
@@ -170,23 +172,24 @@ commands=$@
 
 
 
-if [[ -d $3 ]]; then
+if [[ -d $3 ]]; then # checking if 3rd parameter (refrence path) for profile is directory or a file 
+#if it is a directory then sum up all the .fa files and put them into one and send them to fasta splitter  to prepare them as  single fasta sequences for analysis 
 	rm -f -r Refrences_used
 	mkdir Refrences_used
 	echo "The refrences inputed:"
 	path_refs=`cat $3/*.fa > all_refs.fa`
 	bash $mydir/Fasta_splitter.sh all_refs.fa
 
-	refs=Refrences_used
+	refs=Refrences_used #this is where bowtie will look for refrence sequence ot align. It is a sub directory 
 
-elif [[ -f $3 ]]; then
+elif [[ -f $3 ]]; then # if the refrence entered as a file  then just send it to fasta splitter in case it is multi sequence fasta 
 	rm -f -r Refrences_used
 	mkdir Refrences_used
 
 
 echo "The refrences inputed:"
 
-bash $mydir/Fasta_splitter.sh $3
+bash $mydir/Fasta_splitter.sh $3  
 
 refs=Refrences_used
 
@@ -195,26 +198,33 @@ else
     echo "The path to folder of Refrences files  or The path to your Refrecnes file is not valid"
     exit 1
 fi
+
+
+##this is just make sure no duplicates is there 
 rm -f -r Errors.log  2> /dev/null
 rm *bam *bt2  2> /dev/null
 rm -f -r all_depth_cvs  2> /dev/null
-mkdir all_depth_cvs
+######
+
+mkdir all_depth_cvs #this creates all_depth_cvs where it store  a table of postion of refrence and the coverage depth (the folder will be used later by Rscripts)
 
 
 
 
 rm -f *out  2> /dev/null
-ls $refs/*.fa > fofnrefs.txt 
-echo "Reference	Sample_index	Read1	Read2	Total_reads	percent_mapped" > The_summary.txt
+ls $refs/*.fa > fofnrefs.txt  #the folder where fasta spliter stores all the .fa file after splitting them. This line just gets a list of these refrences with their paths 
+echo "Reference	Sample_index	Read1	Read2	Total_reads	percent_mapped" > The_summary.txt #preparing the summary table 
 
-while read line
+while read line  # for each line  in the fofnrefs.txt we will loop through it and  carry the following analysis 
 do
 
-ref_char_count=`tail -n +2 $line | tr -cd 'ATGCatgc'  | wc -c`
-name_ref=$(awk -F "/" '{print $NF}' <<< $line) 
+ref_char_count=`tail -n +2 $line | tr -cd 'ATGCatgc'  | wc -c` #this gets the refrence sequence length 
+name_ref=$(awk -F "/" '{print $NF}' <<< $line) # this awk command is to get the refrence name from the path of refrences stored in fofnrefs.txt we did earlier
+											   # this command sepeartes on / and get the last word which is the refrence name
 
 
-if [[ $ref_char_count == 0 ]]; then
+if [[ $ref_char_count == 0 ]]; then			   # if the  the length of the specfic refrence is 0 then just skip it.
+											   # it skips it by just printing the below message and nothing else will be executed because everything done is in the else statemen of this 
 echo ""
 echo "your $name_ref is an empty sequence or not in the correct format. It wont be analyzed or indexed. Please revise it " | tee -a Errors_README.log
 echo ""
@@ -222,13 +232,13 @@ echo ""
 
 else
 
-echo "$(tail -n +2 $line)" > ref_temp.txt
+echo "$(tail -n +2 $line)" > ref_temp.txt #this does something similar to above  
 
-The_ref_size=`wc -c < ref_temp.txt`
+The_ref_size=`wc -c < ref_temp.txt` #same as above re_char_count
 
-bash $mydir/Readmegen.sh
+bash $mydir/Readmegen.sh #this starts generating the readme. which will be populated later with the index to read conversions 
 
-    bowtie2-build $line $BASE > /dev/null 2> /dev/null
+    bowtie2-build $line $BASE > /dev/null 2> /dev/null # this build index for the current refrence 
     echo "The name of the reference  sequence whose index was built and currently under analysis :"
     echo "$line" 
     echo ""
@@ -236,18 +246,19 @@ bash $mydir/Readmegen.sh
 
 
 #bash index_refs.sh
-name_ref=$(awk -F "/" '{print $NF}' <<< $line) 
+name_ref=$(awk -F "/" '{print $NF}' <<< $line) #same as above just to make sure 
 
-Ref_name=$name_ref
-ReadPair=1
+Ref_name=$name_ref #assigning it to another variable 
 
-stringe="$Ref_name"
+stringe="$Ref_name" 
 stringee="_output"
-the_output="$stringe$stringee"
+the_output="$stringe$stringee" #i sum up both variables to create the suboutput folder for that refrence REFname_ouput. The one you see in the big folder 
 rm -f -r $the_output
 mkdir $the_output
 
-echo "$the_output" >>fofn_Theoutputs.txt
+
+echo "$the_output" >>fofn_Theoutputs.txt #this appends the fofn_the outputs with the current name (it gets created by the first append at the first refrence rest is appennding)
+										 # keeping track of the folder names will help in the future when assigining stuff to each folder  
 
 
 
@@ -255,15 +266,15 @@ echo "$the_output" >>fofn_Theoutputs.txt
 
 
 
-numPairpile=1
+numPairpile=1 #this will keep count of the index reads 
 
 
-p=8
+p=8 #this is the deafult threads
 
 commands=$@
 array=(${commands})
-index=0
-
+index=0 
+#we did this before we will check if -t was entered in optional arguments 
 for th in "${array[@]}"
 do
 
@@ -274,7 +285,7 @@ if [[ $th  ==  "-t" ]]; then
 		
 		
 	    re='^[0-9]+$'
-	if ! [[ $p =~ $re ]] ; then
+	if ! [[ $p =~ $re ]] ; then #make sure the user entered a number for threads not some nonsense words 
 	p=8	
 	fi
 
@@ -287,23 +298,14 @@ fi
 		((index ++))
 
 done
-echo "Threads used: $p"
+echo "Threads used: $p" #prints to the user what threads is being used 
 
 
-# if [[ $@  ==  *"-t"* ]]; then
-
-# commands=$@
-# p=`echo "$commands" | awk '{for (I=1;I<=NF;I++) if ($I == "-t") {print $(I+1)};}' `	
-# re='^[0-9]+$'
-# if ! [[ $p =~ $re ]] ; then
-   # p=8	
-# fi
 
 
-# echo "Threads used: $p"
-# fi
+#the following is the same checking for optional flag but this time it is for bowtie alignment settings 
 
-a="--very-sensitive-local"
+a="--very-sensitive-local"   
 commands=$@
 array=(${commands})
 
@@ -326,44 +328,46 @@ fi
 
 echo "Bowtie2 alignment settings: $a"
 
+####
 
-bash $mydir/map_mpileup.sh $line $4 $2 $p $a 
-retval=$?
+bash $mydir/map_mpileup.sh $line $4 $2 $p $a  #here we call map_mpileup.sh which runs bowtie aligning and uses the indexes we built and also run samtools pileup 
+retval=$? #check if any error occured by getting the exit code
 
-if [ $retval -ne 0 ]; then
+if [ $retval -ne 0 ]; then #if an error occured and the exit code isnt 0  then exit. The error message will be printed from map_mileup not here 
     
 exit 1
 
 fi
 
-echo "name_poly" > multi_poly_names.txt
+echo "name_poly" > multi_poly_names.txt #this creates a text file called multi_poly_names.txt this is used to keep track of the reads that we are drwaing the graphs for 
+										# LIKE for example Refrencename_001  001 refrence to the read the index we talked about before 
 rm -f -r multi_poly
 mkdir multi_poly
 rm -f temp_cvs
-mkdir temp_cvs
-while read pairpile
+mkdir temp_cvs #this store the current postion vs coverage depth of the current refrence (this is used in r script)
+while read pairpile # for each pair pile this means for each pileup output from the map_mpileup
 do
 
-F=`printf "%03d\n" $numPairpile`
+F=`printf "%03d\n" $numPairpile` #this convert 1 to 001 for example this allow naming to be in order 
 
-pile_counted_name="${Ref_name}_${F}"
+pile_counted_name="${Ref_name}_${F}" #this is the pileup counted name
 
-echo $pile_counted_name >> multi_poly_names.txt
+echo $pile_counted_name >> multi_poly_names.txt #now populate the  multi_poly_names
 
-python $mydir/pileup_basecount_sink.py $pairpile $pile_counted_name $The_ref_size
+python $mydir/pileup_basecount_sink.py $pairpile $pile_counted_name $The_ref_size # this pileup script that counts mismatches from the sam pileup.out file and count depth and all aother info 
 
 
-cp "$pile_counted_name.csv" all_depth_cvs
-mv "$pile_counted_name.csv" temp_cvs
+cp "$pile_counted_name.csv" all_depth_cvs # cp the selected .csv produced by the python script 
+mv "$pile_counted_name.csv" temp_cvs #this moves it to temp_cvs  also. both steps are needed to be done because all_depths_cvs runs at the end for the all refrences statistcs   while temp_cvs just for this refrence combined graphs and scaling 
 
 output=$Ref_name
 
 stringpile2="$F"
 stringpile3="_"
-output="$output$stringpile3$stringpile2"
+output="$output$stringpile3$stringpile2" #this just combines the output with its number to create the sub folder of the refrence folder you see REF_001 for example where it contains the graphs 
 	
-echo "$output" >> fofn_folders.txt
-Rscript $mydir/polymorphism_2.0.R $output $R_packages
+echo "$output" >> fofn_folders.txt #adds the name to the fofn_folders.txt
+Rscript $mydir/polymorphism_2.0.R $output $R_packages # call polymorphism Rscripts 
 
 
 
@@ -375,16 +379,16 @@ mv  *.png  pileup_counted.txt  $output
 	
 ((numPairpile ++))
 
-done < fofn_pileup.txt
+done < fofn_pileup.txt #after finishing all the maping and creating the csv files now we can start plotting graphs by scaling among all data
 
 
-while read folder_names
+while read folder_names #for each line in folder name where we stored the folder name like REF_001
 do
 
 
-echo $folder_names
+echo $folder_names #say it 
 
-Rscript $mydir/RP_4.0.R $folder_names $R_packages
+Rscript $mydir/RP_4.0.R $folder_names $R_packages #run Rscripts 
 
 mv $folder_names $the_output
 done < fofn_folders.txt
@@ -395,6 +399,8 @@ Rscript $mydir/All_RP_graphs_reference.R $R_packages
 
 Rscript $mydir/multi_Poly_maker.R $R_packages 
 
+
+#move R scripts 
 mv *combined* $the_output
 rm -f phylip.phy
 Rscript $mydir/fraction_bases.R  > Closely_related_reads_analysis.txt
@@ -402,7 +408,7 @@ Rscript $mydir/fraction_bases.R  > Closely_related_reads_analysis.txt
 mv phylip.phy $the_output
 
 mv *variation_analysis* $the_output
-mv Closely_related_reads_analysis.txt $the_output
+rm -f Closely_related_reads_analysis.txt #mv Closely_related_reads_analysis.txt $the_output
 
 
 
@@ -410,23 +416,24 @@ mv Closely_related_reads_analysis.txt $the_output
 
 
 
-if [[ $@  ==  *"-corr"* ]]; then
+if [[ $@  ==  *"-corr"* ]]; then #if the user enter -corr check for user_provided.txt is in the same directory then run it and see if there is errors and run it 
+
+rm -f  R_correlation_errors.txt
 
 if [[ !(-f user_provided.txt) ]]; then
 
-echo "user_provided.txt wasnt provided, so the graph of correlation between reads for a refrence  wont be produced. Only the matrix." >> Errors_README.log
+echo "user_provided.txt wasnt provided, so the graph of correlation between reads for a refrence  wont be produced. Only the matrix." > R_correlation_errors.txt
 
 fi
 
-Rscript $mydir/Corr_test.R $the_output $R_packages 2> R_correlation_errors.txt
+
+Rscript $mydir/Corr_test.R $the_output $R_packages  2> /dev/null
 
 
-if [ -s R_correlation_errors.txt ]
-then
-        rm -f R_correlation_errors.txt
-else
-mv R_correlation_errors.txt $the_output
+if [ -f R_correlation_errors.txt ]; then 
 
+
+mv R_correlation_errors.txt $the_output 
 fi
 
 
@@ -444,7 +451,7 @@ fi
 #mv multi_poly $the_output    uncomment when testing 
 #mv multi_poly_names.txt $the_output
 	
-	
+#thats check for -k which says where to keep bam file or not 
 	
 commands=$@
 array=(${commands})
@@ -478,36 +485,26 @@ rm -f -r temp_cvs
 rm -f fofn_folders.txt
 
 fi #this an fi for error handling dont mess with it. this is the end of the refrence
-done < fofnrefs.txt
+done < fofnrefs.txt #keep looping until all refrences inputed  undergone the analysis 
 
 	
 
 
 #rm -f *csv
-Rscript $mydir/The_depth_analyser.R 2> /dev/null
+Rscript $mydir/The_depth_analyser.R 2> /dev/null #run the depth analyzer which produces the final summary table 
 Number=`wc -l < fofn_bam.txt`
 
-#rm -f all_Refrences_color_scaled_combined_graph.pdf
 
 rm -f -r refrences_wide_color_scaled_graphs
-mkdir refrences_wide_color_scaled_graphs
+mkdir refrences_wide_color_scaled_graphs #this creats folder where the graphs which will be scaled using ALL_RP_GRAPHS.R stored 
 
 echo "Thenumber: $Number"
 
 Rscript $mydir/All_RP_graphs.R $Number $R_packages
 mv  refrences_wide_color_scaled_graphs $The_folder 
-#mv *pdf all_graphs_scaled
 
 
-# if [ -f all_Refrences_color_scaled_combined_graph.pdf ]; then
-
-# mv all_Refrencets_color_scaled_combined_graph.pdf $The_folder
-# else
-#echo "There was only 1 refrence inputed, so no combined refrences_scale_wide_graph.pdf for this run"
-# fi
-
-
-mv  *ReadMe*  $The_folder
+mv  *ReadMe*  $The_folder #move read me to the final folder 
 
 rm -f The_summary.txt ref_temp.txt bowtie.log  *db.2*
 
@@ -517,10 +514,10 @@ mv The_summary_final.csv Errors_README.log $The_folder 2> /dev/null
 rm -f  *Rplots*	
 
 rm -f  *fofn* *.out *.bam all_refs.fa
+rm -f -r images-RP
+rm -f -r multi_poly multi_poly_names.txt Index_conv.txt #comment when testing
 
-rm -f -r multi_poly multi_poly_names.txt #Index_conv.txt #comment when testing
-
-#design of the cow was borrowed from the famous cowsay command
+#design of the cow was borrowed from the famous cowsay package 
 
 echo "________________________________"                      
 echo "< WOW what a great pipeline !!!! >"
@@ -537,6 +534,8 @@ fi
 
 
 fi 
+
+#this is other commands stuff which is simple to understand  below 
 
 
 if [ "$1" == "pre-corr" ]; then
@@ -565,9 +564,9 @@ reads2_check=`cat fofn2.txt | wc -l `
 fi
 if [ $2 = "-u" ]; then
 
-ls ${reads}/*.fastq ${reads}/*.gz ${reads}/*.fq ${reads}/*.fq.gz    > fofn1.txt 2>/dev/null
+ls ${reads}/*.fastq ${reads}/*.gz ${reads}/*.fq     > fofn1.txt 2>/dev/null
 
-ls ${reads}/*.fastq ${reads}/*.gz ${reads}/*.fq  ${reads}/*.fq.gz  > fofn2.txt 2>/dev/null
+ls ${reads}/*.fastq ${reads}/*.gz ${reads}/*.fq    > fofn2.txt 2>/dev/null
 
 
 
@@ -607,38 +606,48 @@ Rscript $mydir/user_supplied_maker.R $2
 fi
 
 if [ "$1" == "clean" ]; then
-rm -f -r *bam *fofn* *.out* *multi_poly_names* *_output* *_conv* *summary* *bt2* *ref_temp* *bowtie.log* *ReadMe* *_cvs* *_temp* *db.2* *Rplots* all_refs.fa Refrences_used
+rm -f -r *bam *fofn* *.out* *multi_poly_names* *_output* *_conv* *summary* *bt2* *ref_temp* *bowtie.log* *ReadMe* *_cvs* *_temp* *db.2* *Rplots* all_refs.fa Refrences_used images-RP
 echo "remians of a broken run were cleaned successfuly "
 fi
 if [ "$1" == "-h" ]; then
 echo ""
 
-echo "a sample command for profiling will be:"
+echo "Usage:"
 echo "repeatprof profile <-p for paired reads or  -u for unpaired> <the refrence sequence path > <path of the folder containing reads> [opitonal flags]"
 echo ""
 echo "optional flags:"
-echo "-o <folder_path>	use to specifiy an directory where the final output file  be directed to. Default: current directory"
-echo "			This will direct the final output folder  to this specifiy folder"
-echo "-corr		        type this flag to make the correlation analysis. user_provided.txt is needed for the correlation graph. Please refer to the github page for more info about this or look below"
-echo "--very-fast | --local | --fast " 
-echo "--very-fast-local | --fast-local  type one of these 9 alignment settings for bowtie2. Default is  --very-sensitive"
-echo "-sensitive | --very-sensitive "
-echo "--very-sensitive-local | --sensitive-local  "
-echo "-k	use this flag if you want to keep the sorted bam files of the alignments in the final output folder"
+echo "-o <folder_path>		use to specifiy an directory where the final output file  be directed to. Default: current directory"
+echo "-corr				type this flag to make the correlation analysis. user_provided.txt is needed for the correlation graph. Please refer to the github page for more info this"
+echo "--very-sensitive		bowtie alignment setting. Default:--very-sensitive"
+echo "--very-fast			bowtie alignment setting. Default:--very-sensitive"
+echo "--local				bowtie alignment setting. Default:--very-sensitive"
+echo "--fast				bowtie alignment setting. Default:--very-sensitive"
+echo "--very-fast-local		bowtie alignment setting. Default:--very-sensitive"
+echo "--fast-local			bowtie alignment setting. Default:--very-sensitive"
+echo "--sensitive			bowtie alignment setting. Default:--very-sensitive"
+echo "--very-sensitive		bowtie alignment setting. Default:--very-sensitive"
+echo "--very-sensitive-local	        bowtie alignment setting. Default:--very-sensitive"
+echo "--sensitive-local		bowtie alignment setting. Default:--very-sensitive"
+echo "-k				use this flag if you want to keep the sorted bam files of the alignments in the final output folder"
 
-
+echo "-usrprov <user_provided.txt path> use this flag to specify path of user_provided.txt. Default: current directory"
 
 echo ""
 
 
 
-echo "Supported read formats:"
+echo "Supported input formats:"
+echo "reference:	.fa .fasta .txt "
+
 echo "Paired reads: _R1.fastq _R1.fastq.gz _R1.fq  _R1.fq.gz  _1.fastq _1.fastq.gz _1.fq  _1.fq.gz  "
 echo "              _R2.fastq _R2.fastq.gz _R2.fq  _R2.fq.gz  _2.fastq _2.fastq.gz _2.fq  _2.fq.gz  "
 echo "Unpaired reads:  .fastq .fastq.gz .fq  .fq.gz  .fastq .fastq.gz .fq"
-echo "Supported refrence  formats:"
+
+echo ""
+
 echo "refrences need to be in fasta format. They can be multi-sequence or single sequence fasta file."
 
+echo ""
 
 
 
@@ -648,9 +657,14 @@ echo "refrences need to be in fasta format. They can be multi-sequence or single
 
 
 echo "--------------------------------other usages: "
+echo ""
 
-echo "repeatprof pre-corr <-u for unpaired reads  or -p paired reads  > <path of the folder containing reads> use this command to help prepare user_provided.txt for correlation graph produced by -corr flag in profile "
-echo "repeatprof pre-corr -v  use this command to review your edited user_provided.txt with your desired groups. This ensures that it is still in the correct file format."
+echo "repeatprof pre-corr <-u for unpaired reads  or -p paired reads> <path of the folder containing reads> use this command to help prepare user_provided.txt for correlation graph produced by -corr flag in profile "
+echo ""
+
+echo "repeatprof pre-corr -v  use this command to review your edited user_provided.txt with your desired groups. This ensures that it is still in the correct file format. Need to be in same directory as file"
+echo ""
+
 echo "repeatprof clean		use this command to cleanup a broken/terminated run"
 
 echo ""
@@ -662,4 +676,3 @@ echo "check our github page https://github.com/johnssproul/RepeatProfiler for mo
 
 
 fi
-
