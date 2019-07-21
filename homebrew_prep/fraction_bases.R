@@ -588,9 +588,8 @@ for (i in 1:NROW(Polyarray)) {
 
 ############saving_the_data_in_phylip fomat 
 
-header<-paste(NROW(samples),Ref_size,sep = " ")
 
-cat(c(header,"\n"), file = "phylip.phy",append = TRUE)
+onetime=TRUE  #this is to make writing to the header writies only once in the phylip file 
 
 
 for (i in 1:NROW(Polyarray)) {
@@ -611,12 +610,30 @@ for (i in 1:NROW(Polyarray)) {
     name_full<-samples[[i]]
     name_full<-strsplit(name_full,"_")
     name_full<-name_full[[1]]
-    
-    name_full[length(name_full)]<- Read1_name
-    
+    name_full<-name_full[1:length(name_full)-1]
     name_full=paste(name_full,collapse="_")
+    name_full<-strsplit(name_full,".",fixed = TRUE)
+    name_full<-name_full[[1]]
+    name_full <- name_full[name_full != "fasta"]
+    name_full <- name_full[name_full != "fa"]
+    name_full <- name_full[name_full != "txt"]
+    name_full=paste(name_full,collapse=".")
     
+    
+    #these blocks is to prepare names in a visually appealing way by removing extentions and stuff like that 
   
+    name_of_sample<-strsplit(Read1_name,".",fixed = TRUE)
+    name_of_sample<-name_of_sample[[1]]
+    
+    #this will remove extentions 
+    name_of_sample <- name_of_sample[name_of_sample != "fq"]
+    name_of_sample <- name_of_sample[name_of_sample != "fastq"]
+    name_of_sample <- name_of_sample[name_of_sample != "gz"]
+    ####
+    
+    
+    name_of_sample=paste(name_of_sample,collapse=".")
+    
     
     
   }else{
@@ -625,12 +642,23 @@ for (i in 1:NROW(Polyarray)) {
     name_full<-samples[[i]]
     name_full<-strsplit(name_full,"_")
     name_full<-name_full[[1]]
-    
-    name_full[length(name_full)]<- paste(Read1_name,Read2_name,sep = "_")
-    
+    name_full<-name_full[1:length(name_full)-1]
     name_full=paste(name_full,collapse="_")
+    name_full<-strsplit(name_full,".",fixed = TRUE)
+    name_full<-name_full[[1]]
+    name_full <- name_full[name_full != "fasta"]
+    name_full <- name_full[name_full != "fa"]
+    name_full <- name_full[name_full != "txt"]
+    name_full=paste(name_full,collapse=".")
     
     
+    
+    name_of_sample<-strsplit(Read1_name,"_")
+    name_of_sample<-name_of_sample[[1]]
+    name_of_sample<-name_of_sample[1:length(name_of_sample)-1]
+    name_of_sample=paste(name_of_sample,collapse="_")
+    
+ 
     
     
   }
@@ -641,10 +669,20 @@ for (i in 1:NROW(Polyarray)) {
   
   
   ###
-
-  entry<-paste(name_full,polydata,sep =" ")
+  filename=paste(name_full,".phy",sep = "")
   
-  cat(c(entry,"\n"), file = "phylip.phy",append = TRUE)
+  if(onetime==TRUE){
+    
+    header<-paste(NROW(samples),Ref_size,sep = " ")
+    
+    cat(c(header,"\n"), file =filename ,append = TRUE)
+    onetime=FALSE
+  }
+  
+  entry<-paste(name_of_sample,polydata,sep =" ")
+  
+  
+  cat(c(entry,"\n"), file=filename,append = TRUE)
   
   
 }

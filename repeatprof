@@ -403,13 +403,13 @@ Rscript $mydir/multi_Poly_maker.R $R_packages
 
 #move R scripts 
 mv *combined* $the_output
-rm -f phylip.phy
+rm -f *.phy
 Rscript $mydir/fraction_bases.R  > Closely_related_reads_analysis.txt
 
-mv phylip.phy $the_output
+mv *.phy $the_output
 
 mv *variation_analysis* $the_output
-rm -f Closely_related_reads_analysis.txt #mv Closely_related_reads_analysis.txt $the_output
+rm -f Closely_related_reads_analysis.txt #we dont need this anymore
 
 
 
