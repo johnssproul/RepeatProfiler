@@ -14,7 +14,7 @@ A tool for generating, visualizing, and comparing repetitive DNA profiles from s
 
 
 ### Installation
-The easiest way to setup repeat profiler with all of its dependencies is through the package manager [Homebrew]. If you don’t have homebrew, it is available for installation on [linux/WSL] and on [macOS].
+The easiest way to setup RepeatProfiler with all of its dependencies is through the package manager [Homebrew]. If you don’t have homebrew, it is available for installation on [linux/WSL] and on [macOS].
 
 After homebrew is installed, run this command:
 ```
