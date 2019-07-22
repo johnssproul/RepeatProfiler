@@ -74,12 +74,26 @@ To generate profiles, you need two input types: (1) one or more reference sequen
 
 Review the sample input data set provided [here]. Also make sure all your files has Unix LF which means an empty line at the end of the file. This is standard among all linux and macOS text files
 
+
 ##### Generating profiles:
 
-a sample profile command with mandatory flags 
+a sample profile command with mandatory flags explained 
 ```sh
 repeatprof profile <-p for paired reads or -u for unpaired> <the reference sequence path > <path of the folder containing reads> [optional flags] 
 ```
+
+an example of a functional example command (explanations omitted).
+
+```repeatprof profile -p Refs.fa /RepeatProfilerData/Test1
+```
+
+Explanation: 
+- 'repeatprof' calls the program
+- 'profile' the command that directs program to generate profiles (see other command options below) 
+- '-p' indicates the input reads are paired 
+- 'Refs.fa' specifies the FASTA files containing reference sequences (located in the current directory in this example, alternatively a path can be provided) 
+– '/RepeatProfilerData/Test1' gives the path of the directory containing input read files
+
 
 ###### Optional flags: 
 | optional flag                        | usage                                                                                                                                                           |
