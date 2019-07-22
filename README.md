@@ -84,7 +84,8 @@ repeatprof profile <-p for paired reads or -u for unpaired> <the reference seque
 
 an example of a functional example command (explanations omitted).
 
-```repeatprof profile -p Refs.fa /RepeatProfilerData/Test1
+```sh
+repeatprof profile -p Refs.fa /RepeatProfilerData/Test1
 ```
 
 Explanation: 
