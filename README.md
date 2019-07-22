@@ -1,9 +1,7 @@
 ﻿
 # Repeat Profiler (This README is in the early draft stages of construction)
 
-A tool for generating, visualizing, and comparing repetitive DNA profiles from short-read data. This tool helps to generate solid comparative DNA profiles based on just short sample reads and repeat reference sequences. RepeatProfiler is developed specifically to facilitate study of repetitive DNA dynamics over short evolutionary time scales in groups lacking genomic resources; however, it may be useful in any application where extracting signal from repetitive sequences is needed.
-
-
+A tool for generating, visualizing, and comparing repetitive DNA profiles from short-read data. This tool automates the generation of repetitive DNA profiles from short-read sequence data and one or more reference sequences. Output enables standardized visualization of profiles and comparative analysis of profiles across and within samples. RepeatProfiler is developed specifically to facilitate study of repetitive DNA dynamics over short evolutionary time scales in groups lacking genomic resources; however, it may be useful in any application where extracting signal from repetitive sequences is needed.
 
 
 # Features:
@@ -12,12 +10,11 @@ A tool for generating, visualizing, and comparing repetitive DNA profiles from s
   - Produces publication quality graphs in R that simplify visual comparison of profiles. 
   - Provides summary statistics related to repeat abundance, etc.
   - Conducts comparative analysis of profiles shape across and within user specified groups
-  - Enables phylogenetic analysis using variation present in profiles
-
+  - Enables comparative study of variation within repeats through phylogenetic analysis
 
 
 ### Installation
-The easiest way to setup repeat profiler with all of its dependencies is through the package manager [Homebrew]. If you don’t have homebrew, it is available for installation on [linux/WSL] and on [macOS].
+The easiest way to setup RepeatProfiler with all of its dependencies is through the package manager [Homebrew]. If you don’t have homebrew, it is available for installation on [linux/WSL] and on [macOS].
 
 After homebrew is installed, run this command:
 ```
@@ -52,16 +49,19 @@ bash repeatprof
 # Getting started:
 
 
-##### Input data:
+##### Required Input data:
 
-To generate profiles you need one or more reference sequences in fasta format for and paired or unpaired short sequence reads  
+To generate profiles, you need two input types: (1) one or more reference sequence, and (2) short-read sequence data from one or more samples.
 
-Reference sequences (one or more reference sequences of repeats in FASTA format)
-Sequence data (reads files from one or more samples, paired or unpaired formats are supported)
+1. Reference sequences
+- One or more reference sequence of repeats in FASTA format (LINK example)
+- For tips on obtaining reference sequences for groups that lack repeat reference libraries see “TBD section” below (or LINK to full tutorial)
 
-For tips on obtaining reference sequences for groups that lack repeat reference libraries see “some section” below (or in the full tutorial). 
-
-Supported input formats are shown in the table below:
+2. Sequence data
+- Read files should be in FASTQ format.
+- Files should end in the ‘.fastq’, or compressed ‘.fastq.gz’ extension (‘.fq’ instead of ‘.fastq’  is also supported).
+- Input reads may be paired, or unpaired. If paired data are used, the last string before the file extension should be ‘_1’ for Read1 and ‘_2’ for Read2 (alternatively ‘_R1’ and ‘_R2’ may be used). An example of an acceptable name for the file name for the file containing Read1 reads would be: ‘SampleName_1.fastq.gz’. The file containing Read2 data should replace the ‘_1’ with ‘_2’, but be identical otherwise as in: ‘SampleName_2.fastq.gz’
+-A full list of supported input final strings and extensions is shown in the table below:
 
 |  Input |format   | format  | format  |format   | format  | format  | format|
 |---|---|---|---|---|---|---|---|
@@ -74,17 +74,32 @@ Supported input formats are shown in the table below:
 
 Review the sample input data set provided [here]. Also make sure all your files has Unix LF which means an empty line at the end of the file. This is standard among all linux and macOS text files
 
+
 ##### Generating profiles:
 
-a sample profile command with mandatory flags 
+a sample profile command with mandatory flags explained 
 ```sh
-repeatprof profile <-p for paired reads or  -u for unpaired> <the reference sequence path > <path of the folder containing reads> [optional flags] 
+repeatprof profile <-p for paired reads or -u for unpaired> <the reference sequence path > <path of the folder containing reads> [optional flags] 
 ```
+
+an example of a functional example command (explanations omitted).
+
+```sh
+repeatprof profile -p Refs.fa /RepeatProfilerData/Test1
+```
+
+Explanation: 
+- 'repeatprof' calls the program
+- 'profile' the command that directs program to generate profiles (see other command options below) 
+- '-p' indicates the input reads are paired 
+- 'Refs.fa' specifies the FASTA files containing reference sequences (located in the current directory in this example, alternatively a path can be provided) 
+– '/RepeatProfilerData/Test1' gives the path of the directory containing input read files
+
 
 ###### Optional flags: 
 | optional flag                        | usage                                                                                                                                                           |
 |--------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| -o <folder_path>                     | This will direct the final output folder to the specified  folder. Default: Current directory                                                                 |
+| -o <folder_path>                     | This will direct the final output folder to the specified folder. Default: Current directory                                                                 |
 | -corr                                | this flag to make the correlation analysis. user_provided.txt is needed for the  correlation graph                                                              |
 | -usrprov <user_provided.txt path> | use this to provide path of user_provided.txt explained above. Default is current directory. look  below on how to prepare the user_provided.txt and what it is |
 | --very-sensitive                     | bowtie alignment setting. Default:--very-sensitive                                                                                                              |
@@ -137,9 +152,9 @@ In this section, I will walk you through a sample output/outputs generated by th
 
  - How to find good repeat reference sequence if you don’t have any based on your reads
  
- -  How to use the phylip formatted file correctly and get the most out of the trees you generate. 
+ - How to use the phylip formatted file correctly and get the most out of the trees you generate. 
  
-- How to get the most out of the tool and your data 
+ - How to get the most out of the tool and your data 
 
 
 
