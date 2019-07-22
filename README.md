@@ -51,7 +51,7 @@ bash repeatprof
 
 ##### Required Input data:
 
-To generate profiles, you need two input types: (1) one or more reference sequences and (2) short-read sequence data from one or more samples.
+To generate profiles, you need two input types: (1) one or more reference sequence, and (2) short-read sequence data from one or more samples.
 
 1. Reference sequences
 - One or more reference sequence of repeats in FASTA format (LINK example)
