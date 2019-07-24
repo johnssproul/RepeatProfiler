@@ -179,7 +179,19 @@ if [[ -d $3 ]]; then # checking if 3rd parameter (refrence path) for profile is 
 	mkdir Refrences_used
 	echo "The refrences inputed:"
 	path_refs=`cat $3/*.fa > all_refs.fa`
-	bash $mydir/Fasta_splitter.sh all_refs.fa
+	
+
+bash $mydir/Fasta_splitter.sh $3 2> /dev/null > dev/null
+
+retval=$? #check if any error occured by getting the exit code
+
+if [ $retval -ne 0 ]; then #if an error occured and the exit code isnt 0  then exit. The error message will be printed from map_mileup not here 
+    
+	echo "something is wrong with refrence file inputed. Please make sure it is in correct fasta format and dont contain \ in the names"
+exit 1
+
+fi
+
 
 	refs=Refrences_used #this is where bowtie will look for refrence sequence ot align. It is a sub directory 
 
@@ -190,7 +202,16 @@ elif [[ -f $3 ]]; then # if the refrence entered as a file  then just send it to
 
 echo "The refrences inputed:"
 
-bash $mydir/Fasta_splitter.sh $3  
+bash $mydir/Fasta_splitter.sh $3 2> /dev/null > dev/null
+
+retval=$? #check if any error occured by getting the exit code
+
+if [ $retval -ne 0 ]; then #if an error occured and the exit code isnt 0  then exit. The error message will be printed from map_mileup not here 
+    
+	echo "something is wrong with refrence file inputed. Please make sure it is in correct fasta format and dont contain \ in the names"
+exit 1
+
+fi
 
 refs=Refrences_used
 
