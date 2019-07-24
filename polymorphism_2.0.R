@@ -10,17 +10,18 @@ library(ggplot2)
 
 
 #code if file type specified
-if(is.null(args[3]) || is.na(args[3])) {
-  ft <- '.png'
-} else if (grepl('.', args[3], fixed = TRUE)){
-  ft <- args[3]
-} else {
-  print('Invalid input. Setting file type to default: ".png"')
-  ft <- '.png'
-}
+ft <- '.png'
+# 
+# if(is.null(args[3]) || is.na(args[3])) {
+#   ft <- '.png'
+# } else if (grepl('.', args[3], fixed = TRUE)){
+#   ft <- args[3]
+# } else {
+#   print('Invalid input. Setting file type to default: ".png"')
+# }
 
 #for handling low coverage plots
-img <- png::readPNG('./images/watermark.png')
+img <- png::readPNG('./images-RP/watermark.png')
 cap <- labs(caption = 'The coverage of this graph is too low to properly plot it.') #sets caption for low coverage plots
 wm <- ggpubr::background_image(img) #for watermark
 

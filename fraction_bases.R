@@ -27,7 +27,6 @@ find_peaks <- function (x, m = 3){
   pks
 }
 
-discover<-
 
 
 
@@ -207,41 +206,41 @@ for (r in 1:nrow(common_matrix)) {
     
   }}
     
-for (i in 1:NROW(multi_poly_names)) {
-  
-  
-  
-  
-  
-  name_of_table_used<-paste("multi_poly/",multi_poly_names[i,1],".txt",sep = "")
-  
-  multi_table<-read.table(name_of_table_used,header=TRUE)
-  
-  m=NROW(multi_table)*0.2
-  
-  fraction_table[i,"Peaks_G"]<-paste(find_peaks(multi_table$CountG,m), sep = " ",collapse = " ")
-  
-  
-}
-#this is for Base C
-
-for (i in 1:NROW(multi_poly_names)) {
-  
-  
-  
-  
-  
-  name_of_table_used<-paste("multi_poly/",multi_poly_names[i,1],".txt",sep = "")
-  
-  multi_table<-read.table(name_of_table_used,header=TRUE)
-  
-  m=NROW(multi_table)*0.4
-  
-  fraction_table[i,"Peaks_C"]<-paste(find_peaks(multi_table$CountC,m), sep = " ",collapse = " ")
-  
-  
-}
-
+# for (i in 1:NROW(multi_poly_names)) {
+#   
+#   
+#   
+#   
+#   
+#   name_of_table_used<-paste("multi_poly/",multi_poly_names[i,1],".txt",sep = "")
+#   
+#   multi_table<-read.table(name_of_table_used,header=TRUE)
+#   
+#   m=NROW(multi_table)*0.2
+#   
+#   fraction_table[i,"Peaks_G"]<-paste(find_peaks(multi_table$CountG,m), sep = " ",collapse = " ")
+#   
+#   
+# }
+# #this is for Base C
+# 
+# for (i in 1:NROW(multi_poly_names)) {
+#   
+#   
+#   
+#   
+#   
+#   name_of_table_used<-paste("multi_poly/",multi_poly_names[i,1],".txt",sep = "")
+#   
+#   multi_table<-read.table(name_of_table_used,header=TRUE)
+#   
+#   m=NROW(multi_table)*0.4
+#   
+#   fraction_table[i,"Peaks_C"]<-paste(find_peaks(multi_table$CountC,m), sep = " ",collapse = " ")
+#   
+#   
+# }
+# 
 
 
 
@@ -385,11 +384,15 @@ if(fraction_table$Read1==fraction_table$Read2){
   
 }
 
+fraction_table_towrite<-fraction_table
+
+fraction_table_towrite$Peaks_A<-NULL
+fraction_table_towrite$Peaks_T<-NULL
+fraction_table_towrite$Peaks_G<-NULL
+fraction_table_towrite$Peaks_C<-NULL
 
 
-
-
-write.csv(fraction_table,"variation_analysis.csv",row.names = FALSE)
+write.table(fraction_table_towrite,"variation_analysis.tsv",row.names = FALSE)
 
 
 
@@ -585,17 +588,101 @@ for (i in 1:NROW(Polyarray)) {
 
 ############saving_the_data_in_phylip fomat 
 
-header<-paste(NROW(samples),Ref_size,sep = " ")
 
-cat(c(header,"\n"), file = "phylip.phy",append = TRUE)
+onetime=TRUE  #this is to make writing to the header writies only once in the phylip file 
 
 
 for (i in 1:NROW(Polyarray)) {
   polydata<-paste(Polyarray[[i]],collapse="")
-
-  entry<-paste(samples[[i]],polydata,sep =" ")
+  #Converting index back to name steps 
   
-  cat(c(entry,"\n"), file = "phylip.phy",append = TRUE)
+  name<-samples[[i]]
+  name_index<-strsplit(name,"_")
+  name_index<-name_index[[1]]
+  name_index<-as.numeric(name_index[length(name_index)])
+  
+  
+  Read1_name=index_conv[name_index,1]
+  Read2_name=index_conv[name_index,2]
+  
+  if(identical(Read1_name,Read2_name)){
+    
+    name_full<-samples[[i]]
+    name_full<-strsplit(name_full,"_")
+    name_full<-name_full[[1]]
+    name_full<-name_full[1:length(name_full)-1]
+    name_full=paste(name_full,collapse="_")
+    name_full<-strsplit(name_full,".",fixed = TRUE)
+    name_full<-name_full[[1]]
+    name_full <- name_full[name_full != "fasta"]
+    name_full <- name_full[name_full != "fa"]
+    name_full <- name_full[name_full != "txt"]
+    name_full=paste(name_full,collapse=".")
+    
+    
+    #these blocks is to prepare names in a visually appealing way by removing extentions and stuff like that 
+  
+    name_of_sample<-strsplit(Read1_name,".",fixed = TRUE)
+    name_of_sample<-name_of_sample[[1]]
+    
+    #this will remove extentions 
+    name_of_sample <- name_of_sample[name_of_sample != "fq"]
+    name_of_sample <- name_of_sample[name_of_sample != "fastq"]
+    name_of_sample <- name_of_sample[name_of_sample != "gz"]
+    ####
+    
+    
+    name_of_sample=paste(name_of_sample,collapse=".")
+    
+    
+    
+  }else{
+    
+    
+    name_full<-samples[[i]]
+    name_full<-strsplit(name_full,"_")
+    name_full<-name_full[[1]]
+    name_full<-name_full[1:length(name_full)-1]
+    name_full=paste(name_full,collapse="_")
+    name_full<-strsplit(name_full,".",fixed = TRUE)
+    name_full<-name_full[[1]]
+    name_full <- name_full[name_full != "fasta"]
+    name_full <- name_full[name_full != "fa"]
+    name_full <- name_full[name_full != "txt"]
+    name_full=paste(name_full,collapse=".")
+    
+    
+    
+    name_of_sample<-strsplit(Read1_name,"_")
+    name_of_sample<-name_of_sample[[1]]
+    name_of_sample<-name_of_sample[1:length(name_of_sample)-1]
+    name_of_sample=paste(name_of_sample,collapse="_")
+    
+ 
+    
+    
+  }
+  
+  
+  
+  
+  
+  
+  ###
+  filename=paste(name_full,".phy",sep = "")
+  
+  if(onetime==TRUE){
+    
+    header<-paste(NROW(samples),Ref_size,sep = " ")
+    
+    cat(c(header,"\n"), file =filename ,append = TRUE)
+    onetime=FALSE
+  }
+  
+  entry<-paste(name_of_sample,polydata,sep =" ")
+  
+  
+  cat(c(entry,"\n"), file=filename,append = TRUE)
   
   
 }

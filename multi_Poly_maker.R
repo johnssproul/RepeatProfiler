@@ -8,28 +8,31 @@ library(ggplot2)
 
 
 #code if plots per page or file type specified
-if (is.null(args[2]) || is.na(args[2])) { #if nothing is specified, set defaults
-  n <- 8
-  ft <- '.pdf'
-} else if(is.null(args[3]) || is.na(args[3])) { #if nothing is specified for arg[3]
-  if(grepl('.', args[2], fixed = TRUE)) {
-    n <- 8
-    ft <- args[2] #args[2] is file type
-  } else if (!is.na(as.numeric(args[2]))){
-    n <- args[2] #args[2] is plots per page
-    ft <- '.pdf'
-  } else {
-    print('Invalid input. Setting plots per page and file type to default: 8 and ".pdf", respectively')
-    n <- 8
-    ft <- '.pdf'
-  }
-} else {
-  n <- args[2] #assume args[2] is plots per page
-  ft <- args[3] #assume args[3] is file type
-}
+n <- 8
+ft <- '.pdf'
+# 
+# if (is.null(args[2]) || is.na(args[2])) { #if nothing is specified, set defaults
+#   n <- 8
+#   ft <- '.pdf'
+# } else if(is.null(args[3]) || is.na(args[3])) { #if nothing is specified for arg[3]
+#   if(grepl('.', args[2], fixed = TRUE)) {
+#     n <- 8
+#     ft <- args[2] #args[2] is file type
+#   } else if (!is.na(as.numeric(args[2]))){
+#     n <- args[2] #args[2] is plots per page
+#     ft <- '.pdf'
+#   } else {
+#     print('Invalid input. Setting plots per page and file type to default: 8 and ".pdf", respectively')
+#     n <- 8
+#     ft <- '.pdf'
+#   }
+# } else {
+#   n <- args[2] #assume args[2] is plots per page
+#   ft <- args[3] #assume args[3] is file type
+# }
 
 #for handling low coverage plots
-img <- png::readPNG('./images/watermark.png')
+img <- png::readPNG('./images-RP/watermark.png')
 cap <- labs(caption = 'The coverage of this graph is too low to properly plot it.') #sets caption for low coverage plots
 wm <- ggpubr::background_image(img) #for watermark
 

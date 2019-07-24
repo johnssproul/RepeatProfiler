@@ -9,14 +9,15 @@ library(ggplot2)
 
 
 #code if file type specified
-if(is.null(args[3]) || is.na(args[3])) {
-  ft <- '.png'
-} else if (grepl('.', args[3], fixed = TRUE)){
-  ft <- args[3]
-} else {
-  print('Invalid input. Setting file type to default: ".png"')
-  ft <- '.png'
-}
+ft <- '.png'
+
+# if(is.null(args[3]) || is.na(args[3])) {
+#   ft <- '.png'
+# } else if (grepl('.', args[3], fixed = TRUE)){
+#   ft <- args[3]
+# } else {
+#   print('Invalid input. Setting file type to default: ".png"')
+# }
 
 #merges all files located in 'mypath' into one dataframe
 multmerge = function(mypath){
@@ -139,10 +140,10 @@ if(NCOL(all.depth.cvs) > 2){
 
 #error reporting messages
   }else{
-    write('Correlation analysis cannot be done because there is only 1 read with non-zero depth values.', stderr())
+    cat('Correlation analysis cannot be done because there is only 1 read with non-zero depth values.\n', file = " R_correlation_errors.txt",append = TRUE)
     print('Correlation analysis cannot be done because there is only 1 read with non-zero depth values.')
   }
 }else{
-  write('Correlation analysis cannot be done with only one pair of reads or a single unpaired read.', stderr())
+  cat('Correlation analysis cannot be done with only one pair of reads or a single unpaired read. \n',  file = " R_correlation_errors.txt",append = TRUE)
   print('Correlation analysis cannot be done with only one pair of reads or a single unpaired read.')
 }

@@ -8,18 +8,22 @@ library(ggplot2)
 
 
 
+
 #code if file type specified
-if(is.null(args[3]) || is.na(args[3])) {
-  ft <- '.png'
-} else if (grepl('.', args[3], fixed = TRUE)){
-  ft <- args[3]
-} else {
-  print('Invalid input. Setting file type to default: ".png"')
-  ft <- '.png'
-}
+
+ft <- '.png'
+
+# if(is.null(args[3]) || is.na(args[3])) {
+#   ft <- '.png'
+# } else if (grepl('.', args[3], fixed = TRUE)){
+#   ft <- args[3]
+# } else {
+#   print('Invalid input. Setting file type to default: ".png"')
+#   ft <- '.png'
+# }
 
 #get watermark image
-img <- png::readPNG('./images/watermark.png')
+img <- png::readPNG('./images-RP/watermark.png')
 
 ########## Preparing Dataframe ##########
 cat('Rscript RP_4.0.R started: ', args[1], '\n')
@@ -48,7 +52,7 @@ read2.first <- index.conv[name.first,2]
 
 if(read1.first != read2.first){
   t <- paste(args[1], '   Read1: ', read1.first, '   Read2: ', read2.first, sep = '')
-}else if(Read1.first == Read2.first){
+}else if(read1.first == read2.first){
   t <- paste(args[1], '   Read: ', read1.first, sep = '')
 }
 
