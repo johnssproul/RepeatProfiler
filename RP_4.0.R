@@ -1,12 +1,10 @@
 #!/usr/bin/env Rscript
 args <- commandArgs(trailingOnly = TRUE)
-#args[1] <- 'NC_024511_2_Drosophila_melanogaster_mitochondrion__complete_genome.fa_005' #path-specific
+args[1] <- '260bp_SAT_Satellite_1pt688.fa_001' #path-specific
 
 #.libPaths(as.character(args[2])) #brew stuff
 
 library(ggplot2)
-
-
 
 
 #code if file type specified
@@ -23,7 +21,8 @@ ft <- '.png'
 # }
 
 #get watermark image
-img <- png::readPNG('./images-RP/watermark.png')
+#img <- png::readPNG('./images-RP/watermark.png')
+img <- png::readPNG('./watermark.png') #path-specific
 
 ########## Preparing Dataframe ##########
 cat('Rscript RP_4.0.R started: ', args[1], '\n')
@@ -110,8 +109,8 @@ if(df1.max < 1) {
 
 #horizontalPlot #testing
 
-#plot1name <- paste('./Test_plots/Horizontal_gradient', ft, sep = '') #path-specific
-plot1name <- paste(as.character(args[1]), '/Horizontally_colored', ft, sep='')
+plot1name <- paste('./Test_plots/Horizontal_gradient', ft, sep = '') #path-specific
+#plot1name <- paste(as.character(args[1]), '/Horizontally_colored', ft, sep='')
 ggsave(as.character(plot1name), horizontalPlot, units = 'mm', width = 175, height = 50)
 cat('file saved to',  plot1name, '\n')
 
@@ -133,11 +132,8 @@ y <- unlist(vals)
 pos <- rep(df1$Position, lengths(vals))
 
 #creates dataframe setting datapoints for each rectangle that will be colored in vertical graph (x and xend define length of segment, y and y end define height of segment)
-if(df1.max > 10) {
-  df2 <- data.frame(x = pos-1, xend = pos, y = y-1, yend = y)
-} else {
-  df2 <- data.frame(x = pos, xend = pos, y = 0, yend = y)
-}
+df2 <- data.frame(x = pos-1, xend = pos, y = y-1, yend = y)
+
 
 #since x=pos-1 and y=y-1, goes through df2 and sets any x=-1 or y=-1 values to 0 (otherwise the axes would start at -1 and be grey)
 for(i in 1:length(df2$x)) {
@@ -149,15 +145,6 @@ for(i in 1:length(df2$x)) {
   }
 }
 
-#sets size of segment based on maximum depth of sample (reduces vertical lines)
-if(df1.max > 400) {
-  s <- .3
-} else if (df1.max > 30){
-  s <- 1
-} else {
-  s <- 2
-}
-
 #renames columns 1 and 3 in df2 so that the x-axis and y-axis are labelled correctly
 colnames(df2)[1] <- 'Position'
 colnames(df2)[3] <- 'Depth'
@@ -167,7 +154,7 @@ colnames(df2)[3] <- 'Depth'
 cat('Saving vertical gradient plot... \n')
 
 verticalPlot <- ggplot(data = df2)+
-  geom_segment(aes(x = Position, xend = xend, y = Depth, yend = yend, color = Depth), size = s)+
+  geom_rect(aes(xmin = Position, xmax = xend, ymin = Depth, ymax = yend, fill = Depth, color = Depth), size = 0.1)+
   cs+ theme_bw()+ #to remove grey background
   tf+ ggtitle(t) #sets plot title
 
@@ -178,8 +165,8 @@ if(df1.max < 1) {
 
 #verticalPlot #testing
 
-#plot2name <- paste('./Test_plots/Vertical_gradient', ft, sep = '') #path-specific
-plot2name <- paste(as.character(args[1]), '/Vertically_colored', ft, sep='')
+plot2name <- paste('./Test_plots/Vertical_gradient', ft, sep = '') #path-specific
+#plot2name <- paste(as.character(args[1]), '/Vertically_colored', ft, sep='')
 ggsave(as.character(plot2name), verticalPlot, units = 'mm', width = 175, height = 50)
 cat('file saved to',  plot2name, '\n')
 
@@ -238,7 +225,7 @@ if(df1.max < 1) {
 
 #solidPlot #testing
 
-#plot3name <- paste('./Test_plots/Solid', ft, sep = '') #path-specific
-plot3name <- paste(as.character(args[1]), '/solid_colored', ft, sep='')
+plot3name <- paste('./Test_plots/Solid', ft, sep = '') #path-specific
+#plot3name <- paste(as.character(args[1]), '/solid_colored', ft, sep='')
 ggsave(as.character(plot3name), solidPlot, units = 'mm', width = 175, height = 50)
 cat('file saved to',  plot3name, '\n')
