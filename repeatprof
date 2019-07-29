@@ -7,7 +7,7 @@ num_commands=`echo $commands | wc -w ` #gets the number  of commands
 
 if ((num_commands == 0 )) # if no commands entered, show this 
  then
-echo "RepeatProfiler v 0.9 -prerelease- x New x Beginning x "
+echo "RepeatProfiler v 0.91 -prerelease- x Correlation x and x Reinforcements x"
 echo "please use -h flag to view help menu for how to use this tool"
 
 
@@ -33,14 +33,13 @@ rm -f Errors_README.txt
 #brew link --overwrite >/dev/null 2>&1  #brew stuff
 
 
-#mydir=`echo "$(brew --cellar repeatprof)/0.9/libexec"` #brew stuff
+#mydir=`echo "$(brew --cellar repeatprof)/0.91/libexec"` #brew stuff
 
-#R_packages=`echo "$(brew --cellar repeatprof)/0.9/R_packages"` #brew stuff
+#R_packages=`echo "$(brew --cellar repeatprof)/0.91/R_packages"` #brew stuff
 
-#images=`echo "$(brew --cellar repeatprof)/0.9/images-RP"`  #brew stuff
-
+#images=`echo "$(brew --cellar repeatprof)/0.91/images-RP"`  #brew stuff
+#Rscript=`echo "$(brew --prefix R)/bin/Rscript"`  #brew stuff
 mydir=`pwd` #comment when running it for brew 
-
 
 
 
@@ -129,20 +128,31 @@ index=0
 
 for p in "${array[@]}"  
 do
-if [[ $p  ==  "-usrprov" ]]; then
+if [[ $p  ==  "-corr" ]]; then
 	((index ++))
 	
 	user_prov=${array[index]}
 	    if [[ -f $user_prov ]]; then
+		rm -f user_provided.txt 
 		
 		currentdir=`pwd`
 	
 		 cp $user_prov  $currentdir
 		
-		else
-		   echo "the path of user_provided.txt file isnt correct"
+		elif [[ -f user_provided.txt ]]; then 
 		
-		   exit 0
+	     echo '' > /dev/null
+		
+		else 
+		
+		   echo "no user_provided.txt path is provided and it is not present in the current directory. Please refer to repeatprof -h to understand how to create it"
+		   
+		   echo "it must be provided for correlation analysis to continue"
+		   
+		   exit 0 
+		   
+		
+		   
 		fi
 		
 		
@@ -177,15 +187,19 @@ if [[ -d $3 ]]; then # checking if 3rd parameter (refrence path) for profile is 
 #if it is a directory then sum up all the .fa files and put them into one and send them to fasta splitter  to prepare them as  single fasta sequences for analysis 
 	rm -f -r Refrences_used
 	mkdir Refrences_used
-	echo "The refrences inputed:"
 	path_refs=`cat $3/*.fa > all_refs.fa`
 	
 
-bash $mydir/Fasta_splitter.sh $3 2> /dev/null > dev/null
+bash $mydir/Fasta_splitter.sh $3 
+
 
 retval=$? #check if any error occured by getting the exit code
 
-if [ $retval -ne 0 ]; then #if an error occured and the exit code isnt 0  then exit. The error message will be printed from map_mileup not here 
+if [ $retval -eq 2 ]; then #if an error occured and the exit code isnt 0  then exit. The error message will be printed from map_mileup not here 
+    
+exit 1
+
+elif [ $retval -ne 0 ]; then #if an error occured and the exit code isnt 0  then exit. The error message will be printed from map_mileup not here 
     
 	echo "something is wrong with refrence file inputed. Please make sure it is in correct fasta format and dont contain \ in the names"
 exit 1
@@ -200,13 +214,16 @@ elif [[ -f $3 ]]; then # if the refrence entered as a file  then just send it to
 	mkdir Refrences_used
 
 
-echo "The refrences inputed:"
 
-bash $mydir/Fasta_splitter.sh $3 2> /dev/null > dev/null
+bash $mydir/Fasta_splitter.sh $3 
 
 retval=$? #check if any error occured by getting the exit code
 
-if [ $retval -ne 0 ]; then #if an error occured and the exit code isnt 0  then exit. The error message will be printed from map_mileup not here 
+if [ $retval -eq 2 ]; then #if an error occured and the exit code isnt 0  then exit. The error message will be printed from map_mileup not here 
+    
+exit 1
+
+elif [ $retval -ne 0 ]; then #if an error occured and the exit code isnt 0  then exit. The error message will be printed from map_mileup not here 
     
 	echo "something is wrong with refrence file inputed. Please make sure it is in correct fasta format and dont contain \ in the names"
 exit 1
@@ -502,7 +519,7 @@ fi # end of pile up
 mv $the_output $The_folder
 rm -f folder_names.txt
 
-rm *bt2
+rm -f *bt2
 rm -f -r temp_cvs
 rm -f fofn_folders.txt
 
@@ -531,6 +548,36 @@ mv  *ReadMe*  $The_folder #move read me to the final folder
 rm -f The_summary.txt ref_temp.txt bowtie.log  *db.2*
 
 mv Refrences_used $The_folder
+
+
+if [[ $@  ==  *"-corr"* ]]; then #if the user enter -corr check for user_provided.txt is in the same directory then run it and see if there is errors and run it 
+
+rm -f  R_all_correlation_errors.txt
+
+if [[ !(-f user_provided.txt) ]]; then
+
+echo "user_provided.txt wasnt provided, so the FULL correlation analysis wasnt   conducted " > R_all_correlation_errors.txt
+
+else 
+
+Rscript $mydir/all_corr.R
+
+mv full_correlation_analysis.csv $The_folder
+
+fi
+
+if [ -f R_all_correlation_errors.txt ]; then 
+
+
+mv R_all_correlation_errors.txt $The_folder 
+fi
+
+
+
+fi
+
+
+
 mv all_depth_cvs $The_folder
 mv The_summary_final.csv Errors_README.log $The_folder 2> /dev/null
 rm -f  *Rplots*	
@@ -629,6 +676,7 @@ fi
 
 if [ "$1" == "clean" ]; then
 rm -f -r *bam *fofn* *.out* *multi_poly_names* *_output* *_conv* *summary* *bt2* *ref_temp* *bowtie.log* *ReadMe* *_cvs* *_temp* *db.2* *Rplots* all_refs.fa Refrences_used #images-RP #brew stuff
+rm -f  R_all_correlation_errors.txt 
 echo "remians of a broken run were cleaned successfuly "
 fi
 if [ "$1" == "-h" ]; then
@@ -639,7 +687,15 @@ echo "repeatprof profile <-p for paired reads or  -u for unpaired> <the refrence
 echo ""
 echo "optional flags:"
 echo "-o <folder_path>		use to specifiy an directory where the final output file  be directed to. Default: current directory"
-echo "-corr				type this flag to make the correlation analysis. user_provided.txt is needed for the correlation graph. Please refer to the github page for more info this"
+echo "-corr				type this flag to make the correlation analysis. user_provided.txt will be assumed to be in same directory"
+echo "-corr	<user_provided.txt path >   type this flag to make the correlation analysis providing User_provided.txt path"
+
+echo "-k				use this flag if you want to keep the sorted bam files of the alignments in the final output folder"
+
+echo ""
+
+echo "other optional flags can be used:"
+
 echo "--very-sensitive		bowtie alignment setting. Default:--very-sensitive"
 echo "--very-fast			bowtie alignment setting. Default:--very-sensitive"
 echo "--local				bowtie alignment setting. Default:--very-sensitive"
@@ -650,9 +706,7 @@ echo "--sensitive			bowtie alignment setting. Default:--very-sensitive"
 echo "--very-sensitive		bowtie alignment setting. Default:--very-sensitive"
 echo "--very-sensitive-local	        bowtie alignment setting. Default:--very-sensitive"
 echo "--sensitive-local		bowtie alignment setting. Default:--very-sensitive"
-echo "-k				use this flag if you want to keep the sorted bam files of the alignments in the final output folder"
 
-echo "-usrprov <user_provided.txt path> use this flag to specify path of user_provided.txt. Default: current directory"
 
 echo ""
 

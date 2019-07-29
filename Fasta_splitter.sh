@@ -10,7 +10,7 @@ if [[ $Start != '>' ]]; then
 echo "file dont appear to be in fasta format. it doesnt start with >"
 
 
-exit 1 
+exit 2
 
 fi 
 
@@ -18,9 +18,12 @@ if [[ $end != '$' ]]; then
 
 
 echo "Please make sure the file is unix formated. Which means it ends with an empty line. You can use tool like dos2unix to make sure it is"
-exit 1 
+exit 2
 
 fi 
+
+echo "The refrences inputed:"
+
 
 while read line
 do
@@ -48,4 +51,5 @@ do
 done < $Fasta_file
 
 
+exit 0
 

@@ -2,7 +2,7 @@
 args <- commandArgs(trailingOnly = TRUE)
 #args[1] <- 'NC_024511_2_Drosophila_melanogaster_mitochondrion__complete_genome.fa_005' #path-specific
 
-.libPaths(as.character(args[2])) #brew stuff
+#.libPaths(as.character(args[2])) #brew stuff
 
 library(ggplot2)
 
