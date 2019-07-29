@@ -1,6 +1,6 @@
 #!/usr/bin/env Rscript
 args <- commandArgs(trailingOnly = TRUE)
-args[1] <- '260bp_SAT_Satellite_1pt688.fa_001' #path-specific
+#args[1] <- '260bp_SAT_Satellite_1pt688.fa_001' #path-specific
 
 #.libPaths(as.character(args[2])) #brew stuff
 
@@ -20,8 +20,8 @@ ft <- '.png'
 # }
 
 #get watermark image
-#img <- png::readPNG('./images-RP/watermark.png')
-img <- png::readPNG('./watermark.png') #path-specific
+img <- png::readPNG('./images-RP/watermark.png')
+#img <- png::readPNG('./watermark.png') #path-specific
 
 
 ########## Preparing Dataframe ##########
@@ -116,8 +116,8 @@ horizontalPlot <- lc(horizontalPlot);
 
 #horizontalPlot #testing
 
-plot1name <- paste('./Test_plots/Horizontal_gradient', ft, sep = '') #path-specific
-#plot1name <- paste(as.character(args[1]), '/Horizontally_colored', ft, sep='')
+#plot1name <- paste('./Test_plots/Horizontal_gradient', ft, sep = '') #path-specific
+plot1name <- paste(as.character(args[1]), '/Horizontally_colored', ft, sep='')
 ggsave(as.character(plot1name), horizontalPlot, units = 'mm', width = 175, height = 50)
 cat('file saved to',  plot1name, '\n')
 
@@ -161,8 +161,8 @@ verticalPlot <- lc(verticalPlot);
 
 #verticalPlot #testing
 
-plot2name <- paste('./Test_plots/Vertical_gradient', ft, sep = '') #path-specific
-#plot2name <- paste(as.character(args[1]), '/Vertically_colored', ft, sep='')
+#plot2name <- paste('./Test_plots/Vertical_gradient', ft, sep = '') #path-specific
+plot2name <- paste(as.character(args[1]), '/Vertically_colored', ft, sep='')
 ggsave(as.character(plot2name), verticalPlot, units = 'mm', width = 175, height = 50)
 cat('file saved to',  plot2name, '\n')
 
@@ -214,7 +214,7 @@ solidPlot <- lc(solidPlot);
 
 #solidPlot #testing
 
-plot3name <- paste('./Test_plots/Solid', ft, sep = '') #path-specific
-#plot3name <- paste(as.character(args[1]), '/solid_colored', ft, sep='')
+#plot3name <- paste('./Test_plots/Solid', ft, sep = '') #path-specific
+plot3name <- paste(as.character(args[1]), '/solid_colored', ft, sep='')
 ggsave(as.character(plot3name), solidPlot, units = 'mm', width = 175, height = 50)
 cat('file saved to',  plot3name, '\n')
