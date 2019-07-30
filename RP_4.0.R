@@ -76,7 +76,7 @@ colnames(df1)[2] <- 'Depth'
 df1.max <- max(df1$Depth)
 
 #determines bin split based on number of positions; this n value is used for vertical gradient plot and the solid plot
-if ((length(df1$Position) < 300) || df1.max < 500){
+if ((length(df1$Position) < 300) || df1.max < 1500){
   n <- 1
 } else {
   n <- 10
