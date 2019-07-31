@@ -4,7 +4,7 @@ args <- commandArgs(trailingOnly = TRUE)
 
 cat('Saving variation plot...', args[1], '... \n')
 
-#.libPaths(as.character(args[2])) #brew stuff
+.libPaths(as.character(args[2])) #brew stuff
 
 library(ggplot2)
 

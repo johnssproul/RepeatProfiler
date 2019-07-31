@@ -2,8 +2,8 @@
 
 Fasta_file=$1
 
-Start=`cat -A $Fasta_file  | head -c1`
-end=`cat -A $Fasta_file  | tail -c2`
+Start=`head -c1 $Fasta_file`
+end=`tail -c1 $Fasta_file`
 
 if [[ $Start != '>' ]]; then 
  
@@ -14,7 +14,7 @@ exit 2
 
 fi 
 
-if [[ $end != '$' ]]; then 
+if [[ ! -z $end  ]]; then 
 
 
 echo "Please make sure the file is unix formated. Which means it ends with an empty line. You can use tool like dos2unix to make sure it is"

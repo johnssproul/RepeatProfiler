@@ -20,7 +20,7 @@ exit 1
 
 fi
 
-rm -f -r  *.out *.bam *fofn* Errors_README.txt #images-RP #brew stuff
+rm -f -r  *.out *.bam *fofn* Errors_README.txt images-RP #brew stuff
 
 currentDate=`date`
 currentDate=`tr ' :' '_' <<<"$currentDate"`
@@ -67,7 +67,7 @@ currentdir=`pwd`
 
 if [ "$1" == "profile" ]; then  # check if the second parameter is profile, If yes then preform profiling stuff 
 
-# cp -r $images $currentdir #brew stuff
+cp -r $images $currentdir #brew stuff
 if  [[ $2 == "-u" ]] ||  [[ $2  ==  "-p" ]]; then # check if the user inputed -u or -p if not give him an error as it is a madantory command
 
 echo "" > /dev/null
@@ -584,7 +584,7 @@ mv The_summary_final.csv Errors_README.log $The_folder 2> /dev/null
 rm -f  *Rplots*	
 
 rm -f  *fofn* *.out *.bam all_refs.fa
-#rm -f -r images-RP  #brew stuff 
+rm -f -r images-RP  #brew stuff 
 rm -f -r multi_poly multi_poly_names.txt Index_conv.txt #comment when testing
 
 #design of the cow was borrowed from the famous cowsay package 
@@ -676,7 +676,7 @@ $Rscript $mydir/user_supplied_maker.R $2
 fi
 
 if [ "$1" == "clean" ]; then
-rm -f -r *bam *fofn* *.out* *multi_poly_names* *_output* *_conv* *summary* *bt2* *ref_temp* *bowtie.log* *ReadMe* *_cvs* *_temp* *db.2* *Rplots* all_refs.fa Refrences_used #images-RP #brew stuff
+rm -f -r *bam *fofn* *.out* *multi_poly_names* *_output* *_conv* *summary* *bt2* *ref_temp* *bowtie.log* *ReadMe* *_cvs* *_temp* *db.2* *Rplots* all_refs.fa Refrences_used images-RP #brew stuff
 rm -f  R_all_correlation_errors.txt 
 echo "remians of a broken run were cleaned successfuly "
 fi
