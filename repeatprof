@@ -39,8 +39,10 @@ rm -f Errors_README.txt
 
 #images=`echo "$(brew --cellar repeatprof)/0.91/images-RP"`  #brew stuff
 #Rscript=`echo "$(brew --prefix R)/bin/Rscript"`  #brew stuff
-mydir=`pwd` #comment when running it for brew 
 
+mydir=`pwd` #comment when running it for brew 
+Rscript="Rscript" #comment when running it for brew 
+#dont forget to cp the image when in brew mode
 
 
 
@@ -66,7 +68,7 @@ currentdir=`pwd`
 
 if [ "$1" == "profile" ]; then  # check if the second parameter is profile, If yes then preform profiling stuff 
 
-# cp -r $images $currentdir #brew stuff
+#cp -r $images $currentdir #brew stuff
 if  [[ $2 == "-u" ]] ||  [[ $2  ==  "-p" ]]; then # check if the user inputed -u or -p if not give him an error as it is a madantory command
 
 echo "" > /dev/null
@@ -245,7 +247,7 @@ rm *bam *bt2  2> /dev/null
 rm -f -r all_depth_cvs  2> /dev/null
 ######
 
-mkdir all_depth_cvs #this creates all_depth_cvs where it store  a table of postion of refrence and the coverage depth (the folder will be used later by Rscripts)
+mkdir all_depth_cvs #this creates all_depth_cvs where it store  a table of postion of refrence and the coverage depth (the folder will be used later by $Rscripts)
 
 
 
@@ -406,7 +408,7 @@ stringpile3="_"
 output="$output$stringpile3$stringpile2" #this just combines the output with its number to create the sub folder of the refrence folder you see REF_001 for example where it contains the graphs 
 	
 echo "$output" >> fofn_folders.txt #adds the name to the fofn_folders.txt
-Rscript $mydir/polymorphism_2.0.R $output $R_packages # call polymorphism Rscripts 
+$Rscript $mydir/polymorphism_2.0.R $output $R_packages # call polymorphism $Rscripts 
 
 
 
@@ -427,22 +429,22 @@ do
 
 echo $folder_names #say it 
 
-Rscript $mydir/RP_4.0.R $folder_names $R_packages #run Rscripts 
+$Rscript $mydir/RP_4.0.R $folder_names $R_packages #run $Rscripts 
 
 mv $folder_names $the_output
 done < fofn_folders.txt
 
 
-Rscript $mydir/All_RP_graphs_reference.R $R_packages
+$Rscript $mydir/All_RP_graphs_reference.R $R_packages
 
 
-Rscript $mydir/multi_Poly_maker.R $R_packages 
+$Rscript $mydir/multi_Poly_maker.R $R_packages 
 
 
 #move R scripts 
 mv *combined* $the_output
 rm -f *.phy
-Rscript $mydir/fraction_bases.R  > Closely_related_reads_analysis.txt
+$Rscript $mydir/fraction_bases.R  > Closely_related_reads_analysis.txt
 
 mv *.phy $the_output
 
@@ -466,7 +468,7 @@ echo "user_provided.txt wasnt provided, so the graph of correlation between read
 fi
 
 
-Rscript $mydir/Corr_test.R $the_output $R_packages  2> /dev/null
+$Rscript $mydir/Corr_test.R $the_output $R_packages  2> /dev/null
 
 
 if [ -f R_correlation_errors.txt ]; then 
@@ -530,7 +532,7 @@ done < fofnrefs.txt #keep looping until all refrences inputed  undergone the ana
 
 
 #rm -f *csv
-Rscript $mydir/The_depth_analyser.R 2> /dev/null #run the depth analyzer which produces the final summary table 
+$Rscript $mydir/The_depth_analyser.R 2> /dev/null #run the depth analyzer which produces the final summary table 
 Number=`wc -l < fofn_bam.txt`
 
 
@@ -539,7 +541,7 @@ mkdir refrences_wide_color_scaled_graphs #this creats folder where the graphs wh
 
 echo "Thenumber: $Number"
 
-Rscript $mydir/All_RP_graphs.R $Number $R_packages
+$Rscript $mydir/All_RP_graphs.R $Number $R_packages
 mv  refrences_wide_color_scaled_graphs $The_folder 
 
 
@@ -560,7 +562,7 @@ echo "user_provided.txt wasnt provided, so the FULL correlation analysis wasnt  
 
 else 
 
-Rscript $mydir/all_corr.R
+$Rscript $mydir/all_corr.R
 
 mv full_correlation_analysis.csv $The_folder
 
@@ -666,7 +668,7 @@ echo "There is a pair of read missing. Please check the folder where you have yo
 exit 1
 fi
 
-Rscript $mydir/user_supplied_maker.R $2
+$Rscript $mydir/user_supplied_maker.R $2
 
 
 

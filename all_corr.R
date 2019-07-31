@@ -31,6 +31,9 @@ while(NCOL(all_depth_cvs)>0){
   
   
   current_cvs_samples<-all_depth_cvs[,1:number_of_samples]
+  
+  current_cvs_samples<- na.omit(current_cvs_samples) #this deletes  NA values caused by other refrences positions 
+
   current_cvs_samples <- current_cvs_samples[, colSums(current_cvs_samples != 0) > 0] #remove columns containing only zeroes
   
   all_depth_cvs<- all_depth_cvs[,-(1:number_of_samples)]   
