@@ -9,25 +9,23 @@ cat('Saving variation plot...', args[1], '... \n')
 library(ggplot2)
 
 
-#code if file type specified
 ft <- '.png'
-# 
+
+#code if file type specified
 # if(is.null(args[3]) || is.na(args[3])) {
 #   ft <- '.png'
 # } else if (grepl('.', args[3], fixed = TRUE)){
 #   ft <- args[3]
 # } else {
-#   print('Invalid input. Setting file type to default: ".png"')
+#   print('Invalid input. Setting file type to default: '.png'')
 # }
 
-#for handling low coverage plots
+#objects for handling low coverage plots
 img <- png::readPNG('./images-RP/watermark.png')
-cap <- labs(caption = 'The coverage of this graph is too low to properly plot it.') #sets caption for low coverage plots
+cap <- labs(caption = 'This graph has low coverage. It may not provide accurate information.') #sets caption for low coverage plots
 wm <- ggpubr::background_image(img) #for watermark
 
-
-#reads textfile containing names of reads
-index.conv <- read.table('Index_conv.txt', header = TRUE, stringsAsFactors = FALSE)
+index.conv <- read.table('Index_conv.txt', header = TRUE, stringsAsFactors = FALSE) #reads textfile containing names of reads
 
 #gets names of reads and stores as objects to be used for title
 name <- args[1]
@@ -53,7 +51,7 @@ head(base.counts[1])
 base.countsRed <- base.counts[1:6]
 head(base.countsRed)
 
-#makes a stacked bar chart taken from: https://stackoverflow.com/questions/21236229/stacked-bar-chart
+#makes a stacked bar chart based on: https://stackoverflow.com/questions/21236229/stacked-bar-chart
 #melt takes data with the same position and stacks it as a set of columns into a single column of data
 base.countsRed.m <- reshape2::melt(base.countsRed, id.vars = 'Position')
 head(base.countsRed.m)
@@ -72,14 +70,18 @@ polymorphPlot <- ggplot(base.countsRed.m, aes(x = Position, y = Depth, fill = Ba
   theme(legend.text = element_text(size = 6))+ #formats legend
   ggtitle(t)
 
-#low coverage marker
+#low coverage cases
 if(max(base.counts$Depth) < 1) {
-  polymorphPlot <- polymorphPlot+ wm+ cap
+  polymorphPlot <- polymorphPlot+ wm
+} else if(max(base.counts$Depth) < 100) {
+  polymorphPlot <- polymorphPlot+ cap
+} else {
+  polymorphPlot <- polymorphPlot
 }
 
 #polymorphPlot #testing
 
-#plot.name <- paste('./Test_plots/Variation_plot', ft, sep='') #path-specific
-plot.name <- paste('Variation_plot', ft, sep='')
+#plot.name <- paste('./Test_plots/Variation_plot', ft, sep = '') #path-specific
+plot.name <- paste('Variation_plot', ft, sep = '')
 ggsave(as.character(plot.name), polymorphPlot, units = 'mm', width = 175, height = 50)
 cat('file saved to',  plot.name, '\n')

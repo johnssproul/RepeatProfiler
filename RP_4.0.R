@@ -7,23 +7,19 @@ args <- commandArgs(trailingOnly = TRUE)
 library(ggplot2)
 
 
-
-
-#code if file type specified
-
 ft <- '.png'
 
+#code if file type specified
 # if(is.null(args[3]) || is.na(args[3])) {
 #   ft <- '.png'
 # } else if (grepl('.', args[3], fixed = TRUE)){
 #   ft <- args[3]
 # } else {
-#   print('Invalid input. Setting file type to default: ".png"')
+#   print('Invalid input. Setting file type to default: '.png'')
 #   ft <- '.png'
 # }
 
-#get watermark image
-img <- png::readPNG('./images-RP/watermark.png')
+img <- png::readPNG('./images-RP/watermark.png') #get watermark image
 
 ########## Preparing Dataframe ##########
 cat('Rscript RP_4.0.R started: ', args[1], '\n')
@@ -35,10 +31,7 @@ multmerge <- function(mypath){
   Reduce(function(x, y) {merge(x, y, all = TRUE)}, datalist)
 }
 
-#reads textfile containing names of reads
-index.conv <- read.table('Index_conv.txt', header = TRUE, stringsAsFactors = FALSE)
-
-#multimerge files in temp_cvs directory
+index.conv <- read.table('Index_conv.txt', header = TRUE, stringsAsFactors = FALSE) #reads textfile containing names of reads
 all.depth.csv <- multmerge('temp_cvs')
 
 #gets names of reads
@@ -68,8 +61,7 @@ for (i in 2:NCOL(all.depth.csv)) {
   }
 }
 
-#gets name of sample to be used when subsetting data
-depth.column <- make.names(args[1])
+depth.column <- make.names(args[1]) #gets name of sample to be used when subsetting data
 
 #subsets all.depth.csv into dataframe containing position and depth for only one read
 df1 <- subset(all.depth.csv, select = c('Position', depth.column))
@@ -78,20 +70,30 @@ colnames(df1)[2] <- 'Depth'
 df1.max <- max(df1$Depth)
 
 #determines bin split based on number of positions; this n value is used for vertical gradient plot and the solid plot
-#alternative condition: ((length(df1$Position) + df1.max) < 1300)
-if ((length(df1$Position) < 300) || df1.max < 1000){
+if ((length(df1$Position) < 300) || df1.max < 1500){
   n <- 1
 } else {
   n <- 10
 }
 
+#defines a function to check and handle low coverage
+lc <- function(plot) {
+  #low coverage cases
+  if(df1.max < 1) {
+    plot <- plot+ wm
+  } else if(df1.max < 100) {
+    plot <- plot+ cap
+  } else {
+    plot <- plot
+  }
+}
 
 ########## Plot Aesthetics ##########
 colors <- c('blue4', 'springgreen2', 'yellow', 'orange', 'red', 'red') #sets color scheme for gradient
 cs <- scale_colour_gradientn(name = 'Depth', values = c(0, .20, .40, .60, .80, 1.0), colours = colors, limits = c(0, max), guide = 'colourbar', aesthetics = c('colour', 'fill')) #sets color gradient environment for gradient plots (horizontal and vertical)
 tf <- theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), #to remove gridlines
         plot.title = element_text(size = 6, face = 'bold'), axis.title = element_text(size = 6)) #formats plot title
-cap <- labs(caption = 'The coverage of this graph is too low to properly plot it.') #sets caption for low coverage plots
+cap <- labs(caption = 'This graph has low coverage. It may not provide accurate information.') #sets caption for low coverage plots
 wm <- ggpubr::background_image(img) #for watermark
 
 
@@ -103,41 +105,28 @@ horizontalPlot <- ggplot(data = df1, aes(x = Position, y = Depth))+
   cs+ theme_bw()+ #to remove grey background
   tf+ ggtitle(t) #sets plot title
 
-#low coverage marker
-if(df1.max < 1) {
-  horizontalPlot <- horizontalPlot+ wm+ cap
-}
+horizontalPlot <- lc(horizontalPlot)
 
 #horizontalPlot #testing
 
 #plot1name <- paste('./Test_plots/Horizontal_gradient', ft, sep = '') #path-specific
-plot1name <- paste(as.character(args[1]), '/Horizontally_colored', ft, sep='')
+plot1name <- paste(as.character(args[1]), '/Horizontally_colored', ft, sep = '')
 ggsave(as.character(plot1name), horizontalPlot, units = 'mm', width = 175, height = 50)
 cat('file saved to',  plot1name, '\n')
 
 
 ########## Preparing Vertical Gradient Data ##########
 cat('Preparing vertical gradient plot data... \n')
+
 #defines a function that splits the depth for vertical plot by=n
 vals.fun <- function(y){
   seq(0, y, by = n)
 }
 
-#applies vals.fun function (defined above) to df1[[2]] (= depth) and store in vals (a vector of lists)
-vals <- lapply(df1[[2]], vals.fun)
-
-#unlists vals to make y a vector of numbers (because vals is a list of lists, rather than a single vector)
-y <- unlist(vals)
-
-#creates object pos which has the same length as y (all elements of each list in vals) and has respective (and extrapolated) values from df1$Position
-pos <- rep(df1$Position, lengths(vals))
-
-#creates dataframe setting datapoints for each rectangle that will be colored in vertical graph (x and xend define length of segment, y and y end define height of segment)
-if(df1.max > 10) {
-  df2 <- data.frame(x = pos-1, xend = pos, y = y-1, yend = y)
-} else {
-  df2 <- data.frame(x = pos, xend = pos, y = 0, yend = y)
-}
+vals <- lapply(df1[[2]], vals.fun) #applies vals.fun function (defined above) to df1[[2]] (= depth) and store in vals (a vector of lists)
+y <- unlist(vals) #unlists vals to make y a vector of numbers (because vals is a list of lists, rather than a single vector)
+pos <- rep(df1$Position, lengths(vals)) #creates object pos which has the same length as y (all elements of each list in vals) and has respective (and extrapolated) values from df1$Position
+df2 <- data.frame(x = pos-1, xend = pos, y = y-1, yend = y) #creates dataframe setting datapoints for each rectangle that will be colored in vertical graph (x and xend define length of segment, y and y end define height of segment)
 
 #since x=pos-1 and y=y-1, goes through df2 and sets any x=-1 or y=-1 values to 0 (otherwise the axes would start at -1 and be grey)
 for(i in 1:length(df2$x)) {
@@ -149,16 +138,6 @@ for(i in 1:length(df2$x)) {
   }
 }
 
-#sets size of segment based on maximum depth of sample (reduces vertical lines)
-if(df1.max > 400) {
-  s <- .3
-} else if (df1.max > 30){
-  s <- 1
-} else {
-  s <- 2
-}
-
-#renames columns 1 and 3 in df2 so that the x-axis and y-axis are labelled correctly
 colnames(df2)[1] <- 'Position'
 colnames(df2)[3] <- 'Depth'
 
@@ -167,14 +146,11 @@ colnames(df2)[3] <- 'Depth'
 cat('Saving vertical gradient plot... \n')
 
 verticalPlot <- ggplot(data = df2)+
-  geom_segment(aes(x = Position, xend = xend, y = Depth, yend = yend, color = Depth), size = s)+
-  cs+ theme_bw()+ #to remove grey background
-  tf+ ggtitle(t) #sets plot title
+  geom_rect(aes(xmin = Position, xmax = xend, ymin = Depth, ymax = yend, fill = Depth, color = Depth), size = 0.1)+
+  cs+ theme_bw()+
+  tf+ ggtitle(t)
 
-#low coverage marker
-if(df1.max < 1) {
-  verticalPlot <- verticalPlot+ wm+ cap
-}
+verticalPlot <- lc(verticalPlot)
 
 #verticalPlot #testing
 
@@ -186,8 +162,8 @@ cat('file saved to',  plot2name, '\n')
 
 ########## Preparing Solid Plot Data ##########
 cat('Preparing solid plot data... \n')
-#create new dataframe containing just depth column
-df3.1 <- df1[2]
+
+df3.1 <- df1[2] #create new dataframe containing just depth column
 
 #defines a function that partitions the data into bins of size n
 fun.split <- function(x) {
@@ -195,10 +171,7 @@ fun.split <- function(x) {
 }
 
 if(n != 1) {
-  #use lapply to loop through each vector in df3.1, apply fun.split, and create a vector of lists
-  df3.2 <- lapply(df3.1, fun.split)
-
-  #loops through the bins in df3.2 and returns a mean for each bin
+  df3.2 <- lapply(df3.1, fun.split) #use lapply to loop through each vector in df3.1, apply fun.split, and create a vector of lists
   sp.names3 <- names(df3.2)
   means3 <- as.list(rep(NA, length(sp.names3))) #rep replicates the data --> so this line (I think) is making a list with the same length as depth3, but all the values are NA
   names(means3) <- names(df3.2)
@@ -208,7 +181,6 @@ if(n != 1) {
     means3[[i]] <- sapply(df3.2[[i]], mean)
   }
 
-  #converts means3 to data frame
   df3 <- data.frame(means3, check.rows = TRUE, fix.empty.names = FALSE)
 } else {
   df3 <- df3.1
@@ -228,13 +200,10 @@ cat('Saving solid plot... \n')
 
 solidPlot <- ggplot(data = df3, aes(x = Position, y = Depth))+
   geom_area(fill = 'blue4')+
-  theme_bw()+ #to remove grey background
+  theme_bw()+
   tf+ ggtitle(t)
 
-#low coverage marker
-if(df1.max < 1) {
-  solidPlot <- solidPlot+ wm+ cap
-}
+solidPlot <- lc(solidPlot);
 
 #solidPlot #testing
 

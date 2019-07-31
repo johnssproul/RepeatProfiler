@@ -8,10 +8,10 @@ cat('Saving scaled per reference plots (horizontal gradient)... \n')
 library(ggplot2)
 
 
-#code if plots per page or file type specified
 n <- 8
 ft <- '.pdf'
 
+#code if plots per page or file type specified (not implemented yet)
 # if (is.null(args[2]) || is.na(args[2])) { #if nothing is specified, set defaults
 # } else if(is.null(args[3]) || is.na(args[3])) { #if nothing is specified for arg[3]
 #   if(grepl('.', args[2], fixed = TRUE)) {
@@ -21,7 +21,7 @@ ft <- '.pdf'
 #     n <- args[2] #args[2] is plots per page
 #     ft <- '.pdf'
 #   } else {
-#     print('Invalid input. Setting plots per page and file type to default: 8 and ".pdf", respectively')
+#     print('Invalid input. Setting plots per page and file type to default: 8 and '.pdf', respectively')
 #     n <- 8
 #     ft <- '.pdf'
 #   }
@@ -37,13 +37,9 @@ multmerge <- function(mypath){
   Reduce(function(x, y) {merge(x, y, all = TRUE)}, datalist)
 }
 
-#get watermark image
-img <- png::readPNG('./images-RP/watermark.png')
+img <- png::readPNG('./images-RP/watermark.png') #get watermark image
 
-#reads textfile containing names of reads
-index.conv <- read.table('Index_conv.txt', header = TRUE, stringsAsFactors = FALSE)
-
-#multimerge files in temp_cvs directory
+index.conv <- read.table('Index_conv.txt', header = TRUE, stringsAsFactors = FALSE) #reads textfile containing names of reads
 all.depth.csv <- multmerge('temp_cvs')
 
 #calculates maximum depth based on all.depth.csv dataframe
@@ -65,7 +61,7 @@ cs <- scale_colour_gradientn(name = 'Depth', values = c(0, .20, .40, .60, .80, 1
 tf <- theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), #to remove gridlines
             plot.title = element_text(size = 10, face = 'bold'), axis.title = element_text(size = 6)) #formats plot title
 tl <- theme(legend.text = element_text(size = 6)) #formats legend
-cap <- labs(caption = 'The coverage of this graph is too low to properly plot it.') #sets caption for low coverage plots
+cap <- labs(caption = 'This graph has low coverage. It may not provide accurate information.') #sets caption for low coverage plots
 wm <- ggpubr::background_image(img) #for watermark
 
 
@@ -106,9 +102,13 @@ for(i in 2:NCOL(all.depth.csv)){
     cs+ theme_bw()+ #to remove grey background
     tf+ tl+ ggtitle(t) #sets plot title
 
-  #low coverage marker
+  #low coverage cases
   if(max(df1$Depth) < 1) {
-    horizontalPlot <- horizontalPlot+ wm+ cap
+    horizontalPlot <- horizontalPlot+ wm
+  } else if(max(df1$Depth) < 100) {
+    horizontalPlot <- horizontalPlot+ cap
+  } else {
+    horizontalPlot <- horizontalPlot
   }
 
   plots[[i-1]] <- horizontalPlot

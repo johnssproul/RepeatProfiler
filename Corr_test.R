@@ -8,9 +8,9 @@ cat('Plotting correlation', args[1], '... \n')
 library(ggplot2)
 
 
-#code if file type specified
 ft <- '.png'
 
+#code if file type specified
 # if(is.null(args[3]) || is.na(args[3])) {
 #   ft <- '.png'
 # } else if (grepl('.', args[3], fixed = TRUE)){
@@ -26,7 +26,6 @@ multmerge = function(mypath){
   Reduce(function(x,y) {merge(x, y, all = TRUE)}, datalist)
 }
 
-#multimerge files in temp_cvs directory
 all.depth.cvs = multmerge('temp_cvs')
 
 #check if there is more than 1 read to do correlation analysis
@@ -115,8 +114,7 @@ if(NCOL(all.depth.cvs) > 2){
     #makes all data in Correlation column numeric
     all.cor$Correlation <- as.numeric(all.cor$Correlation)
 
-    #sets title
-    t <- paste('Correlation Plot of ', args[1], sep = '')
+    t <- paste('Correlation Plot of ', args[1], sep = '') #title
 
     #creates stacked histogram object of correlations
     correlationPlot <- ggplot(all.cor, aes(x = Correlation, group = Grouping, fill = Grouping, color = Grouping))+

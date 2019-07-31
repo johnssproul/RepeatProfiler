@@ -1,16 +1,16 @@
 args <- commandArgs(trailingOnly = TRUE)
 
-cat('Saving combined variation plots... \n') #could we possibly get the name of the reference?
+cat('Saving combined variation plots... \n')
 
 #.libPaths(as.character(args[1])) #brew stuff
 
 library(ggplot2)
 
 
-#code if plots per page or file type specified
 n <- 8
 ft <- '.pdf'
-# 
+
+#code if plots per page or file type specified
 # if (is.null(args[2]) || is.na(args[2])) { #if nothing is specified, set defaults
 #   n <- 8
 #   ft <- '.pdf'
@@ -22,7 +22,7 @@ ft <- '.pdf'
 #     n <- args[2] #args[2] is plots per page
 #     ft <- '.pdf'
 #   } else {
-#     print('Invalid input. Setting plots per page and file type to default: 8 and ".pdf", respectively')
+#     print('Invalid input. Setting plots per page and file type to default: 8 and '.pdf', respectively')
 #     n <- 8
 #     ft <- '.pdf'
 #   }
@@ -31,17 +31,16 @@ ft <- '.pdf'
 #   ft <- args[3] #assume args[3] is file type
 # }
 
-#for handling low coverage plots
+#objects for handling low coverage plots
 img <- png::readPNG('./images-RP/watermark.png')
-cap <- labs(caption = 'The coverage of this graph is too low to properly plot it.') #sets caption for low coverage plots
+cap <- labs(caption = 'This graph has low coverage. It may not provide accurate information.') #sets caption for low coverage plots
 wm <- ggpubr::background_image(img) #for watermark
 
-#reads textfile containing names indexed samples (?)
+#reads textfile containing names indexed samples
 #multi.poly.names <- read.table('./erecta_CL9_TR_1_x_6687_0nt.fa_output/multi_poly_names.txt', header = TRUE, stringsAsFactors = FALSE) #path-specific
 multi.poly.names <- read.table('multi_poly_names.txt', header = TRUE, stringsAsFactors = FALSE)
 
-#reads textfile containing names of reads
-index.conv <- read.table('Index_conv.txt', header = TRUE, stringsAsFactors=FALSE)
+index.conv <- read.table('Index_conv.txt', header = TRUE, stringsAsFactors=FALSE) #reads textfile containing names of reads
 
 plots <- list()
 
@@ -74,7 +73,7 @@ for (i in 1:NROW(multi.poly.names)) {
   base.countsRed <- base.counts[1:6]
   head(base.countsRed)
 
-  #makes a stacked bar chart taken form: https://stackoverflow.com/questions/21236229/stacked-bar-chart
+  #makes a stacked bar chart based on: https://stackoverflow.com/questions/21236229/stacked-bar-chart
   #melt takes data with the same position and stacks it as a set of columns into a single column of data
   base.countsRed.m <- reshape2::melt(base.countsRed, id.vars = 'Position')
   head(base.countsRed.m)
@@ -92,9 +91,13 @@ for (i in 1:NROW(multi.poly.names)) {
           plot.title = element_text(face = 'bold'))+ #to remove gridlines and format title
     ggtitle(t)
 
-  #low coverage marker
+  #low coverage cases
   if(max(base.counts$Depth) < 1) {
-    polymorphPlot <- polymorphPlot+ wm+ cap
+    polymorphPlot <- polymorphPlot+ wm
+  } else if(max(base.counts$Depth) < 100) {
+    polymorphPlot <- polymorphPlot+ cap
+  } else {
+    polymorphPlot <- polymorphPlot
   }
 
   plots[[i]] <- polymorphPlot
