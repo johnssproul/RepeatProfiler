@@ -489,8 +489,8 @@ fi
 
 
 
-#mv multi_poly $the_output    uncomment when testing
-#mv multi_poly_names.txt $the_output
+mv multi_poly $the_output    uncomment when testing
+mv multi_poly_names.txt $the_output
 
 #thats check for -k which says where to keep bam file or not
 
