@@ -1,6 +1,6 @@
 #!/usr/bin/env Rscript
 args <- commandArgs(trailingOnly = TRUE)
-#args[1] <- 'NC_024511_2_Drosophila_melanogaster_mitochondrion__complete_genome.fa_005' #path-specific
+#args[1] <- 'RibosomalComplex_contig_690.fa_002' #path-specific
 
 #.libPaths(as.character(args[2])) #brew stuff
 
@@ -25,6 +25,7 @@ ft <- '.png'
 #   ft <- '.png'
 # }
 
+#img <- png::readPNG('../images-RP/watermark.png') #path-specific
 img <- png::readPNG('./images-RP/watermark.png') #get watermark image
 
 ########## Preparing Dataframe ##########
@@ -39,6 +40,7 @@ multmerge <- function(mypath){
 
 index.conv <- read.table('Index_conv.txt', header = TRUE, stringsAsFactors = FALSE) #reads textfile containing names of reads
 all.depth.csv <- multmerge('temp_cvs')
+#all.depth.csv <- multmerge('./RibosomalComplex_contig_690.fa_output/temp_cvs') #path-specific
 
 
 
@@ -100,6 +102,8 @@ for (i in 2:NCOL(all.depth.csv)) {
   }
 }
 
+#max <- 2718 #testing - standard scale 44662 2718
+
 depth.column <- make.names(args[1]) #gets name of sample to be used when subsetting data
 
 #subsets all.depth.csv into dataframe containing position and depth for only one read
@@ -111,8 +115,18 @@ df1.max <- max(df1$Depth)
 #determines bin split based on number of positions; this n value is used for vertical gradient plot and the solid plot
 if ((length(df1$Position) < 300) || df1.max < 1500){
   n <- 1
-} else {
+} else if (df1.max < 2500){
+  n <- 5
+} else if (df1.max < 5000){
   n <- 10
+} else if (df1.max < 15000){ #not sure about bounds
+  n <- 20
+} else if (df1.max < 20000){  #not sure about bounds - tested with 15000
+  n <- 40
+} else if (df1.max < 40000){ #not sure about bound - tested with ~25000
+  n <- 70
+} else {
+  n <- 100
 }
 
 #defines a function to check and handle low coverage
@@ -148,7 +162,7 @@ horizontalPlot <- lc(horizontalPlot)
 
 #horizontalPlot #testing
 
-#plot1name <- paste('./Test_plots/Horizontal_gradient', ft, sep = '') #path-specific
+#plot1name <- paste('/Volumes/SamsungUSB/RP_test/Validation_010819_scaled/Test_plots/Horizontal_gradient', ft, sep = '') #path-specific
 plot1name <- paste(as.character(args[1]), '/Horizontally_colored', ft, sep = '')
 ggsave(as.character(plot1name), horizontalPlot, units = 'mm', width = 175, height = 50)
 cat('file saved to',  plot1name, '\n')
@@ -187,13 +201,13 @@ cat('Saving vertical gradient plot... \n')
 verticalPlot <- ggplot(data = df2)+
   geom_rect(aes(xmin = Position, xmax = xend, ymin = Depth, ymax = yend, fill = Depth, color = Depth), size = 0.1)+
   cs+ theme_bw()+
-  tf+ ggtitle(t)
+  tf+ ggtitle(t)+ xlab('Position')+ ylab('Depth')
 
 verticalPlot <- lc(verticalPlot)
 
 #verticalPlot #testing
 
-#plot2name <- paste('./Test_plots/Vertical_gradient', ft, sep = '') #path-specific
+#plot2name <- paste('/Volumes/SamsungUSB/RP_test/Validation_010819_scaled/Test_plots/Vertical_gradient', ft, sep = '') #path-specific
 plot2name <- paste(as.character(args[1]), '/Vertically_colored', ft, sep='')
 ggsave(as.character(plot2name), verticalPlot, units = 'mm', width = 175, height = 50)
 cat('file saved to',  plot2name, '\n')
@@ -246,7 +260,7 @@ solidPlot <- lc(solidPlot);
 
 #solidPlot #testing
 
-#plot3name <- paste('./Test_plots/Solid', ft, sep = '') #path-specific
+#plot3name <- paste('/Volumes/SamsungUSB/RP_test/Validation_010819_scaled/Test_plots/Solid', ft, sep = '') #path-specific
 plot3name <- paste(as.character(args[1]), '/solid_colored', ft, sep='')
 ggsave(as.character(plot3name), solidPlot, units = 'mm', width = 175, height = 50)
 cat('file saved to',  plot3name, '\n')
