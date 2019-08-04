@@ -565,8 +565,13 @@ if [[ !(-f user_provided.txt) ]]; then
 echo "user_provided.txt wasnt provided, so the FULL correlation analysis wasnt   conducted " > R_all_correlation_errors.txt
 
 else
+rm -f -r corrbarplots
 
+mkdir corrbarplots
+rm -f *_corrbarplot.pdf*
 $Rscript $mydir/all_corr.R
+mv *_corrbarplot.pdf*  corrbarplots
+mv  corrbarplots $The_folder
 
 mv full_correlation_analysis.csv $The_folder
 

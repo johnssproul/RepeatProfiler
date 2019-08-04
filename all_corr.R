@@ -23,7 +23,6 @@ number_of_samples=NROW(user_supplied)
 #
 
 
-pdf("correlaion_barplots.pdf",width = 15)
 
 
 if(NCOL(all_depth_cvs) > 2){
@@ -243,10 +242,15 @@ print(groupsxothers[x])
 }
 
     ## end of cross correlation analysis
- plot<-boxplot(df,na.rm=TRUE,main=name_full,
+   print(name_full)
+   plot_title<-paste(name_full,"corrbarplot.pdf",sep = "_")
+    
+    pdf(plot_title,width = 15)
+   
+   boxplot(df,na.rm=TRUE,main=name_full,
                  xlab="Group Comparision made",ylab="correlation value",col = "orange",border = "brown")
    
-  plot_title<-paste(name_full,"corrplot.pdf",sep = "_")
+ dev.off()
 
   }else{
     cat('Correlation analysis and plot for one of the refrences couldnt be done because  there is only 1 sample with non-zero depth values for this reference .\n', file = "R_all_correlation_errors.txt",append = TRUE)
@@ -312,9 +316,6 @@ for (i in 1:NROW(groups)) {
 
 all_corr[is.na(all_corr)] <- "No correlation coefficient calculated due to lack of enough samples"
 
-# write.csv(all_corr,"full_correlation_analysis.csv",row.names = FALSE)
-# print("Full correlation analysis finished")
-#
-
-dev.off()
-
+ write.csv(all_corr,"full_correlation_analysis.csv",row.names = FALSE)
+ print("Full correlation analysis finished")
+  
