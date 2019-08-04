@@ -424,10 +424,10 @@ for ( r in 1:NROW(fraction_table)) {
     
     if(v[[peak]]=="-"){
       
-      v[[peak]]<-"A"
+      v[[peak]]<-"0"
     }else{
     
-    v[[peak]]<-paste(v[[peak]],"A",sep = " ")
+    v[[peak]]<-paste(v[[peak]],"0",sep = " ")
     }
   }
   
@@ -445,10 +445,10 @@ for ( r in 1:NROW(fraction_table)) {
     
     if(v[[peak]]=="-"){
       
-      v[[peak]]<-"T"
+      v[[peak]]<-"1"
     }else{
       
-      v[[peak]]<-paste(v[[peak]],"T",sep = " ")
+      v[[peak]]<-paste(v[[peak]],"1",sep = " ")
     }    
   }
   
@@ -466,10 +466,10 @@ for ( r in 1:NROW(fraction_table)) {
     
     if(v[[peak]]=="-"){
       
-      v[[peak]]<-"G"
+      v[[peak]]<-"2"
     }else{
       
-      v[[peak]]<-paste(v[[peak]],"G",sep = " ")
+      v[[peak]]<-paste(v[[peak]],"2",sep = " ")
     }
     
   }
@@ -487,10 +487,10 @@ for ( r in 1:NROW(fraction_table)) {
     
     if(v[[peak]]=="-"){
       
-      v[[peak]]<-"C"
+      v[[peak]]<-"3"
     }else{
       
-      v[[peak]]<-paste(v[[peak]],"C",sep = " ")
+      v[[peak]]<-paste(v[[peak]],"3",sep = " ")
     }    
   }
   
@@ -509,17 +509,17 @@ for ( r in 1:NROW(fraction_table)) {
 }
 
 codes<-data.frame(codes=character(),meaning=character(),stringsAsFactors = FALSE)
-codes[1,]<- c("A C","M")
-codes[2,]<- c("A G","R")
-codes[3,]<- c("A T","W")
-codes[4,]<- c("C G","S")
-codes[5,]<- c("C T","Y")
-codes[6,]<- c("G T","K")
-codes[7,]<- c("A C G","V")
-codes[8,]<- c("A C T","H")
-codes[9,]<- c("A G T","D")
-codes[10,]<- c("C G T","B")
-codes[11,]<- c("G A T C","N")
+codes[1,]<- c("0 3","4")
+codes[2,]<- c("0 2","5")
+codes[3,]<- c("0 1","6")
+codes[4,]<- c("3 2","7")
+codes[5,]<- c("3 1","8")
+codes[6,]<- c("2 1","9")
+codes[7,]<- c("0 3 2","A")
+codes[8,]<- c("0 3 1","B")
+codes[9,]<- c("0 2 1","C")
+codes[10,]<- c("3 2 1","D")
+codes[11,]<- c("2 0 1 3","E")
 
 
 
