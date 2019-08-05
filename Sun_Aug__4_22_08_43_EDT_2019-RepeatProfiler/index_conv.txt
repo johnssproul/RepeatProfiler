@@ -1,0 +1,5 @@
+Read1	Read2	index
+5M_isoG_1.fq.gz	5M_isoG_1.fq.gz	001
+5M_isoG_2.fq.gz	5M_isoG_2.fq.gz	002
+5M_mauG_R1.fq.gz	5M_mauG_R1.fq.gz	003
+5M_mauG_R2.fq	5M_mauG_R2.fq	004

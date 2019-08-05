@@ -153,7 +153,7 @@ print(groupsxothers[x])
           name_row <- as.numeric(name_row[length(name_row)])
           
           group_row = user_supplied[name_row,'Group']
-          
+          group_row<-as.character(group_row)
           
         if(identical(group_row,thegroup)){
           print("new sample")

@@ -2,7 +2,6 @@ args = commandArgs(trailingOnly = TRUE)
 #args[1] <- 'temp_cvs' #path-specific
 
 cat('Plotting correlation', args[1], '... \n')
-args[1]<-"pics_readme"
 #.libPaths(as.character(args[2])) brew stuff
 
 library(ggplot2)
