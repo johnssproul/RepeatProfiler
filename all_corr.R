@@ -1,5 +1,8 @@
 cat("Full correlation analysis is starting... \n")
 
+library(ggplot2)
+
+
 multmerge <- function(mypath){
   filenames <- list.files(path = mypath, full.names = TRUE)
   datalist <- lapply(filenames, function(x){read.csv(file = x, header = T)})
@@ -7,7 +10,8 @@ multmerge <- function(mypath){
 }
 
 all_depth_cvs <- multmerge('all_depth_cvs')
-user_supplied <- read.table('user_provided.txt', header = TRUE, stringsAsFactors = FALSE)
+#user_supplied <- read.table('user_provided.txt', header = TRUE, stringsAsFactors = FALSE)
+user_supplied <- read.table('../user_provided.txt', header = TRUE, stringsAsFactors = FALSE) #path-specific
 
 #intalize the all_corr table
 all_corr <- data.frame(groups = as.character())
@@ -109,3 +113,33 @@ if(NCOL(all_depth_cvs) > 2){
 all_corr[is.na(all_corr)] <- "No correlation coefficient calculated due to lack of enough samples."
 write.csv(all_corr, "full_correlation_analysis.csv", row.names = FALSE)
 print("Full correlation analysis finished.")
+
+########## Plotting Graph ##########
+Correlation <- NULL
+Group <- NULL
+Species <- NULL
+counter <- 1
+for(i in 2:length(colnames(all_corr))) {
+  for (j in 1:length(rownames(all_corr))) {
+    Correlation[counter] <- all_corr[j,i]
+    Group[counter] <- groups[j]
+    Species[counter] <- colnames(all_corr[i])
+    counter <- counter+1
+  }
+}
+
+corrData <- data.frame(Species, Group, Correlation)
+
+correlationPlot <- ggplot(data = corrData)+
+  geom_bar(aes(x = Species, y = Correlation, fill = Group), stat = 'identity', position = 'dodge', width = 0.8)+
+  scale_colour_manual(values = c('darkslateblue', 'goldenrod1', 'springgreen4'), aesthetics = c('colour', 'fill'))+
+  theme_bw()+
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), #to remove gridlines
+        plot.title = element_text(size = 6, face = 'bold'), axis.title = element_text(size = 6))+ #formats plot title
+  coord_flip()+
+  ggtitle("Correlation for References")
+
+correlationPlot #for testing
+
+#ggsave(as.character("Full_Corr_Plot.png"), correlationPlot, units = 'mm')
+#cat('file saved to',  "Full_Corr_Plot.png", '\n')
