@@ -115,7 +115,7 @@ df1.max <- max(df1$Depth)
 #determines bin split based on number of positions; this n value is used for vertical gradient plot and the solid plot
 if ((length(df1$Position) < 300) || df1.max < 1500){
   n <- 1
-} else if (df1.max < 2500){
+} else if (df1.max < 3000){
   n <- 5
 } else if (df1.max < 5000){
   n <- 10
