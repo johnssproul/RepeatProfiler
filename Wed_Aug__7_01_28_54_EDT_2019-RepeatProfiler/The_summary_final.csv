@@ -1,0 +1,9 @@
+"Reference","Sample_index","Read","Total_reads","percent_mapped","Ref.Length","Average.coverage","max.coverage"
+"aeruginosum_KY950856_1_CAD_singlecopy.fa","S001","laxatum500microgram_DNA4153_LIB0309_val_1_10M_2.fq.gz",10000000,0,809,2.81458590852905,7
+"aeruginosum_KY950856_1_CAD_singlecopy.fa","S002","laxatum500microgram_DNA4153_LIB0309_val_1_5M_1.fq.gz",5000000,0,809,2.82076637824475,6
+"aeruginosum_KY951120_1_MSP_singlecopy.fa","S001","laxatum500microgram_DNA4153_LIB0309_val_1_10M_2.fq.gz",10000000,0,879,2.3230944254835,5
+"aeruginosum_KY951120_1_MSP_singlecopy.fa","S002","laxatum500microgram_DNA4153_LIB0309_val_1_5M_1.fq.gz",5000000,0,879,1.10125142207053,3
+"aeruginosum_KY951241_1_Topo_singlecopy.fa","S001","laxatum500microgram_DNA4153_LIB0309_val_1_10M_2.fq.gz",10000000,0,729,2.95610425240055,6
+"aeruginosum_KY951241_1_Topo_singlecopy.fa","S002","laxatum500microgram_DNA4153_LIB0309_val_1_5M_1.fq.gz",5000000,0,729,0.721536351165981,2
+"liv_CL25_TR_1_x_566_0nt.fa","S001","laxatum500microgram_DNA4153_LIB0309_val_1_10M_2.fq.gz",10000000,0.24,566,236.482332155477,297
+"liv_CL25_TR_1_x_566_0nt.fa","S002","laxatum500microgram_DNA4153_LIB0309_val_1_5M_1.fq.gz",5000000,0.24,566,231.936395759717,290

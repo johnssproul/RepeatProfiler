@@ -1,6 +1,4 @@
 args = commandArgs(trailingOnly = TRUE)
-#args[1] <- 'temp_cvs' #path-specific
-
 cat('Plotting correlation', args[1], '... \n')
 #.libPaths(as.character(args[2])) brew stuff
 

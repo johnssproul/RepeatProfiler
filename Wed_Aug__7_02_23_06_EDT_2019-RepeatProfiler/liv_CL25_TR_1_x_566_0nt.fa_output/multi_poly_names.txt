@@ -1,0 +1,3 @@
+name_poly
+liv_CL25_TR_1_x_566_0nt.fa_001
+liv_CL25_TR_1_x_566_0nt.fa_002

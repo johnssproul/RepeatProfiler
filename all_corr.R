@@ -201,7 +201,7 @@ print(groupsxothers[x])
 
             if(r!=c){
 
-            if(!(identical(group_col,thegroup))){
+            if(!(identical(group_col,group_row))){
 
 
               print(paste(group_row,"x",group_col,sep = " "))
@@ -243,6 +243,12 @@ print(groupsxothers[x])
 
     ## end of cross correlation analysis
    print(name_full)
+   df<-df[,order(colnames(df),decreasing=FALSE)]
+   df<-as.data.frame(df)
+   
+   pathtostoredf<-paste("corrbarplots/",name_full,".csv",sep = "")
+   write.csv(df,file = pathtostoredf,row.names = FALSE)
+   
    plot_title<-paste(name_full,"corrbarplot.pdf",sep = "_")
     
     pdf(plot_title,width = 15)
@@ -315,6 +321,10 @@ for (i in 1:NROW(groups)) {
 
 
 all_corr[is.na(all_corr)] <- "No correlation coefficient calculated due to lack of enough samples"
+
+
+all_corr<-all_corr[order(all_corr$groups),]
+all_corr<-as.data.frame(all_corr)
 
  write.csv(all_corr,"full_correlation_analysis.csv",row.names = FALSE)
  print("Full correlation analysis finished")

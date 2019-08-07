@@ -7,6 +7,12 @@ args <- commandArgs(trailingOnly = TRUE)
 library(ggplot2)
 
 
+
+
+Normalized=as.numeric(args[3]) #change it to args[3] when brew prep
+
+print(Normalized)
+
 ft <- '.png'
 
 #code if file type specified
@@ -34,6 +40,11 @@ multmerge <- function(mypath){
 index.conv <- read.table('Index_conv.txt', header = TRUE, stringsAsFactors = FALSE) #reads textfile containing names of reads
 all.depth.csv <- multmerge('temp_cvs')
 
+#all.depth.csv<-cbind(Position=all.depth.csv[,1],all.depth.csv[,2:NCOL(all.depth.csv)]/Normalized)
+# 
+  all.depth.csv<-all.depth.csv[,1:NCOL(all.depth.csv)]/Normalized
+  all.depth.csv$Position<-all.depth.csv$Position*Normalized
+
 #gets names of reads
 name <- args[1]
 name.first <- strsplit(name, '_')
@@ -42,6 +53,8 @@ name.first <- as.numeric(name.first[length(name.first)])
 
 read1.first <- index.conv[name.first,1]
 read2.first <- index.conv[name.first,2]
+
+print(read1.first)
 
 if(read1.first != read2.first){
   t <- paste(args[1], '   Read1: ', read1.first, '   Read2: ', read2.first, sep = '')

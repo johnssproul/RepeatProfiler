@@ -1,7 +1,0 @@
-Read1	Read2	Group
-breve_DNA4919_LIB0209_val_1.fq.gz	breve_DNA4919_LIB0209_val_2.fq.gz	1
-breve_DNA5011_LIB0330_val_1.fq.gz	breve_DNA5011_LIB0330_val_2.fq.gz	1
-breve_DNA5012_LIB0252_val_1.fq.gz	breve_DNA5012_LIB0252_val_2.fq.gz	1
-lividulum_DNA3486_LIB0323_val_1.fq.gz	lividulum_DNA3486_LIB0323_val_2.fq.gz	2
-lividulum_DNA3797_LIB0325_val_1.fq.gz	lividulum_DNA3797_LIB0325_val_2.fq.gz	2
-lividulum_DNA3804_LIB0317_val_1.fq.gz	lividulum_DNA3804_LIB0317_val_2.fq.gz	2

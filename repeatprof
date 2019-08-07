@@ -35,6 +35,7 @@ rm -f Errors_README.txt
 
 #mydir=`echo "$(brew --cellar repeatprof)/0.91/libexec"` #brew stuff
 
+R_packages="a7a"
 #R_packages=`echo "$(brew --cellar repeatprof)/0.91/R_packages"` #brew stuff
 
 #images=`echo "$(brew --cellar repeatprof)/0.91/images-RP"`  #brew stuff
@@ -250,11 +251,88 @@ rm -f -r all_depth_cvs  2> /dev/null
 mkdir all_depth_cvs #this creates all_depth_cvs where it store  a table of postion of refrence and the coverage depth (the folder will be used later by $Rscripts)
 
 
-
+Normalized=1 #this is equal 1 always unless the user chooses to normalize 
 
 rm -f *out  2> /dev/null
-ls $refs/*.fa > fofnrefs.txt  #the folder where fasta spliter stores all the .fa file after splitting them. This line just gets a list of these refrences with their paths
+
+#here we will insert single copy stuff 
+
+for i in "${array[@]}"
+do
+
+if [[ $i == "-singlecopy" ]]; then
+  
+
+
+
+a="--very-sensitive-local"
+commands=$@
+array=(${commands})
+
+for i in "${array[@]}"
+do
+
+if [[ $i  ==  "--very-fast" ]] || [[ $i  ==  "--local" ]] || [[ $i  ==  "--fast" ]] || [[ $i  ==  "--sensitive" ]] || [[ $i  == "--very-sensitive" ]] || [[ $i  ==  "--very-fast-local" ]] || [[ $i  ==  "--fast-local" ]] || [[ $i  ==  "--sensitive-local" ]] || [[ $i  ==  "--very-sensitive-local" ]]; then
+		a=$i
+    fi
+done
+
+echo ""
+
+
+echo "The alignment setting for single copy calculations  is $a"
+
+
+bash $mydir/singlecopy.sh $mydir $4 $2 "2" $a
+
+retval=$? 
+
+if [ $retval -ne 0 ]; then #if an error occured and the exit code isnt 0  then exit. The error message will be printed from singlecopy.sh not here
+
+exit 1
+
+fi
+
+
+
+Normalized=`$Rscript $mydir/single_copy_Calculator.R`
+
+#rm -f The_summary.txt 
+echo "The Normalization value calculated = $Normalized"
+
+
+echo "Normalization calcaulations ended "
+
+
+### 
+
+fi
+done 
+
+###end of single copy stuff 
+
+
+ls $refs/*.fa > fofnrefs.txt  2> /dev/null #the folder where fasta spliter stores all the .fa file after splitting them. This line just gets a list of these refrences with their paths
+
+fofncheck=`cat fofnrefs.txt | wc -l` 
+
+if [[ $fofncheck == 0 ]];then #if both are empty then there was no reads of correct format to begin with 
+
+echo "it seems like you had only _singlecopy refrences in your fasta file.The program also additional  actual sequences to analyze"
+echo "or rerun without -singlecopy if you want to anlayze any sequence in the fasta file "
+
+exit 1
+fi
+
+
+
 echo "Reference	Sample_index	Read1	Read2	Total_reads	percent_mapped" > The_summary.txt #preparing the summary table
+
+
+
+
+
+
 
 while read line  # for each line  in the fofnrefs.txt we will loop through it and  carry the following analysis
 do
@@ -367,6 +445,8 @@ a=`echo "$commands" | awk '{for (I=1;I<=NF;I++) if ($I == "-D") {print $I " " $(
 
 fi
 
+
+
 echo "Bowtie2 alignment settings: $a"
 
 ####
@@ -408,7 +488,7 @@ stringpile3="_"
 output="$output$stringpile3$stringpile2" #this just combines the output with its number to create the sub folder of the refrence folder you see REF_001 for example where it contains the graphs
 
 echo "$output" >> fofn_folders.txt #adds the name to the fofn_folders.txt
-$Rscript $mydir/polymorphism_2.0.R $output $R_packages # call polymorphism $Rscripts
+$Rscript $mydir/polymorphism_2.0.R $output $R_packages  # call polymorphism $Rscripts
 
 
 
@@ -429,13 +509,13 @@ do
 
 echo $folder_names #say it
 
-$Rscript $mydir/RP_4.0.R $folder_names $R_packages #run $Rscripts
+$Rscript $mydir/RP_4.0.R $folder_names $R_packages $Normalized #run $Rscripts
 
 mv $folder_names $the_output
 done < fofn_folders.txt
 
 
-$Rscript $mydir/All_RP_graphs_reference.R $R_packages
+$Rscript $mydir/All_RP_graphs_reference.R $R_packages $Normalized
 
 
 $Rscript $mydir/multi_Poly_maker.R $R_packages
@@ -545,7 +625,7 @@ mkdir refrences_wide_color_scaled_graphs #this creats folder where the graphs wh
 
 echo "Thenumber: $Number"
 
-$Rscript $mydir/All_RP_graphs.R $Number $R_packages
+$Rscript $mydir/All_RP_graphs.R $Number $R_packages $Normalized
 mv  refrences_wide_color_scaled_graphs $The_folder
 
 

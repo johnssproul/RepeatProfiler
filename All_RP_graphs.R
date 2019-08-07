@@ -6,6 +6,7 @@ cat('Saving scaled over all references plots (horizontal gradient)... \n')
 #.libPaths(as.character(args[2])) #brew stuff
 
 library(ggplot2)
+Normalized=as.numeric(args[3]) #normalize stuff
 
 
 n <- 8
@@ -42,6 +43,9 @@ multmerge <- function(mypath){
 
 index.conv <- read.table('Index_conv.txt', header = TRUE, stringsAsFactors = FALSE) #reads textfile containing names of reads
 all.depth.csv <- multmerge('all_depth_cvs')
+# all.depth.csv<-cbind(Position=all.depth.csv[,1],all.depth.csv[,2:NCOL(all.depth.csv)]/Normalized) #this is for normalization
+all.depth.csv<-all.depth.csv[,1:NCOL(all.depth.csv)]/Normalized
+all.depth.csv$Position<-all.depth.csv$Position*Normalized
 
 #args[1] <- length(colnames(all.depth.csv))-1 #path-specific --> number of graphs
 

@@ -1,0 +1,3 @@
+name_poly
+aeruginosum_KY951120_1_MSP_singlecopy.fa_001
+aeruginosum_KY951120_1_MSP_singlecopy.fa_002

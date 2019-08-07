@@ -11,6 +11,8 @@ fraction_table$Peaks_T <- ""
 fraction_table$Peaks_G <- ""
 fraction_table$Peaks_C <- ""
 
+perecentagecutoff=0.1
+
 index_conv<-read.table("Index_conv.txt",header = TRUE,stringsAsFactors=FALSE)
 
 
@@ -79,12 +81,12 @@ for (i in 1:NROW(multi_poly_names)) {
   
   multi_table<-read.table(name_of_table_used,header=TRUE)
   
-   m=NROW(multi_table)*0.1
+   m=NROW(multi_table)*perecentagecutoff
 
   for(t in 1:NROW(multi_table)){
     
     
-    cut_off=multi_table[t,2]*0.1
+    cut_off=multi_table[t,2]*perecentagecutoff
     
     if(multi_table[t,3]>cut_off){
     
@@ -525,8 +527,8 @@ codes[11,]<- c("2 0 1 3","E")
 
 
 
-
-
+#ambegious stuff
+ 
 for (i in 1:NROW(Polyarray)) {
   
  data<- Polyarray[[i]]

@@ -7,6 +7,7 @@ cat('Saving scaled per reference plots (horizontal gradient)... \n')
 
 library(ggplot2)
 
+Normalized=as.numeric(args[2]) #change it to args[3] when brew prep
 
 n <- 8
 ft <- '.pdf'
@@ -41,6 +42,9 @@ img <- png::readPNG('./images-RP/watermark.png') #get watermark image
 
 index.conv <- read.table('Index_conv.txt', header = TRUE, stringsAsFactors = FALSE) #reads textfile containing names of reads
 all.depth.csv <- multmerge('temp_cvs')
+# all.depth.csv<-cbind(Position=all.depth.csv[,1],all.depth.csv[,2:NCOL(all.depth.csv)]/Normalized) #this is for normalization
+all.depth.csv<-all.depth.csv[,1:NCOL(all.depth.csv)]/Normalized
+all.depth.csv$Position<-all.depth.csv$Position*Normalized
 
 #calculates maximum depth based on all.depth.csv dataframe
 max <- 0
@@ -94,6 +98,8 @@ for(i in 2:NCOL(all.depth.csv)){
   df1 <- subset(all.depth.csv, select = c('Position', depth.column))
   df1 <- na.omit(df1)
   colnames(df1)[2] <- 'Depth'
+  
+
 
 
   ########## Horizontal Gradient Plot ##########
