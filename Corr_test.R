@@ -40,7 +40,7 @@ all.depth.cvs <- multmerge('temp_cvs')
 if(Normalized=="true"){
 Normalizetable<-read.csv('normalized_table.csv', header = TRUE, stringsAsFactors = FALSE) #reads textfile containing names of reads
 
-names.all <- colnames(all.depth.csv)
+names.all <- colnames(all.depth.cvs)
 
 for(x in 2:NCOL(all.depth.csv)){
   
@@ -51,7 +51,7 @@ for(x in 2:NCOL(all.depth.csv)){
   
   normalvalue<-Normalizetable[name,2]
   
-  all.depth.csv[,x]<-all.depth.csv[,x]/normalvalue
+  all.depth.cvs[,x]<-all.depth.cvs[,x]/normalvalue
   
   
   
@@ -239,3 +239,7 @@ if(NCOL(all.depth.cvs) > 2){
   cat('Correlation analysis cannot be done with only one pair of reads or a single unpaired read. \n',  file = " R_correlation_errors.txt",append = TRUE)
   print('Correlation analysis cannot be done with only one pair of reads or a single unpaired read.')
 }
+
+
+
+
