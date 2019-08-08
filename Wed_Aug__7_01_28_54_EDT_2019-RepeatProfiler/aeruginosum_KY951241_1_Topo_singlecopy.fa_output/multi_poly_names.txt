@@ -1,3 +1,0 @@
-name_poly
-aeruginosum_KY951241_1_Topo_singlecopy.fa_001
-aeruginosum_KY951241_1_Topo_singlecopy.fa_002

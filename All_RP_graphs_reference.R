@@ -5,9 +5,9 @@ cat('Saving scaled per reference plots (horizontal gradient)... \n')
 #print(as.character(args[1])) #brew stuff
 #.libPaths(as.character(args[1])) #brew stuff
 
+Normalized=as.character(args[2])
 library(ggplot2)
 
-Normalized=as.numeric(args[2]) #change it to args[3] when brew prep
 
 n <- 8
 ft <- '.pdf'
@@ -43,8 +43,33 @@ img <- png::readPNG('./images-RP/watermark.png') #get watermark image
 index.conv <- read.table('Index_conv.txt', header = TRUE, stringsAsFactors = FALSE) #reads textfile containing names of reads
 all.depth.csv <- multmerge('temp_cvs')
 # all.depth.csv<-cbind(Position=all.depth.csv[,1],all.depth.csv[,2:NCOL(all.depth.csv)]/Normalized) #this is for normalization
-all.depth.csv<-all.depth.csv[,1:NCOL(all.depth.csv)]/Normalized
-all.depth.csv$Position<-all.depth.csv$Position*Normalized
+
+#this is normalization codes
+if(Normalized=="true"){
+  
+Normalizetable<-read.csv('normalized_table.csv', header = TRUE, stringsAsFactors = FALSE) #reads textfile containing names of reads
+
+names.all <- colnames(all.depth.csv)
+
+for(x in 2:NCOL(all.depth.csv)){
+  
+  name<-names.all[x]
+  name <- strsplit(name, '_')
+  name <- name[[1]]
+  name <- as.numeric(name[length(name)])
+  
+  normalvalue<-Normalizetable[name,2]
+  
+  all.depth.csv[,x]<-all.depth.csv[,x]/normalvalue
+  
+  
+  
+}
+}
+#
+
+
+
 
 #calculates maximum depth based on all.depth.csv dataframe
 max <- 0

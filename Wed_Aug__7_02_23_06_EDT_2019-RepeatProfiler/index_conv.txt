@@ -1,3 +1,0 @@
-Read1	Read2	index
-laxatum500microgram_DNA4153_LIB0309_val_1_10M_2.fq.gz	laxatum500microgram_DNA4153_LIB0309_val_1_10M_2.fq.gz	001
-laxatum500microgram_DNA4153_LIB0309_val_1_5M_1.fq.gz	laxatum500microgram_DNA4153_LIB0309_val_1_5M_1.fq.gz	002

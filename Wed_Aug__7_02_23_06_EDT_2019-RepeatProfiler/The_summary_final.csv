@@ -1,3 +1,0 @@
-"Reference","Sample_index","Read","Total_reads","percent_mapped","Ref.Length","Average.coverage","max.coverage"
-"liv_CL25_TR_1_x_566_0nt.fa","S001","laxatum500microgram_DNA4153_LIB0309_val_1_10M_2.fq.gz",10000000,0.24,566,236.482332155477,297
-"liv_CL25_TR_1_x_566_0nt.fa","S002","laxatum500microgram_DNA4153_LIB0309_val_1_5M_1.fq.gz",5000000,0.24,566,231.936395759717,290

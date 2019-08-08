@@ -9,7 +9,7 @@ library(ggplot2)
 
 
 
-Normalized=as.numeric(args[3]) #change it to args[3] when brew prep
+Normalized=as.character(args[3]) #change it to args[3] when brew prep
 
 print(Normalized)
 
@@ -40,10 +40,36 @@ multmerge <- function(mypath){
 index.conv <- read.table('Index_conv.txt', header = TRUE, stringsAsFactors = FALSE) #reads textfile containing names of reads
 all.depth.csv <- multmerge('temp_cvs')
 
-#all.depth.csv<-cbind(Position=all.depth.csv[,1],all.depth.csv[,2:NCOL(all.depth.csv)]/Normalized)
-# 
-  all.depth.csv<-all.depth.csv[,1:NCOL(all.depth.csv)]/Normalized
-  all.depth.csv$Position<-all.depth.csv$Position*Normalized
+
+
+#this is normalization codes
+if(Normalized=="true"){
+  
+Normalizetable<-read.csv('normalized_table.csv', header = TRUE, stringsAsFactors = FALSE) #reads textfile containing names of reads
+
+names.all <- colnames(all.depth.csv)
+
+for(x in 2:NCOL(all.depth.csv)){
+  
+  name<-names.all[x]
+  name <- strsplit(name, '_')
+  name <- name[[1]]
+  name <- as.numeric(name[length(name)])
+  
+  normalvalue<-Normalizetable[name,2]
+  
+  all.depth.csv[,x]<-all.depth.csv[,x]/normalvalue
+  
+  
+  
+}
+}
+#
+
+# #all.depth.csv<-cbind(Position=all.depth.csv[,1],all.depth.csv[,2:NCOL(all.depth.csv)]/Normalized)
+# # 
+#   all.depth.csv<-all.depth.csv[,1:NCOL(all.depth.csv)]/Normalized
+#   all.depth.csv$Position<-all.depth.csv$Position*Normalized
 
 #gets names of reads
 name <- args[1]

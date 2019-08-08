@@ -3,6 +3,7 @@ multmerge <- function(mypath){
   datalist <- lapply(filenames, function(x){read.csv(file = x, header = T)})
   Reduce(function(x,y) {merge(x, y, all = TRUE)}, datalist)
 }
+args <- commandArgs(trailingOnly = TRUE)
 
 all.depth <- multmerge('single_cvs')
 The.summary <- read.table('The_summary.txt', header = TRUE, stringsAsFactors = FALSE)
@@ -52,4 +53,47 @@ if(thenormal==0){
 }
 
 
+Backupsummary<-The.summary
+
+Normalized_dataframe<-data.frame(Sample=character(),NormalizedValue=character(),stringsAsFactors = FALSE)
+
+
+
+Backupsummary<-Backupsummary[order(Backupsummary$Sample_index),]
+
+refnumber=as.numeric(args[1])
+
+
+
+counter=1
+while (NROW(Backupsummary)>0) {
+  
+  
+  currentable<-Backupsummary[1:refnumber,]
+  
+  Backupsummary<- Backupsummary[-(1:refnumber),]   
+  
+  
+  print(NROW(Backupsummary))
+
+  Normalized_dataframe[counter,2]<-mean(currentable$Average.coverage)
+  
+  Normalized_dataframe[counter,1]<-counter
+  
+  
+  counter=counter+1
+
+
+  
+  
+
+}
+
+
+
+
+
+
+write.csv(Normalized_dataframe,"normalized_table.csv",row.names = FALSE)
+write.table(The.summary,file = "Single_summary.csv",sep=",",col.names = FALSE,row.names = FALSE)
 cat(thenormal)

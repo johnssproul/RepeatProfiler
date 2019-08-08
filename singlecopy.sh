@@ -102,16 +102,15 @@ mv "$pile_counted_name.csv" single_cvs
 done < fofn_pileup.txt
 
 
-
-
 fi
 done < fofnsingle.txt
+
 
 
 rm -f  Refrences_used/*_singlecopy.fa
 rm -f fofn_pileup.txt 
 rm -f pileup_counted.txt
-rm -f fofn_bam.txt 
+#rm -f fofn_bam.txt 
 rm -f ReadMe.txt
 rm -f index_conv.txt  
 rm -f -r multi_poly

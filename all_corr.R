@@ -1,4 +1,10 @@
+args <- commandArgs(trailingOnly = TRUE)
+
 print("Full correlation analysis is starting")
+
+Normalized=as.character(args[1]) #normalize stuff
+
+print(paste("CorrNormalized",Normalized))
 
 multmerge = function(mypath){
   filenames = list.files(path = mypath, full.names = TRUE)
@@ -7,6 +13,30 @@ multmerge = function(mypath){
 }
 
 all_depth_cvs = multmerge('all_depth_cvs')
+
+#this is normalization codes
+if(Normalized=="true"){
+  
+Normalizetable<-read.csv('normalized_table.csv', header = TRUE, stringsAsFactors = FALSE) #reads textfile containing names of reads
+
+names.all <- colnames(all_depth_cvs)
+
+for(x in 2:NCOL(all_depth_cvs)){
+  
+  name<-names.all[x]
+  name <- strsplit(name, '_')
+  name <- name[[1]]
+  name <- as.numeric(name[length(name)])
+  
+  normalvalue<-Normalizetable[name,2]
+  
+  all_depth_cvs[,x]<-all_depth_cvs[,x]/normalvalue
+  
+  
+  
+}
+}
+#
 
 user_supplied <- read.table('user_provided.txt', header = TRUE, stringsAsFactors = FALSE)
 

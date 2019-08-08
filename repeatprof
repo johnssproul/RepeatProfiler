@@ -35,7 +35,7 @@ rm -f Errors_README.txt
 
 #mydir=`echo "$(brew --cellar repeatprof)/0.91/libexec"` #brew stuff
 
-R_packages="a7a"
+R_packages="placeholder"
 #R_packages=`echo "$(brew --cellar repeatprof)/0.91/R_packages"` #brew stuff
 
 #images=`echo "$(brew --cellar repeatprof)/0.91/images-RP"`  #brew stuff
@@ -251,7 +251,7 @@ rm -f -r all_depth_cvs  2> /dev/null
 mkdir all_depth_cvs #this creates all_depth_cvs where it store  a table of postion of refrence and the coverage depth (the folder will be used later by $Rscripts)
 
 
-Normalized=1 #this is equal 1 always unless the user chooses to normalize 
+Normalized=false #this is equal 1 always unless the user chooses to normalize 
 
 rm -f *out  2> /dev/null
 
@@ -293,9 +293,9 @@ exit 1
 
 fi
 
-
-
-Normalized=`$Rscript $mydir/single_copy_Calculator.R`
+Normalized=true
+readnumbers=`cat fofnsingle.txt | wc -l`
+$Rscript $mydir/single_copy_Calculator.R $readnumbers
 
 #rm -f The_summary.txt 
 echo "The Normalization value calculated = $Normalized"
@@ -548,7 +548,7 @@ echo "user_provided.txt wasnt provided, so the graph of correlation between read
 fi
 
 
-$Rscript $mydir/Corr_test.R $the_output $R_packages  2> /dev/null
+$Rscript $mydir/Corr_test.R $the_output $R_packages $Normalized  2> /dev/null
 
 
 if [ -f R_correlation_errors.txt ]; then
@@ -617,6 +617,9 @@ done < fofnrefs.txt #keep looping until all refrences inputed  undergone the ana
 
 #rm -f *csv
 $Rscript $mydir/The_depth_analyser.R 2> /dev/null #run the depth analyzer which produces the final summary table
+cat The_summary_final.csv Single_summary.csv  > The_summary_final2.csv
+rm -f The_summary_final.csv
+mv The_summary_final2.csv The_summary_final.csv
 Number=`wc -l < fofn_bam.txt`
 
 
@@ -649,7 +652,7 @@ rm -f -r corrbarplots
 
 mkdir corrbarplots
 rm -f *_corrbarplot.pdf*
-$Rscript $mydir/all_corr.R
+$Rscript $mydir/all_corr.R $Normalized
 mv *_corrbarplot.pdf*  corrbarplots
 mv  corrbarplots $The_folder
 

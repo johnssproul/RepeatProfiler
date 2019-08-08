@@ -2,6 +2,11 @@ args = commandArgs(trailingOnly = TRUE)
 cat('Plotting correlation', args[1], '... \n')
 #.libPaths(as.character(args[2])) brew stuff
 
+
+Normalized=as.character(args[3]) #normalize stuff
+
+print(paste("CorrNormalized",Normalized))
+
 library(ggplot2)
 
 #get names of reads and grouping information
@@ -29,6 +34,31 @@ multmerge = function(mypath){
 }
 
 all.depth.cvs <- multmerge('temp_cvs')
+
+
+#this is normalization codes
+if(Normalized=="true"){
+Normalizetable<-read.csv('normalized_table.csv', header = TRUE, stringsAsFactors = FALSE) #reads textfile containing names of reads
+
+names.all <- colnames(all.depth.csv)
+
+for(x in 2:NCOL(all.depth.csv)){
+  
+  name<-names.all[x]
+  name <- strsplit(name, '_')
+  name <- name[[1]]
+  name <- as.numeric(name[length(name)])
+  
+  normalvalue<-Normalizetable[name,2]
+  
+  all.depth.csv[,x]<-all.depth.csv[,x]/normalvalue
+  
+  
+  
+}
+}
+#
+
 
 #this preparing a readable name by chaning index to the names
 
