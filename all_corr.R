@@ -332,8 +332,8 @@ withinPlot <- ggplot(within, aes(x = Species, y = Correlation, fill = Groups))+
 
 #withinPlot #for testing
 
-ggsave(as.character("Within_corrbarplot.pdf"), withinPlot, width = 8, height = 8)
-cat('file saved to',  "Within_corrbarplot.pdf", '\n')
+ggsave(as.character("corrbarplots/Within_corrbarplot.pdf"), withinPlot, width = 8, height = 8)
+cat('file saved to',  "corrbarplots/Within_corrbarplot.pdf", '\n')
 
 #plot shows only correlation between groups for all references (with error bars)
 betweenPlot <- ggplot(between, aes(x = Species, y = Correlation, fill = Groups))+
@@ -344,8 +344,8 @@ betweenPlot <- ggplot(between, aes(x = Species, y = Correlation, fill = Groups))
 
 #betweenPlot #for testing
 
-ggsave(as.character("Between_corrbarplot.pdf"), betweenPlot, width = 8, height = 8)
-cat('file saved to',  "Between_corrbarplot.pdf", '\n')
+ggsave(as.character("corrbarplots/Between_corrbarplot.pdf"), betweenPlot, width = 8, height = 8)
+cat('file saved to',  "corrbarplots/Between_corrbarplot.pdf", '\n')
 
 #plot shows combined correlation for both within and between groups but no error bars
 correlationPlot <- ggplot(NULL, aes(x = Species, y = Correlation, fill = Groups))+
@@ -357,8 +357,8 @@ correlationPlot <- ggplot(NULL, aes(x = Species, y = Correlation, fill = Groups)
 
 #correlationPlot #for testing
 
-ggsave(as.character("Full_corrbarplot.pdf", width = 8, height = 8), correlationPlot)
-cat('file saved to',  "Full_corrbarplot.pdf", '\n')
+ggsave(as.character("corrbarplots/Full_corrbarplot.pdf", width = 8, height = 8), correlationPlot)
+cat('file saved to',  "corrbarplots/Full_corrbarplot.pdf", '\n')
 
 print('Full correlation analysis finished.')
 
