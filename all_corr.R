@@ -44,7 +44,14 @@ allgroups <- append(groups, groupsxothers, after = length(groups)) #append vecto
 all_corr <- cbind(allgroups, all_corr$groups)
 all_corr <- as.data.frame(all_corr)
 names(all_corr)[names(all_corr) == 'allgroups'] <- 'groups'
-#initialize stdev dataframe
+#initialize stdev dataframe and dataframe containing all correlations
+#used for all ref box plot
+all_species <- NULL
+all_groups <- NULL
+all_correlation <-NULL
+all_counter <- 1
+
+#used for barplots
 stdev_species <- NULL
 stdev_groups <- NULL
 stdev_se <- NULL
@@ -115,7 +122,7 @@ if(NCOL(all_depth_cvs) > 2){
 
           if(identical(group_col, group_row)){
             if (r != c){
-              print(group_col)
+              #print(group_col)
               all_corr[which(all_corr$groups == group_row),name_full] <- all_corr[which(all_corr$groups == group_row),name_full]+cor
               rowcounter <- rowcounter+1
 
@@ -126,7 +133,7 @@ if(NCOL(all_depth_cvs) > 2){
       }
 
       #start for cross correlation analysis
-      print('start cross corr')
+      #print('start cross corr')
 
       for (x in 1:NROW(groupsxothers)){
         thegroup <- strsplit(groupsxothers[x], 'x', fixed = TRUE)
@@ -135,7 +142,7 @@ if(NCOL(all_depth_cvs) > 2){
         thegroup <- thegroup[1:length(thegroup)-1]
         thegroup <- paste(thegroup, collapse = 'x')
 
-        print(groupsxothers[x])
+        #print(groupsxothers[x])
         comparison_counter <- 0
 
         if(NCOL(current_cvs_samples) > 1){
@@ -150,7 +157,7 @@ if(NCOL(all_depth_cvs) > 2){
             group_row<-as.character(group_row)
 
             if(identical(group_row,thegroup)){
-              print('new sample')
+              #print('new sample')
 
               for (c in 1:NCOL(current_cvs_samples)) {
 
@@ -193,7 +200,7 @@ if(NCOL(all_depth_cvs) > 2){
 
                 if(r != c){
                   if(!(identical(group_col, group_row))){
-                    print(paste(group_row, 'x', group_col, sep = ' '))
+                    #print(paste(group_row, 'x', group_col, sep = ' '))
 
                     all_corr[which(all_corr$groups == groupsxothers[x]),name_full] <- all_corr[which(all_corr$groups == groupsxothers[x]),name_full]+cor
                     comparison_counter <- comparison_counter+1
@@ -207,16 +214,25 @@ if(NCOL(all_depth_cvs) > 2){
           }
         }
 
-        print(comparison_counter)
+        #print(comparison_counter)
 
         all_corr[which(all_corr$groups == groupsxothers[x]),name_full] <- all_corr[which(all_corr$groups == groupsxothers[x]),name_full]/comparison_counter
       } # end of cross correlation analysis
 
-      print(name_full)
+      #print(name_full)
       df <- df[,order(colnames(df),decreasing = FALSE)]
       df <- as.data.frame(df)
 
       for(i in 1:length(colnames(df))) {
+        for(j in 1:length(df[[i]])) {
+          if(!is.na(df[[i]][j])) {
+            all_species[all_counter] <- name_full
+            all_groups[all_counter] <- colnames(df)[i]
+            all_correlation[all_counter] <- df[[i]][j]
+            all_counter <- all_counter+1
+          }
+        }
+
         stdev_species[stdev_counter] <- name_full
         stdev_groups[stdev_counter] <- colnames(df)[i]
         stdev_se[stdev_counter] <- sd(df[[i]], na.rm = TRUE)
@@ -224,12 +240,13 @@ if(NCOL(all_depth_cvs) > 2){
       }
 
       stdev <- data.frame(stdev_species, stdev_groups, stdev_se)
+      all <- data.frame(all_species, all_groups, all_correlation)
 
       pathtostoredf <- paste('corrbarplots/', name_full, '.csv', sep = '')
       write.csv(df, file = pathtostoredf, row.names = FALSE)
 
-      #plot_title <- paste('corrbarplots/', name_full, 'corrbarplot.pdf', sep = '_') #path-specific
-      plot_title <- paste(name_full, 'corrbarplot.pdf', sep = '_')
+      plot_title <- paste('corrbarplots/', name_full, 'corrbarplot.pdf', sep = '_') #path-specific
+      #plot_title <- paste(name_full, 'corrbarplot.pdf', sep = '_')
       pdf(plot_title, width = 15)
 
       boxplot(df, na.rm = TRUE, main = name_full,
@@ -251,7 +268,7 @@ if(NCOL(all_depth_cvs) > 2){
   for (i in 1:NROW(groups)) {
     unique_comparision <- 0
     current_group <- groups[i]
-    print(current_group)
+    #print(current_group)
 
     for (r in 1:NROW(which(user_supplied$Group == current_group))) {
       for (c in r:NROW(which(user_supplied$Group == current_group))) {
@@ -261,7 +278,7 @@ if(NCOL(all_depth_cvs) > 2){
       }
     }
 
-    print(unique_comparision)
+    #print(unique_comparision)
 
     all_corr[which(all_corr$groups == current_group),2:NCOL(all_corr)] <- all_corr[which(all_corr$groups == current_group),2:NCOL(all_corr)]/unique_comparision
   }
@@ -279,42 +296,24 @@ write.csv(all_corr, 'full_correlation_analysis.csv',row.names = FALSE)
 
 ########## Plotting All References Graph ##########
 #prepare separate data frames (between and within) that contain correlation and standar deviation for plotting
-b_correlation <- NULL
-b_group <- NULL
-b_species <- NULL
-b_se <- NULL
-b_counter <- 1
-w_correlation <- NULL
-w_group <- NULL
-w_species <- NULL
-w_se <- NULL
-w_counter <- 1
+Correlation <- NULL
+Groups <- NULL
+Species <- NULL
+counter <- 1
 
 for(i in 2:length(colnames(all_corr))) {
   for (j in 1:length(rownames(all_corr))) {
-    if(grepl("Others", levels(all_corr$groups)[j])) {
-      b_correlation[b_counter] <- all_corr[j,i]
-      b_group[b_counter] <- levels(all_corr$groups)[j]
-      b_species[b_counter] <- colnames(all_corr[i])
-      b_counter <- b_counter+1
-    } else {
-      w_correlation[w_counter] <- all_corr[j,i]
-      w_group[w_counter] <- levels(all_corr$groups)[j]
-      w_species[w_counter] <- colnames(all_corr[i])
-      w_counter <- w_counter+1
-    }
+    Correlation[counter] <- all_corr[j,i]
+    Groups[counter] <- levels(all_corr$groups)[j]
+    Species[counter] <- colnames(all_corr[i])
+    counter <- counter+1
   }
 }
 
-between <- data.frame(b_species, b_group, b_correlation)
-within <- data.frame(w_species, w_group, w_correlation)
+allPlot <- data.frame(Species, Groups, Correlation)
 
-colnames(stdev) <- c("Species", "Groups", "SE")
-colnames(between) <- c("Species", "Groups", "Correlation")
-colnames(within) <- c("Species", "Groups", "Correlation")
-
-between <- merge(between, stdev)
-within <- merge(within, stdev)
+colnames(stdev) <- c('Species', 'Groups', 'SE')
+corrData <- merge(allPlot, stdev)
 ###
 
 #aesthetics of plots
@@ -322,43 +321,69 @@ errorbars <- geom_errorbar(aes(ymin = Correlation-SE, ymax = Correlation+SE), wi
 text <- theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), #to remove gridlines
               plot.title = element_text(size = 6, face = 'bold'), axis.title = element_text(size = 6), axis.text=element_text(size=6)) #formats plot title
 
+#barplots different plot for each group
+for (i in 1:length(groups)) {
+  data <- subset(corrData, grepl(groups[i], levels(corrData$Groups)))
+  t <- paste(groups[i], 'Correlation for References', sep = ' ')
+  file <- paste('corrbarplots/', groups[i], '_corrbarplot.pdf', sep = '')
+
+  plot <- ggplot(data, aes(x = Species, y = Correlation, fill = Groups))+
+    geom_bar(stat = 'identity', position = 'dodge', width = 0.8)+ errorbars+ #error bar command
+    scale_fill_manual(values = c('darkorchid2', 'seagreen3'))+
+    theme_bw()+ text+ coord_flip()+
+    ggtitle(t)
+
+  ggsave(as.character(file), plot, width = 8, height = 8)
+}
+
+#boxplots different plot for each group
+i<-1
+for (i in 1:length(groups)) {
+  data <- subset(all, (grepl(groups[i], all$all_groups)))
+  t <- paste(groups[i], 'Correlation for References', sep = ' ')
+  file <- paste('corrbarplots/', groups[i], '_boxplot', '_corrbarplot.pdf', sep = '')
+
+  plot <- ggplot(data = data, aes(x = all_species, y = all_correlation, fill = all_groups))+
+    geom_boxplot(data = data, position = 'dodge2', width = 0.7, outlier.size = 0.2, colour = 'gray25', size = 0.2)+
+    scale_fill_manual(name = 'Groups', values = c('darkorchid2', 'seagreen3'))+
+    guides(fill = guide_legend(reverse = TRUE))+
+    xlab('Correlation')+ ylab('Species')+
+    theme_bw()+ text+ coord_flip()+
+    ggtitle(t)
+
+  plot
+  ggsave(as.character(file), plot, width = 8, height = 8)
+}
 
 #plot shows only correlation within groups for all references (with error bars)
+within <- subset(corrData, !grepl('Others', levels(corrData$Groups)))
 withinPlot <- ggplot(within, aes(x = Species, y = Correlation, fill = Groups))+
   geom_bar(stat = 'identity', position = 'dodge', width = 0.8)+ errorbars+ #error bar command
-  scale_fill_brewer(palette="Pastel1")+
+  scale_fill_brewer(palette = 'Pastel1')+
   theme_bw()+ text+ coord_flip()+
-  ggtitle("Within Correlation for References")
+  ggtitle('Within Correlation for References')
 
-#withinPlot #for testing
-
-ggsave(as.character("Within_corrbarplot.pdf"), withinPlot, width = 8, height = 8)
-cat('file saved to',  "Within_corrbarplot.pdf", '\n')
+ggsave('corrbarplots/Within_corrbarplot.pdf', withinPlot, width = 8, height = 8)
 
 #plot shows only correlation between groups for all references (with error bars)
+between <- subset(corrData, grepl('Others', levels(corrData$Groups)))
 betweenPlot <- ggplot(between, aes(x = Species, y = Correlation, fill = Groups))+
   geom_bar(stat = 'identity', position = 'dodge', width = 0.8)+ errorbars+ #error bar command
-  scale_fill_brewer(palette="Dark2")+
+  scale_fill_brewer(palette='Dark2')+
   theme_bw()+ text+ coord_flip()+
-  ggtitle("Between Correlation for References")
+  ggtitle('Between Correlation for References')
 
-#betweenPlot #for testing
-
-ggsave(as.character("Between_corrbarplot.pdf"), betweenPlot, width = 8, height = 8)
-cat('file saved to',  "Between_corrbarplot.pdf", '\n')
+ggsave('corrbarplots/Between_corrbarplot.pdf', betweenPlot, width = 8, height = 8)
 
 #plot shows combined correlation for both within and between groups but no error bars
 correlationPlot <- ggplot(NULL, aes(x = Species, y = Correlation, fill = Groups))+
-  geom_bar(data = within, aes(x = Species, y = Correlation, fill = Groups), stat = 'identity', position = 'dodge', width = 0.8)+
-  geom_bar(data = between, aes(x = Species, y = Correlation, fill = Groups), stat = 'identity', position = 'dodge', width = 0.8)+
-  scale_fill_brewer(palette="Spectral")+
+  geom_bar(data = within, stat = 'identity', position = 'dodge', width = 0.8)+
+  geom_bar(data = between, stat = 'identity', position = 'dodge', width = 0.8)+
+  scale_fill_brewer(palette='Spectral')+
   theme_bw()+ text+ coord_flip()+
-  ggtitle("Correlation for References")
+  ggtitle('Correlation for References')
 
-#correlationPlot #for testing
-
-ggsave(as.character("Full_corrbarplot.pdf", width = 8, height = 8), correlationPlot)
-cat('file saved to',  "Full_corrbarplot.pdf", '\n')
+ggsave('corrbarplots/Full_corrbarplot.pdf', correlationPlot, width = 8, height = 8)
 
 print('Full correlation analysis finished.')
 
