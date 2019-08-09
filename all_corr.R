@@ -118,7 +118,7 @@ if(NCOL(all_depth_cvs) > 2){
 
           if(identical(group_col, group_row)){
             if (r != c){
-              #print(group_col)
+              print(group_col)
               all_corr[which(all_corr$groups == group_row),name_full] <- all_corr[which(all_corr$groups == group_row),name_full]+cor
               rowcounter <- rowcounter+1
 
@@ -129,7 +129,7 @@ if(NCOL(all_depth_cvs) > 2){
       }
 
       #start for cross correlation analysis
-      #print('start cross corr')
+      print('start cross corr')
 
       for (x in 1:NROW(groupsxothers)){
         thegroup <- strsplit(groupsxothers[x], 'x', fixed = TRUE)
@@ -138,7 +138,7 @@ if(NCOL(all_depth_cvs) > 2){
         thegroup <- thegroup[1:length(thegroup)-1]
         thegroup <- paste(thegroup, collapse = 'x')
 
-        #print(groupsxothers[x])
+        print(groupsxothers[x])
         comparison_counter <- 0
 
         if(NCOL(current_cvs_samples) > 1){
@@ -153,7 +153,7 @@ if(NCOL(all_depth_cvs) > 2){
             group_row<-as.character(group_row)
 
             if(identical(group_row,thegroup)){
-              #print('new sample')
+              print('new sample')
 
               for (c in 1:NCOL(current_cvs_samples)) {
 
@@ -196,7 +196,7 @@ if(NCOL(all_depth_cvs) > 2){
 
                 if(r != c){
                   if(!(identical(group_col, group_row))){
-                    #print(paste(group_row, 'x', group_col, sep = ' '))
+                    print(paste(group_row, 'x', group_col, sep = ' '))
 
                     all_corr[which(all_corr$groups == groupsxothers[x]),name_full] <- all_corr[which(all_corr$groups == groupsxothers[x]),name_full]+cor
                     comparison_counter <- comparison_counter+1
@@ -210,12 +210,12 @@ if(NCOL(all_depth_cvs) > 2){
           }
         }
 
-        #print(comparison_counter)
+        print(comparison_counter)
 
         all_corr[which(all_corr$groups == groupsxothers[x]),name_full] <- all_corr[which(all_corr$groups == groupsxothers[x]),name_full]/comparison_counter
       } # end of cross correlation analysis
 
-      #print(name_full)
+      print(name_full)
       df <- df[,order(colnames(df),decreasing = FALSE)]
       df <- as.data.frame(df)
 
@@ -258,7 +258,7 @@ if(NCOL(all_depth_cvs) > 2){
   for (i in 1:NROW(groups)) {
     unique_comparision <- 0
     current_group <- groups[i]
-    #print(current_group)
+    print(current_group)
 
     for (r in 1:NROW(which(user_supplied$Group == current_group))) {
       for (c in r:NROW(which(user_supplied$Group == current_group))) {
@@ -268,7 +268,7 @@ if(NCOL(all_depth_cvs) > 2){
       }
     }
 
-    #print(unique_comparision)
+    print(unique_comparision)
 
     all_corr[which(all_corr$groups == current_group),2:NCOL(all_corr)] <- all_corr[which(all_corr$groups == current_group),2:NCOL(all_corr)]/unique_comparision
   }
