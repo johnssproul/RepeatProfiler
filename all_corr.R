@@ -231,8 +231,8 @@ if(NCOL(all_depth_cvs) > 2){
       pathtostoredf <- paste('corrbarplots/', name_full, '.csv', sep = '')
       write.csv(df, file = pathtostoredf, row.names = FALSE)
 
-      plot_title <- paste('corrbarplots/', name_full, 'corrbarplot.pdf', sep = '_') #path-specific
-      #plot_title <- paste(name_full, 'corrbarplot.pdf', sep = '_')
+      #plot_title <- paste('corrbarplots/', name_full, 'corrbarplot.pdf', sep = '_') #path-specific
+      plot_title <- paste(name_full, 'corrbarplot.pdf', sep = '_')
       pdf(plot_title, width = 15)
 
       boxplot(df, na.rm = TRUE, main = name_full,
