@@ -239,7 +239,7 @@ if(NCOL(all_depth_cvs) > 2){
               xlab = 'Correlation Value',
               ylab = 'Group Comparision made',
               boxwex = 0.8,
-              horizontal = TRUE, #delete for vertical boxplots
+              #horizontal = TRUE, #delete for vertical boxplots
               col = 'darkgoldenrod1', border = 'firebrick')
 
       dev.off()
