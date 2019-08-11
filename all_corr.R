@@ -1,10 +1,11 @@
 print('Full correlation analysis is starting')
 args <- commandArgs(trailingOnly = TRUE)
+#.libPaths(as.character(args[1])) #brew stuff
 
 library(ggplot2)
 
 
-Normalized <- as.character(args[1]) #normalize stuff
+Normalized <- as.character(args[2]) #normalize stuff
 print(paste('CorrNormalized', Normalized))
 
 multmerge <- function(mypath){
@@ -16,18 +17,21 @@ multmerge <- function(mypath){
 all_depth_cvs <- multmerge('all_depth_cvs')
 
 #normalization codes
-if(Normalized == 'true'){
+if(Normalized=="true"){
   Normalizetable <- read.csv('normalized_table.csv', header = TRUE, stringsAsFactors = FALSE) #reads textfile containing names of reads
   names.all <- colnames(all_depth_cvs)
 
-  for(x in 2:NCOL(all_depth_cvs)){
-    name <- names.all[x]
+   for(x in 2:NCOL(all_depth_cvs)){
+    
+    name<-names.all[x]
     name <- strsplit(name, '_')
     name <- name[[1]]
     name <- as.numeric(name[length(name)])
+    
 
     normalvalue <- Normalizetable[name,2]
-
+    print(normalvalue)
+    
     all_depth_cvs[,x] <- all_depth_cvs[,x]/normalvalue
   }
 }
@@ -228,10 +232,10 @@ if(NCOL(all_depth_cvs) > 2){
 
       all <- data.frame(all_species, all_groups, all_correlation)
 
-      pathtostoredf <- paste('corrbarplots/', name_full, '.csv', sep = '')
+      pathtostoredf <- paste('full_correlation_graphs/', name_full, '.csv', sep = '')
       write.csv(df, file = pathtostoredf, row.names = FALSE)
 
-      #plot_title <- paste('corrbarplots/', name_full, 'corrbarplot.pdf', sep = '_') #path-specific
+      #plot_title <- paste('full_correlation_graphs/', name_full, 'corrbarplot.pdf', sep = '_') #path-specific
       plot_title <- paste(name_full, 'corrbarplot.pdf', sep = '_')
       pdf(plot_title, width = 15)
 
@@ -284,7 +288,7 @@ write.csv(all_corr, 'full_correlation_analysis.csv',row.names = FALSE)
 for (i in 1:length(groups)) {
   data <- subset(all, (grepl(groups[i], all$all_groups)))
   t <- paste(groups[i], 'Correlation for References', sep = ' ')
-  file <- paste('corrbarplots/', groups[i], '_boxplot', '_corrbarplot.pdf', sep = '')
+  file <- paste('full_correlation_graphs/', groups[i], '_boxplot', '_corrbarplot.pdf', sep = '')
 
   plot <- ggplot(data = data, aes(x = all_species, y = all_correlation, fill = all_groups))+
     geom_boxplot(data = data, position = 'dodge2', width = 0.7, outlier.size = 0.2, colour = 'gray25', size = 0.2)+

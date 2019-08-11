@@ -2,16 +2,17 @@ args <- commandArgs(trailingOnly = TRUE)
 
 cat('Saving scaled over all references plots (horizontal gradient)... \n')
 
+print("this is under construction normalize")
 print(as.character(args[2])) #brew stuff
 .libPaths(as.character(args[2])) #brew stuff
 
 library(ggplot2)
+Normalized=as.character(args[3]) #normalize stuff
 
 
-#code if plots per page or file type specified
 n <- 8
 ft <- '.pdf'
-
+#code if plots per page or file type specified (not implemented yet)
 # if (is.null(args[2]) || is.na(args[2])) { #if nothing is specified, set defaults
 #   n <- 8
 #   ft <- '.pdf'
@@ -23,7 +24,7 @@ ft <- '.pdf'
 #     n <- args[2] #args[2] is plots per page
 #     ft <- '.pdf'
 #   } else {
-#     print('Invalid input. Setting plots per page and file type to default: 8 and ".pdf", respectively')
+#     print('Invalid input. Setting plots per page and file type to default: 8 and '.pdf', respectively')
 #     n <- 8
 #     ft <- '.pdf'
 #   }
@@ -32,8 +33,7 @@ ft <- '.pdf'
 #   ft <- args[3] #assume args[3] is file type
 # }
 
-#get watermark image
-img <- png::readPNG('./images-RP/watermark.png')
+img <- png::readPNG('./images-RP/watermark.png') #get watermark image
 
 #merges all files located in 'mypath' into one dataframe
 multmerge <- function(mypath){
@@ -42,11 +42,42 @@ multmerge <- function(mypath){
   Reduce(function(x, y) {merge(x, y, all = TRUE)}, datalist)
 }
 
-#reads textfile containing names of reads
-index.conv <- read.table('Index_conv.txt', header = TRUE, stringsAsFactors = FALSE)
-
-#multimerge files in all_depth_cvs directory
+index.conv <- read.table('Index_conv.txt', header = TRUE, stringsAsFactors = FALSE) #reads textfile containing names of reads
 all.depth.csv <- multmerge('all_depth_cvs')
+
+#this is the code for normaliaztion 
+if(Normalized=="true"){
+  
+Normalizetable<-read.csv('normalized_table.csv', header = TRUE, stringsAsFactors = FALSE) #reads textfile containing names of reads
+
+names.all <- colnames(all.depth.csv)
+
+for(x in 2:NCOL(all.depth.csv)){
+
+  name<-names.all[x]
+  name <- strsplit(name, '_')
+  name <- name[[1]]
+  name <- as.numeric(name[length(name)])
+
+  normalvalue<-Normalizetable[name,2]
+
+  all.depth.csv[,x]<-all.depth.csv[,x]/normalvalue
+
+
+
+}
+
+}
+
+
+#########
+
+
+
+
+# # all.depth.csv<-cbind(Position=all.depth.csv[,1],all.depth.csv[,2:NCOL(all.depth.csv)]/Normalized) #this is for normalization
+# all.depth.csv<-all.depth.csv[,1:NCOL(all.depth.csv)]/Normalized
+# all.depth.csv$Position<-all.depth.csv$Position*Normalized
 
 #args[1] <- length(colnames(all.depth.csv))-1 #path-specific --> number of graphs
 
@@ -66,10 +97,10 @@ for (i in 2:NCOL(all.depth.csv)) {
 ########## Plot Aesthetics ##########
 colors <- c('blue4', 'springgreen2', 'yellow', 'orange', 'red', 'red') #sets color scheme for gradient
 cs <- scale_colour_gradientn(name = 'Depth', values = c(0, .20, .40, .60, .80, 1.0), colours = colors, limits = c(0, max), guide = 'colourbar', aesthetics = c('colour', 'fill')) #sets color gradient environment for gradient plots (horizontal and vertical)
-tf <- theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), #to remove gridlines
+tf <- theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), #removes gridlines
             plot.title = element_text(size = 10, face = 'bold'), axis.title = element_text(size = 6)) #formats plot title
 tl <- theme(legend.text = element_text(size = 6)) #formats legend
-cap <- labs(caption = 'The coverage of this graph is too low to properly plot it.') #sets caption for low coverage plots
+cap <- labs(caption = 'This graph has low coverage. It may not provide accurate information.') #sets caption for low coverage plots
 wm <- ggpubr::background_image(img) #for watermark
 
 
@@ -91,7 +122,7 @@ for(i in 2:NCOL(all.depth.csv)){
   read2.first <- index.conv[name.first,2]
 
   d <- colnames(all.depth.csv)
-  depth.column = d[i]
+  depth.column <- d[i]
 
   if(read1.first != read2.first){
     t <- paste(d[i], '   Read1: ', read1.first, '   Read2: ', read2.first, sep = '')
@@ -111,49 +142,47 @@ for(i in 2:NCOL(all.depth.csv)){
     cs+ theme_bw()+ #to remove grey background
     tf+ tl+ ggtitle(t) #sets plot title
 
-  #low coverage marker
+  #low coverage cases
   if(max(df1$Depth) < 1) {
-    horizontalPlot <- horizontalPlot+ wm+ cap
+    horizontalPlot <- horizontalPlot+ wm
+  } else if(max(df1$Depth) < 100) {
+    horizontalPlot <- horizontalPlot+ cap
+  } else {
+    horizontalPlot <- horizontalPlot
   }
 
-  #make name of file nicer by removing extention at the end 
-  
-  name_file<-strsplit(depth.column,"_")
-  name_file<-name_file[[1]]
-  name_file<-name_file[1:length(name_file)-1]
-  name_file=paste(name_file,collapse="_")
-  name_file<-strsplit(name_file,".",fixed = TRUE)
-  name_file<-name_file[[1]]
-  name_file <- name_file[name_file != "fasta"]
-  name_file <- name_file[name_file != "fa"]
-  name_file <- name_file[name_file != "txt"]
-  name_file=paste(name_file,collapse=".")
-  
-  
-  
-  
-  ######################
-  
+  #make name of file nicer by removing extention at the end
+  name.file <- strsplit(depth.column, '_')
+  name.file <- name.file[[1]]
+  name.file <- name.file[1:length(name.file)-1]
+  name.file <- paste(name.file, collapse = '_')
+  name.file <- strsplit(name.file, '.', fixed = TRUE)
+  name.file <- name.file[[1]]
+  name.file <- name.file[name.file != 'fasta']
+  name.file <- name.file[name.file != 'fa']
+  name.file <- name.file[name.file != 'txt']
+  name.file <- paste(name.file, collapse = '.')
+
   #if last graph has been plotted, save pdf; else continuing plotting
   if(N == as.numeric(args[1])) {
     plots[[N]] <- horizontalPlot
     allplots <- ggpubr::ggarrange(plotlist = plots, nrow = n, ncol = 1, align = 'hv', common.legend = TRUE) #common.legend = TRUE creates a single legend for all graphs on a page; if you want a separate legend for each graph, set to FALSE
     #the.name = paste('./Test_plots/Horizontal_All_Combined', ft, sep = '') #path-specific
-    the.name = paste('refrences_wide_color_scaled_graphs/', name_file, ft, sep = '')
+    the.name = paste('refrences_wide_color_scaled_graphs/', name.file, ft, sep = '')
     ggpubr::ggexport(allplots, filename = the.name, width = 25, height = 25)
 
     #reset variables
     allplots <- NULL
     plots <- list()
-    N = 1
+    N <- 1
   } else {
     plots[[N]] <- horizontalPlot
-    N = N + 1
+    N <- N + 1
   }
 }
 
 # NOTE: Thie warning message may appear:
-# In UseMethod("depth") :
-#   no applicable method for 'depth' applied to an object of class "NULL"
-# Apparently it is an "overuse" of ggplot, which makes sense if there are a large number of plots produced.
+# In UseMethod('depth') :
+#   no applicable method for 'depth' applied to an object of class 'NULL'
+# Apparently it is an 'overuse' of ggplot, which makes sense if there are a large number of plots produced.
 # I have not found this to be a problem in exporting the plots, although it may cause some issues I am not yet aware of.

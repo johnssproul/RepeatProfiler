@@ -112,7 +112,7 @@ fi
 
 if [ $3 = "-p" ]; then #if data is paired then run this  
 
-	(bowtie2 -p $4 -x $BASE -1 $READ1 -2 $READ2 $5    | samtools view -bS -h -F 4 /dev/stdin |  samtools sort -o  ${F}_sorted.bam  /dev/stdin) 2> bowtie.log
+(bowtie2 -p $4 -x $BASE -1 $READ1 -2 $READ2 $5    | samtools view -bS -h -F 4 /dev/stdin |  samtools sort -o  ${F}_sorted.bam  /dev/stdin) 2> bowtie.log
 retval=$? #catches exit code to check for error
 
 samtools sort -n -o namesort.bam ${F}_sorted.bam

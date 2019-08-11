@@ -1,16 +1,23 @@
 args = commandArgs(trailingOnly = TRUE)
-#args[1] <- 'temp_cvs' #path-specific
-
 cat('Plotting correlation', args[1], '... \n')
-
 .libPaths(as.character(args[2])) #brew stuff
+
+
+Normalized=as.character(args[3]) #normalize stuff
+
+print(paste("CorrNormalized",Normalized))
 
 library(ggplot2)
 
+#get names of reads and grouping information
 
-#code if file type specified
+user.supplied <- read.table('user_provided.txt', header = TRUE, stringsAsFactors = FALSE)
+index.conv <- read.table('Index_conv.txt', header = TRUE, stringsAsFactors = FALSE)
+
+
 ft <- '.png'
 
+#code if file type specified
 # if(is.null(args[3]) || is.na(args[3])) {
 #   ft <- '.png'
 # } else if (grepl('.', args[3], fixed = TRUE)){
@@ -26,14 +33,103 @@ multmerge = function(mypath){
   Reduce(function(x,y) {merge(x, y, all = TRUE)}, datalist)
 }
 
-#multimerge files in temp_cvs directory
-all.depth.cvs = multmerge('temp_cvs')
+all.depth.cvs <- multmerge('temp_cvs')
+
+
+#this is normalization codes
+if(Normalized=="true"){
+Normalizetable<-read.csv('normalized_table.csv', header = TRUE, stringsAsFactors = FALSE) #reads textfile containing names of reads
+
+names.all <- colnames(all.depth.cvs)
+
+for(x in 2:NCOL(all.depth.csv)){
+  
+  name<-names.all[x]
+  name <- strsplit(name, '_')
+  name <- name[[1]]
+  name <- as.numeric(name[length(name)])
+  
+  normalvalue<-Normalizetable[name,2]
+  
+  all.depth.cvs[,x]<-all.depth.cvs[,x]/normalvalue
+  
+  
+  
+}
+}
+#
+
+
+#this preparing a readable name by chaning index to the names
+
+
+
+
+
+colnamestochange<-colnames(all.depth.cvs)
+
+for(x in 2:NCOL(all.depth.cvs)){
+  nametochange <-colnamestochange[x]
+  
+  name.second <- strsplit(nametochange, '_',fixed = TRUE)
+  name.second <- name.second[[1]]
+  name.second <- as.numeric(name.second[length(name.second)])
+  
+  readname = index.conv[name.second,'Read1']
+  z = as.numeric(which(user.supplied$Read1 == readname))
+  groupname = user.supplied[z,'Group']
+  
+  if(NCOL(user.supplied)==3){ # THIS MEANS THE DATA IS READ PAIRED 
+    
+    print("paired")
+    readname<-strsplit(readname,"_")
+    readname<-readname[[1]]
+    readname<-readname[1:length(readname)-1]
+    readname=paste(readname,collapse="_")
+    
+    
+  }else if (NCOL(user.supplied)==2){
+    
+    readname<-strsplit(readname,".",fixed = TRUE)
+    readname<-readname[[1]]
+    
+    #this will remove extentions 
+    readname <- readname[readname != "fq"]
+    readname <- readname[readname != "fastq"]
+    readname <- readname[readname != "gz"]
+    
+    
+    
+    readname=paste(readname,collapse=".")
+    
+  }
+  
+  nametochange <- strsplit(nametochange, '_')
+  nametochange <- nametochange[[1]]
+  
+  nametochange[length(nametochange)]<-paste(readname,groupname,sep = "_")
+  
+  nametochange<-paste(nametochange,collapse = "_")
+  
+  print(readname)
+  names(all.depth.cvs)[x] <-as.character(nametochange)
+  
+  
+  
+  
+  
+}
+
+#end code for readable names
+
+
 
 #check if there is more than 1 read to do correlation analysis
 if(NCOL(all.depth.cvs) > 2){
   all.depth.cvs <- all.depth.cvs[,-1] #remove position column
   all.depth.cvs <- all.depth.cvs[, colSums(all.depth.cvs != 0) > 0] #remove columns containing only zeroes
-
+  colnamestochange<-  colnamestochange[2:length(colnamestochange)]
+  
   #check if at least 2 columns remain
   if(NCOL(all.depth.cvs) > 1){
     #prepare correlation matrix
@@ -61,9 +157,6 @@ if(NCOL(all.depth.cvs) > 2){
     matrix.name = paste(as.character(args[1]),'/correlation_matrix.csv', sep = '')
     write.csv(cor.matrix, file = matrix.name)
 
-    #get names of reads and grouping information
-    index.conv <- read.table('Index_conv.txt', header = TRUE, stringsAsFactors = FALSE)
-    user.supplied <- read.table('user_provided.txt', header = TRUE, stringsAsFactors = FALSE)
 
     #prepare dataframe of correlations based on groups
     all.cor <- data.frame(Correlation = numeric(), Grouping = character(), stringsAsFactors = FALSE)
@@ -71,8 +164,8 @@ if(NCOL(all.depth.cvs) > 2){
     row.counter = 1
 
     #loops through all reads listed in user_supplied.txt and does correlation test within and between specified groupings
-    for (first in 1:ncol(all.depth.cvs)) {
-      names.all <- colnames(all.depth.cvs)
+    for (first in 1:NCOL(all.depth.cvs)) {
+      names.all <- colnamestochange #colnames(all.depth.cvs)
       name <- names.all[first]
       name.first <- strsplit(name, '_')
       name.first <- name.first[[1]]
@@ -115,8 +208,7 @@ if(NCOL(all.depth.cvs) > 2){
     #makes all data in Correlation column numeric
     all.cor$Correlation <- as.numeric(all.cor$Correlation)
 
-    #sets title
-    t <- paste('Correlation Plot of ', args[1], sep = '')
+    t <- paste('Correlation Plot of ', args[1], sep = '') #title
 
     #creates stacked histogram object of correlations
     correlationPlot <- ggplot(all.cor, aes(x = Correlation, group = Grouping, fill = Grouping, color = Grouping))+
@@ -147,3 +239,7 @@ if(NCOL(all.depth.cvs) > 2){
   cat('Correlation analysis cannot be done with only one pair of reads or a single unpaired read. \n',  file = " R_correlation_errors.txt",append = TRUE)
   print('Correlation analysis cannot be done with only one pair of reads or a single unpaired read.')
 }
+
+
+
+

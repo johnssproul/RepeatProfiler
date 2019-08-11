@@ -1,3 +1,0 @@
-Read1	Group
-laxatum500microgram_DNA4153_LIB0309_val_1_10M_2.fq.gz	A
-laxatum500microgram_DNA4153_LIB0309_val_1_5M_11.fq.gz	B

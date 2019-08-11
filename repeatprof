@@ -20,7 +20,7 @@ exit 1
 
 fi
 
-rm -f -r  *.out *.bam *fofn* Errors_README.txt #images-RP #brew stuff
+rm -f -r  *.out *.bam *fofn* Errors_README.log normalized_table.csv #images-RP #brew stuff
 
 currentDate=`date`
 currentDate=`tr ' :' '_' <<<"$currentDate"`
@@ -126,6 +126,13 @@ done
 
 # all the flag  checks are done in the same way for optional flag  as the example i explained above ^
 
+
+
+
+
+
+
+
 array=(${commands})
 index=0
 
@@ -133,17 +140,86 @@ for p in "${array[@]}"
 do
 if [[ $p  ==  "-corr" ]]; then
 	((index ++))
+#this is code to get reads fofn early 
+
+if [ $2 = "-p" ]; then #if user specified paired data  then look for this 
+
+ls ${4}/*_R1.fastq ${4}/*_R1.gz ${4}/*_R1.fq ${4}/*_R1.fq.gz  ${4}/*_1.fq ${4}/*_1.fq.gz ${4}/*_1.gz ${4}/*_1.fastq > fofn1.txt 2>/dev/null
+
+ls ${4}/*_R2.fastq ${4}/*_R2.gz ${4}/*_R2.fq ${4}/*_R2.fq.gz  ${4}/*_2.fq.gz  ${4}/*_2.fq ${4}/*_2.gz ${4}/*_2.fastq > fofn2.txt 2>/dev/null
+
+
+fi
+if [ $2 = "-u" ]; then #if user specified unpaired data  then look for that. We use it double here because rest of the code was built on paired data, but dont worry it gets dealt with later
+
+ls ${4}/*.fastq ${4}/*.gz ${4}/*.fq     > fofn1.txt 2>/dev/null
+
+ls ${4}/*.fastq ${4}/*.gz ${4}/*.fq    > fofn2.txt 2>/dev/null
+
+
+
+
+
+fi
+
+
+#we check if the lines of the fofn for pair 1 is equal to lines fofn of pair 2 if not then give an error because that mean user has missing data if paired  
+
+reads1_check=`cat fofn1.txt | wc -l` 
+reads2_check=`cat fofn2.txt | wc -l `
+
+
+
+if [[ $reads1_check == 0 && $reads2_check == 0 ]];then #if both are empty then there was no reads of correct format to begin with 
+echo ""
+
+echo "The path of a file of  paired  read  provided doesnt contain any paired read that has correct format."| tee -a Errors_README.log
+echo "Make sure your read pairs  are in .fastq or .gz or .fq AND revise the path inputed. Make sure there is no blanks in path"| tee -a Errors_README.log
+echo "Analysis wont be able to continue due to the failure of finding reads"
+exit 1
+
+
+fi
+
+if [ "$reads1_check" != "$reads2_check" ]; then
+
+echo "There is a pair of read missing. Please check the folder where you have your paired reads "| tee -a Errors_README.log
+exit 1
+fi
+#ls ${DIR}/*.fa > fofn3.txt
+
+
+#counts number of lines in fofn1.txt and stores variable as MAX
+MAX=`wc -l < fofn1.txt`
+
+
+#ends early  reads check 
 
 	user_prov=${array[index]}
 	    if [[ -f $user_prov ]]; then
 		rm -f user_provided.txt
-
+        lines=`cat $user_prov | wc -l`
+		lines=`echo $[$lines-1]`
+	    if [[ $lines != $MAX ]]; then
+           echo "your user-provided doesnt match your reads in the reads path you provided. Please double check your steps"
+		   echo "if you created your user_provided.txt using -u you need to have -u in your profile command same for -p"
+		   exit 1 
+         fi		
+        
 		currentdir=`pwd`
 
 		 cp $user_prov  $currentdir
+		 
+		 
 
 		elif [[ -f user_provided.txt ]]; then
-
+        lines=`cat user_provided.txt | wc -l`
+		lines=`echo $[$lines-1]`
+	    if [[ $lines != $MAX ]]; then
+           echo "your user-provided doesnt match your reads in the reads path you provided. Please double check your steps"
+		   echo "if you created your user_provided.txt using -u you need to have -u in your profile command same for -p"
+		   exit 1 
+         fi		
 	     echo '' > /dev/null
 
 		else
@@ -162,7 +238,7 @@ if [[ $p  ==  "-corr" ]]; then
 
 
 
-
+    
     fi
 	((index ++))
 done
@@ -295,10 +371,10 @@ fi
 
 Normalized=true
 readnumbers=`cat fofnsingle.txt | wc -l`
+echo "The Normalization values calculated:"
 $Rscript $mydir/single_copy_Calculator.R $readnumbers
 
 #rm -f The_summary.txt 
-echo "The Normalization value calculated = $Normalized"
 
 
 echo "Normalization calcaulations ended "
@@ -648,13 +724,13 @@ if [[ !(-f user_provided.txt) ]]; then
 echo "user_provided.txt wasnt provided, so the FULL correlation analysis wasnt   conducted " > R_all_correlation_errors.txt
 
 else
-rm -f -r corrbarplots
+rm -f -r full_correlation_graphs
 
-mkdir corrbarplots
+mkdir full_correlation_graphs
 rm -f *_corrbarplot.pdf*
-$Rscript $mydir/all_corr.R $Normalized
-mv *_corrbarplot.pdf*  corrbarplots
-mv  corrbarplots $The_folder
+$Rscript $mydir/all_corr.R $R_packages $Normalized
+mv *_corrbarplot.pdf*  full_correlation_graphs
+mv  full_correlation_graphs $The_folder
 
 mv full_correlation_analysis.csv $The_folder
 
@@ -676,7 +752,15 @@ mv all_depth_cvs $The_folder
 mv index_conv.txt $The_folder #for testing
 
 mv The_summary_final.csv Errors_README.log $The_folder 2> /dev/null
-rm -f  *Rplots*
+rm -f  *Rplots* Single_summary.csv
+
+if [[ -f normalized_table.csv ]]; then
+
+mv  normalized_table.csv $The_folder
+
+fi 
+
+
 
 rm -f  *fofn* *.out *.bam all_refs.fa
 #rm -f -r images-RP  #brew stuff
@@ -764,7 +848,7 @@ fi
 
 $Rscript $mydir/user_supplied_maker.R $2
 
-
+echo ""
 
 
 
@@ -772,7 +856,7 @@ fi
 
 if [ "$1" == "clean" ]; then
 rm -f -r *bam *fofn* *.out* *multi_poly_names* *_output* *_conv* *summary* *bt2* *ref_temp* *bowtie.log* *ReadMe* *_cvs* *_temp* *db.2* *Rplots* all_refs.fa Refrences_used #images-RP #brew stuff
-rm -f  R_all_correlation_errors.txt
+rm -f  -r R_all_correlation_errors.txt normalized_table.csv single_cvs Single_summary.csv
 echo "remians of a broken run were cleaned successfuly "
 fi
 if [ "$1" == "-h" ]; then
