@@ -7,7 +7,7 @@ num_commands=`echo $commands | wc -w ` #gets the number  of commands
 
 if ((num_commands == 0 )) # if no commands entered, show this
  then
-echo "RepeatProfiler v 0.91 -prerelease- x Correlation x and x Reinforcements x"
+echo "RepeatProfiler v 0.92 -prerelease- x Singlecopy x new x Correlation x"
 echo "please use -h flag to view help menu for how to use this tool"
 
 
@@ -20,12 +20,12 @@ exit 1
 
 fi
 
-rm -f -r  *.out *.bam *fofn* Errors_README.log normalized_table.csv #images-RP #brew stuff
+rm -f -r  *.out *.bam *fofn* Errors_README.log normalized_table.csv #images-RP Single_summary.csv #brew stuff
 
 currentDate=`date`
 currentDate=`tr ' :' '_' <<<"$currentDate"`
 rm -f Errors_README.txt
-#echo $currentDate
+echo "generating symlinks"
 
 
 
@@ -33,12 +33,12 @@ rm -f Errors_README.txt
 #brew link --overwrite >/dev/null 2>&1  #brew stuff
 
 
-#mydir=`echo "$(brew --cellar repeatprof)/0.91/libexec"` #brew stuff
+#mydir=`echo "$(brew --cellar repeatprof)/0.92/libexec"` #brew stuff
 
 R_packages="placeholder"
-#R_packages=`echo "$(brew --cellar repeatprof)/0.91/R_packages"` #brew stuff
+#R_packages=`echo "$(brew --cellar repeatprof)/0.92/R_packages"` #brew stuff
 
-#images=`echo "$(brew --cellar repeatprof)/0.91/images-RP"`  #brew stuff
+#images=`echo "$(brew --cellar repeatprof)/0.92/images-RP"`  #brew stuff
 #Rscript=`echo "$(brew --prefix R)/bin/Rscript"`  #brew stuff
 
 mydir=`pwd` #comment when running it for brew
@@ -69,7 +69,7 @@ currentdir=`pwd`
 
 if [ "$1" == "profile" ]; then  # check if the second parameter is profile, If yes then preform profiling stuff
 
-#cp -r $images $currentdir #brew stuff
+#cp -r $images $currentdir #brew stuff images-RP
 if  [[ $2 == "-u" ]] ||  [[ $2  ==  "-p" ]]; then # check if the user inputed -u or -p if not give him an error as it is a madantory command
 
 echo "" > /dev/null
@@ -200,7 +200,7 @@ MAX=`wc -l < fofn1.txt`
 		rm -f user_provided.txt
         lines=`cat $user_prov | wc -l`
 		lines=`echo $[$lines-1]`
-	    if [[ $lines != $MAX ]]; then
+	    if [[ $lines -ne $MAX ]]; then
            echo "your user-provided doesnt match your reads in the reads path you provided. Please double check your steps"
 		   echo "if you created your user_provided.txt using -u you need to have -u in your profile command same for -p"
 		   exit 1 
@@ -215,7 +215,8 @@ MAX=`wc -l < fofn1.txt`
 		elif [[ -f user_provided.txt ]]; then
         lines=`cat user_provided.txt | wc -l`
 		lines=`echo $[$lines-1]`
-	    if [[ $lines != $MAX ]]; then
+		echo "$lines"
+	    if [[ $lines -ne $MAX ]]; then
            echo "your user-provided doesnt match your reads in the reads path you provided. Please double check your steps"
 		   echo "if you created your user_provided.txt using -u you need to have -u in your profile command same for -p"
 		   exit 1 
@@ -693,9 +694,12 @@ done < fofnrefs.txt #keep looping until all refrences inputed  undergone the ana
 
 #rm -f *csv
 $Rscript $mydir/The_depth_analyser.R 2> /dev/null #run the depth analyzer which produces the final summary table
+if [[ -f Single_summary.csv ]]; then 
 cat The_summary_final.csv Single_summary.csv  > The_summary_final2.csv
 rm -f The_summary_final.csv
 mv The_summary_final2.csv The_summary_final.csv
+fi 
+
 Number=`wc -l < fofn_bam.txt`
 
 
