@@ -25,7 +25,7 @@ ft <- '.png'
 #   ft <- '.png'
 # }
 
-img <- png::readPNG('./images-RP/watermark.png') #get watermark image
+#img <- png::readPNG('./images-RP/watermark.png') #get watermark image
 
 ########## Preparing Dataframe ##########
 cat('Rscript RP_4.0.R started: ', args[1], '\n')

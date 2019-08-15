@@ -20,7 +20,7 @@ exit 1
 
 fi
 
-rm -f -r  *.out *.bam *fofn* Errors_README.log normalized_table.csv #images-RP Single_summary.csv #brew stuff
+rm -f -r  *.out *.bam *fofn* Errors_README.log Single_summary.csv normalized_table.csv #images-RP Single_summary.csv #brew stuff
 
 currentDate=`date`
 currentDate=`tr ' :' '_' <<<"$currentDate"`
@@ -351,13 +351,25 @@ do
 
 if [[ $i  ==  "--very-fast" ]] || [[ $i  ==  "--local" ]] || [[ $i  ==  "--fast" ]] || [[ $i  ==  "--sensitive" ]] || [[ $i  == "--very-sensitive" ]] || [[ $i  ==  "--very-fast-local" ]] || [[ $i  ==  "--fast-local" ]] || [[ $i  ==  "--sensitive-local" ]] || [[ $i  ==  "--very-sensitive-local" ]]; then
 		a=$i
-    fi
+    
+	fi
+if [[ $i  ==  "-D" ]]; then
+
+a=`echo "$commands" | awk '{for (I=1;I<=NF;I++) if ($I == "-D") {print $I " " $(I+1) " " $(I+2) " " $(I+3)" " $(I+4) " " $(I+5) " " $(I+6) " " $(I+7) " " $(I+8) " " $(I+9) };}' `
+
+
+fi
+
 done
+
+
+
+
 
 echo ""
 
 
-echo "The alignment setting for single copy calculations  is $a"
+	echo "The alignment setting for single copy calculations  is $a"
 
 
 bash $mydir/singlecopy.sh $mydir $4 $2 "2" $a
@@ -515,8 +527,8 @@ done
 
 
 
-if [[ $@  ==  *"-D"* ]]; then
-commands=$@
+if [[ $i  ==  "-D" ]]; then
+
 a=`echo "$commands" | awk '{for (I=1;I<=NF;I++) if ($I == "-D") {print $I " " $(I+1) " " $(I+2) " " $(I+3)" " $(I+4) " " $(I+5) " " $(I+6) " " $(I+7) " " $(I+8) " " $(I+9) };}' `
 
 
@@ -712,7 +724,7 @@ $Rscript $mydir/All_RP_graphs.R $Number $R_packages $Normalized
 mv  refrences_wide_color_scaled_graphs $The_folder
 
 
-mv  *ReadMe*  $The_folder #move read me to the final folder
+mv  *ReadMe* The_summary.txt  $The_folder #move read me to the final folder
 
 rm -f The_summary.txt ref_temp.txt bowtie.log  *db.2*
 
@@ -728,15 +740,26 @@ if [[ !(-f user_provided.txt) ]]; then
 echo "user_provided.txt wasnt provided, so the FULL correlation analysis wasnt   conducted " > R_all_correlation_errors.txt
 
 else
-rm -f -r full_correlation_graphs
+rm -f -r correlation_analysis
 
-mkdir full_correlation_graphs
+mkdir correlation_analysis
+mkdir correlation_analysis/correlation_data
+mkdir correlation_analysis/correlation_histogram
+mkdir correlation_analysis/correlation_cross_refrence_boxplots
+mkdir correlation_analysis/correlation_refrence_specific_boxplots
+
+
 rm -f *_corrbarplot.pdf*
-$Rscript $mydir/all_corr.R $R_packages $Normalized
-mv *_corrbarplot.pdf*  full_correlation_graphs
-mv  full_correlation_graphs $The_folder
 
-mv full_correlation_analysis.csv $The_folder
+rm -f full_correlation_analysis.csv 
+
+
+$Rscript $mydir/all_corr.R $R_packages $Normalized
+
+
+
+mv  correlation_analysis $The_folder
+
 
 fi
 
@@ -857,6 +880,17 @@ echo ""
 
 
 fi
+
+if [ "$1" == "correlation" ]; then
+
+
+echo ""
+
+
+fi
+
+
+
 
 if [ "$1" == "clean" ]; then
 rm -f -r *bam *fofn* *.out* *multi_poly_names* *_output* *_conv* *summary* *bt2* *ref_temp* *bowtie.log* *ReadMe* *_cvs* *_temp* *db.2* *Rplots* all_refs.fa Refrences_used #images-RP #brew stuff
