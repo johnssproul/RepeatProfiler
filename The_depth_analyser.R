@@ -37,7 +37,7 @@ for(i in 2:ncol(all.depth)){
 
 #handles single reads
 if(all(The.summary$Read1 == The.summary$Read2)){
-  The.summary$Read2<-NULL
+  The.summary$Read2 <- NULL
   names(The.summary)[names(The.summary) == 'Read1'] <- 'Read'
 }
 

@@ -2,13 +2,15 @@ args <- commandArgs(trailingOnly = TRUE)
 
 cat('Saving scaled over all references plots (horizontal gradient)... \n')
 
-print("this is under construction normalize")
+print('This is under construction normalize.')
+
 #print(as.character(args[2])) #brew stuff
 #.libPaths(as.character(args[2])) #brew stuff
 
 library(ggplot2)
-Normalized=as.character(args[3]) #normalize stuff
 
+
+Normalized <- as.character(args[3]) #normalize stuff
 
 n <- 8
 ft <- '.pdf'
@@ -33,7 +35,7 @@ ft <- '.pdf'
 #   ft <- args[3] #assume args[3] is file type
 # }
 
-img <- png::readPNG('./images-RP/watermark.png') #get watermark image
+#img <- png::readPNG('./images-RP/watermark.png') #get watermark image
 
 #merges all files located in 'mypath' into one dataframe
 multmerge <- function(mypath){
@@ -45,41 +47,28 @@ multmerge <- function(mypath){
 index.conv <- read.table('Index_conv.txt', header = TRUE, stringsAsFactors = FALSE) #reads textfile containing names of reads
 all.depth.csv <- multmerge('all_depth_cvs')
 
-#this is the code for normaliaztion 
-if(Normalized=="true"){
-  
-Normalizetable<-read.csv('normalized_table.csv', header = TRUE, stringsAsFactors = FALSE) #reads textfile containing names of reads
+###normaliaztion
+if(Normalized == 'true'){
+  Normalizetable <- read.csv('normalized_table.csv', header = TRUE, stringsAsFactors = FALSE) #reads textfile containing names of reads
+  names.all <- colnames(all.depth.csv)
 
-names.all <- colnames(all.depth.csv)
+  for(x in 2:NCOL(all.depth.csv)){
+    name <- names.all[x]
+    name <- strsplit(name, '_')
+    name <- name[[1]]
+    name <- as.numeric(name[length(name)])
 
-for(x in 2:NCOL(all.depth.csv)){
-
-  name<-names.all[x]
-  name <- strsplit(name, '_')
-  name <- name[[1]]
-  name <- as.numeric(name[length(name)])
-
-  normalvalue<-Normalizetable[name,2]
-
-  all.depth.csv[,x]<-all.depth.csv[,x]/normalvalue
-
-
-
+    normalvalue <- Normalizetable[name,2]
+    all.depth.csv[,x] <- all.depth.csv[,x]/normalvalue
+  }
 }
+#
 
-}
-
-
-#########
-
-
-
-
-# # all.depth.csv<-cbind(Position=all.depth.csv[,1],all.depth.csv[,2:NCOL(all.depth.csv)]/Normalized) #this is for normalization
+# all.depth.csv<-cbind(Position=all.depth.csv[,1],all.depth.csv[,2:NCOL(all.depth.csv)]/Normalized) #normalization
 # all.depth.csv<-all.depth.csv[,1:NCOL(all.depth.csv)]/Normalized
 # all.depth.csv$Position<-all.depth.csv$Position*Normalized
 
-#args[1] <- length(colnames(all.depth.csv))-1 #path-specific --> number of graphs
+#args[1] <- length(colnames(all.depth.csv))-1 #testing --> number of graphs
 
 #standard scale based on calculations of maximum depth from all.depth.csv dataframe
 max <- 0
@@ -100,8 +89,8 @@ cs <- scale_colour_gradientn(name = 'Depth', values = c(0, .20, .40, .60, .80, 1
 tf <- theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), #removes gridlines
             plot.title = element_text(size = 10, face = 'bold'), axis.title = element_text(size = 6)) #formats plot title
 tl <- theme(legend.text = element_text(size = 6)) #formats legend
-cap <- labs(caption = 'This graph has low coverage. It may not provide accurate information.') #sets caption for low coverage plots
-wm <- ggpubr::background_image(img) #for watermark
+cap <- labs(caption = 'This graph has no coverage.') #sets caption for low coverage plots
+#wm <- ggpubr::background_image(img) #for watermark
 
 
 ########## Plotting Loop ##########
@@ -144,11 +133,7 @@ for(i in 2:NCOL(all.depth.csv)){
 
   #low coverage cases
   if(max(df1$Depth) < 1) {
-    horizontalPlot <- horizontalPlot+ wm
-  } else if(max(df1$Depth) < 100) {
     horizontalPlot <- horizontalPlot+ cap
-  } else {
-    horizontalPlot <- horizontalPlot
   }
 
   #make name of file nicer by removing extention at the end
@@ -167,7 +152,7 @@ for(i in 2:NCOL(all.depth.csv)){
   if(N == as.numeric(args[1])) {
     plots[[N]] <- horizontalPlot
     allplots <- ggpubr::ggarrange(plotlist = plots, nrow = n, ncol = 1, align = 'hv', common.legend = TRUE) #common.legend = TRUE creates a single legend for all graphs on a page; if you want a separate legend for each graph, set to FALSE
-    #the.name = paste('./Test_plots/Horizontal_All_Combined', ft, sep = '') #path-specific
+    #the.name = paste('./Test_plots/Horizontal_All_Combined', ft, sep = '') #testing
     the.name = paste('refrences_wide_color_scaled_graphs/', name.file, ft, sep = '')
     ggpubr::ggexport(allplots, filename = the.name, width = 25, height = 25)
 
