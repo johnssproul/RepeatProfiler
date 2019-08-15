@@ -52,6 +52,7 @@ currentdir=`pwd`
 
 
 if [ "$1" == "profile" ]; then  # check if the second parameter is profile, If yes then preform profiling stuff
+  #cp -r $images $currentdir #brew stuff images-RP
 
 #cp -r $images $currentdir #brew stuff images-RP
 if  [[ $2 == "-u" ]] ||  [[ $2  ==  "-p" ]]; then # check if the user input -u or -p if not give him an error as it is a madantory command
@@ -108,6 +109,8 @@ fi
 done
 
 
+  array=(${commands})
+  index=0
 
 # continues checking command structure for optional flags as the example explained above ^
 
@@ -136,6 +139,7 @@ if [[ $p  ==  "-corr" ]]; then
 
 
 
+        currentdir=`pwd`
 
 ##### this block does an initial check to detect read data, does error handling, and makes relevant files of file names for downstream loops etc.
 
@@ -230,7 +234,11 @@ MAX=`wc -l < fofn1.txt`
          fi		
 	     echo '' > /dev/null
 
-		else
+        if [[ $lines -ne $MAX ]]; then
+          echo "your user-provided doesnt match your reads in the reads path you provided. Please double check your steps"
+          echo "if you created your user_provided.txt using -u you need to have -u in your profile command same for -p"
+          exit 1
+        fi
 
 		   echo "File 'user_groups.txt' not found. -corr option requires user-defined groups to be specified in user_groups.txt. This file is not present in the current directory, and no alternative path was provided. See repeatprof -h or user manual for help"
 		   echo "Correlation analysis skipped"
@@ -244,18 +252,28 @@ done
 
 ##### end -corr input check and, error handling. Also end of checks for optional flags (and handling errors) that was supplied with profile command
 
+  The_folder="$currentDate-RepeatProfiler"
+  mkdir $The_folder # this creates the main output folder u see at the end
 
+  BASE="refbase_" #this is just for the naming of the refrence index made by bowtie2-build, so it can be detected later when aligning using bowtie2
+  commands=$@
 
 
 The_folder="$currentDate-RP"
 mkdir $The_folder # this creates the main output folder
 
+    bash $mydir/Fasta_splitter.sh $3
 
+    retval=$? #check if any error occured by getting the exit code
 
 
 BASE="refbase_" #this is just for the naming of the refrence index made by bowtie2-build, so it can be detected later when aligning using bowtie2
 commands=$@
 
+    refs=Refrences_used #this is where bowtie will look for refrence sequence ot align. It is a sub directory
+  elif [[ -f $3 ]]; then # if the refrence entered as a file  then just send it to fasta splitter in case it is multi sequence fasta
+  	rm -f -r Refrences_used
+  	mkdir Refrences_used
 
 #refs_full_path=`readlink -f $3`
 
@@ -337,6 +355,11 @@ else
 
 fi
 
+  ##this is just make sure no duplicates is there
+  rm -f -r Errors.log  2> /dev/null
+  rm *bam *bt2  2> /dev/null
+  rm -f -r all_depth_cvs  2> /dev/null
+  ######
 
 #this is just to clear out the clutter one-time use intermidiate output 
 rm -f -r Errors.log  2> /dev/null
@@ -345,6 +368,7 @@ rm -f -r map_depth_allrefs  2> /dev/null
 
 ##### end detection, processing and error handling of input reference sequences
 
+  rm -f *out  2> /dev/null
 
 
 
@@ -352,7 +376,12 @@ mkdir map_depth_allrefs #this creates map_depth_allrefs where it store  a table 
 
 Normalized=false #this is equal 1 always unless the user chooses to normalize 
 
-rm -f *out  2> /dev/null
+      for i in "${array[@]}"
+      do
+        if [[ $i  ==  "--very-fast" ]] || [[ $i  ==  "--local" ]] || [[ $i  ==  "--fast" ]] || [[ $i  ==  "--sensitive" ]] || [[ $i  == "--very-sensitive" ]] || [[ $i  ==  "--very-fast-local" ]] || [[ $i  ==  "--fast-local" ]] || [[ $i  ==  "--sensitive-local" ]] || [[ $i  ==  "--very-sensitive-local" ]]; then
+          a=$i
+        fi
+      done
 
 
 
@@ -398,13 +427,10 @@ a="--very-sensitive-local"
 commands=$@
 array=(${commands})
 
-for i in "${array[@]}"
-do
-
-if [[ $i  ==  "--very-fast" ]] || [[ $i  ==  "--local" ]] || [[ $i  ==  "--fast" ]] || [[ $i  ==  "--sensitive" ]] || [[ $i  == "--very-sensitive" ]] || [[ $i  ==  "--very-fast-local" ]] || [[ $i  ==  "--fast-local" ]] || [[ $i  ==  "--sensitive-local" ]] || [[ $i  ==  "--very-sensitive-local" ]]; then
-		a=$i
+      echo "Normalization calcaulations ended "
     fi
-done
+  done
+  ###end of single copy stuff
 
 
 if [[ $@  ==  *"-D"* ]]; then
@@ -425,6 +451,8 @@ echo $4
 line="All_references"
 
 
+      numPairpile=1 #this will keep count of the index reads
+      p=8 #this is the deafult threads
 
 
 #used to be were mapping is done in the past. 
@@ -437,20 +465,39 @@ fi
 
 echo "yes"
 
+      #the following is the same checking for optional flag but this time it is for bowtie alignment settings
+      a="--very-sensitive-local"
+      commands=$@
+      array=(${commands})
 
 
 
 
 
 
+      echo "name_poly" > multi_poly_names.txt #this creates a text file called multi_poly_names.txt this is used to keep track of the reads that we are drwaing the graphs for
+  										# LIKE for example Refrencename_001  001 refrence to the read the index we talked about before
+
+      rm -f -r multi_poly
+      mkdir multi_poly
+      rm -f temp_cvs
+      mkdir temp_cvs #this store the current postion vs coverage depth of the current refrence (this is used in r script)
 
 
+        pile_counted_name="${Ref_name}_${F}" #this is the pileup counted name
 
+        echo $pile_counted_name >> multi_poly_names.txt #now populate the  multi_poly_names
 
+        python $mydir/pileup_basecount_sink.py $pairpile $pile_counted_name $The_ref_size # this pileup script that counts mismatches from the sam pileup.out file and count depth and all aother info
 
+        cp "$pile_counted_name.csv" all_depth_cvs # cp the selected .csv produced by the python script
+        mv "$pile_counted_name.csv" temp_cvs #this moves it to temp_cvs  also. both steps are needed to be done because all_depths_cvs runs at the end for the all refrences statistcs   while temp_cvs just for this refrence combined graphs and scaling
 
+        output=$Ref_name
 
-
+        stringpile2="$F"
+        stringpile3="_"
+        output="$output$stringpile3$stringpile2" #this just combines the output with its number to create the sub folder of the refrence folder you see REF_001 for example where it contains the graphs
 
 #check if singlecopy gene present if singlecopy option selected
 for i in "${array[@]}"
@@ -477,7 +524,12 @@ done
 
 
 
+      $Rscript $mydir/multi_Poly_maker.R $R_packages
 
+      #move R scripts
+      mv *combined* $the_output
+      rm -f *.phy
+      $Rscript $mydir/fraction_bases.R  > Closely_related_reads_analysis.txt
 
 
 
@@ -485,6 +537,9 @@ done
 bash $mydir/readme_gen.sh #this starts generating the readme. which will be populated later with the index to read conversions
 
 
+        if [ -f R_correlation_errors.txt ]; then
+          mv R_correlation_errors.txt $the_output
+        fi
 
 ##preps references for read mapping in bowtie2
 bowtie2-build all_References.fa $BASE 
@@ -492,6 +547,9 @@ bowtie2-build all_References.fa $BASE
 ##calls map_reads.sh which runs bowtie aligning and uses the indexes we built and also run samtools mpileup
 bash $mydir/map_reads.sh $line $4 $2 $p $a $rmdup
 
+        commands=$@
+        array=(${commands})
+        index=0
 
 retval=$? 
 
@@ -506,12 +564,18 @@ echo "mapped reads"
 
 
 
+  echo "Thenumber: $Number"
 
 
+  mv  *ReadMe*  $The_folder #move read me to the final folder
+
+  rm -f The_summary.txt ref_temp.txt bowtie.log  *db.2*
+
+  mv Refrences_used $The_folder
 
 
-
-
+  if [[ $@  ==  *"-corr"* ]]; then #if the user enter -corr check for user_provided.txt is in the same directory then run it and see if there is errors and run it
+    rm -f  R_all_correlation_errors.txt
 
 
 
@@ -1071,8 +1135,9 @@ fi
 if [ "$1" == "pre-corr" ]; then
 reads=$3
 
-if  [[ $2 == "-u" ]] ||  [[ $2  ==  "-p" ]] ||  [[ $2  ==  "-v" ]]; then
-echo "" > /dev/null
+  if [ $2 = "-p" ]; then
+    ls ${reads}/*_R1.fastq ${reads}/*_R1.gz ${reads}/*_R1.fq  ${reads}/*_R1.fastq.gz ${reads}/*_R1.fq.gz  ${reads}/*_1.fq ${reads}/*_1.fq.gz ${reads}/*_1.gz ${reads}/*_1.fastq ${reads}/*_1.fastq.gz > fofn1.txt 2>/dev/null
+    ls ${reads}/*_R2.fastq ${reads}/*_R2.gz ${reads}/*_R2.fastq.gz ${reads}/*_R2.fq ${reads}/*_R2.fq.gz  ${reads}/*_2.fq.gz  ${reads}/*_2.fq ${reads}/*_2.gz ${reads}/*_2.fastq ${reads}/*_2.fastq.gz 	 > fofn2.txt 2>/dev/null
 
 else
 echo "Incorrect command structure for 'pre-corr'. Refer to repeatprof -h or manual for help"
