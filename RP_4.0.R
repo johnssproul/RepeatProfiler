@@ -1,20 +1,18 @@
 #!/usr/bin/env Rscript
 args <- commandArgs(trailingOnly = TRUE)
-#args[1] <- 'NC_024511_2_Drosophila_melanogaster_mitochondrion__complete_genome.fa_005' #path-specific
+#args[1] <- 'dmel_rDNA_ETS_Other_rDNA.fa_001' #testing
+
+cat('Rscript RP_4.0.R started: ', args[1], '\n')
 
 #.libPaths(as.character(args[2])) #brew stuff
 
 library(ggplot2)
 
 
-
-
-Normalized=as.character(args[3]) #change it to args[3] when brew prep
-
+Normalized <- as.character(args[3]) #change it to args[3] when brew prep
 print(Normalized)
 
 ft <- '.png'
-
 #code if file type specified
 # if(is.null(args[3]) || is.na(args[3])) {
 #   ft <- '.png'
@@ -25,11 +23,10 @@ ft <- '.png'
 #   ft <- '.png'
 # }
 
-img <- png::readPNG('./images-RP/watermark.png') #get watermark image
+#img <- png::readPNG('./images-RP/watermark.png') #get watermark image
+
 
 ########## Preparing Dataframe ##########
-cat('Rscript RP_4.0.R started: ', args[1], '\n')
-
 #merges all files located in 'mypath' into one dataframe
 multmerge <- function(mypath){
   filenames <- list.files(path = mypath, full.names = TRUE)
@@ -37,39 +34,31 @@ multmerge <- function(mypath){
   Reduce(function(x, y) {merge(x, y, all = TRUE)}, datalist)
 }
 
+#index.conv <- read.table('../Index_conv.txt', header = TRUE, stringsAsFactors = FALSE) #testing
 index.conv <- read.table('Index_conv.txt', header = TRUE, stringsAsFactors = FALSE) #reads textfile containing names of reads
 all.depth.csv <- multmerge('temp_cvs')
 
+#normalization
+if(Normalized == 'true'){
+  Normalizetable <- read.csv('normalized_table.csv', header = TRUE, stringsAsFactors = FALSE) #reads textfile containing names of reads
+  names.all <- colnames(all.depth.csv)
 
+  for(x in 2:NCOL(all.depth.csv)){
+    name <- names.all[x]
+    name <- strsplit(name, '_')
+    name <- name[[1]]
+    name <- as.numeric(name[length(name)])
 
-#this is normalization codes
-if(Normalized=="true"){
-  
-Normalizetable<-read.csv('normalized_table.csv', header = TRUE, stringsAsFactors = FALSE) #reads textfile containing names of reads
+    normalvalue <- Normalizetable[name,2]
 
-names.all <- colnames(all.depth.csv)
-
-for(x in 2:NCOL(all.depth.csv)){
-  
-  name<-names.all[x]
-  name <- strsplit(name, '_')
-  name <- name[[1]]
-  name <- as.numeric(name[length(name)])
-  
-  normalvalue<-Normalizetable[name,2]
-  
-  all.depth.csv[,x]<-all.depth.csv[,x]/normalvalue
-  
-  
-  
-}
+    all.depth.csv[,x] <- all.depth.csv[,x]/normalvalue
+  }
 }
 #
 
-# #all.depth.csv<-cbind(Position=all.depth.csv[,1],all.depth.csv[,2:NCOL(all.depth.csv)]/Normalized)
-# # 
-#   all.depth.csv<-all.depth.csv[,1:NCOL(all.depth.csv)]/Normalized
-#   all.depth.csv$Position<-all.depth.csv$Position*Normalized
+# all.depth.csv<-cbind(Position=all.depth.csv[,1],all.depth.csv[,2:NCOL(all.depth.csv)]/Normalized)
+# all.depth.csv<-all.depth.csv[,1:NCOL(all.depth.csv)]/Normalized
+# all.depth.csv$Position<-all.depth.csv$Position*Normalized
 
 #gets names of reads
 name <- args[1]
@@ -99,6 +88,7 @@ for (i in 2:NCOL(all.depth.csv)) {
     max <- max.column
   }
 }
+#max <- 2718 #testing - standard scale 44662 2718
 
 depth.column <- make.names(args[1]) #gets name of sample to be used when subsetting data
 
@@ -109,18 +99,25 @@ colnames(df1)[2] <- 'Depth'
 df1.max <- max(df1$Depth)
 
 #determines bin split based on number of positions; this n value is used for vertical gradient plot and the solid plot
-if ((length(df1$Position) < 300) || df1.max < 1500){
+if ((length(df1$Position) < 500) || df1.max < 1500){
   n <- 1
-} else {
+} else if (df1.max < 5000){
+  n <- 5
+} else if (df1.max < 10000){
   n <- 10
+} else if (df1.max < 15000){
+  n <- 20
+} else if (df1.max < 20000){
+  n <- 40
+} else if (df1.max < 40000){
+  n <- 70
+} else {
+  n <- 100
 }
 
 #defines a function to check and handle low coverage
 lc <- function(plot) {
-  #low coverage cases
   if(df1.max < 1) {
-    plot <- plot+ wm
-  } else if(df1.max < 100) {
     plot <- plot+ cap
   } else {
     plot <- plot
@@ -132,8 +129,9 @@ colors <- c('blue4', 'springgreen2', 'yellow', 'orange', 'red', 'red') #sets col
 cs <- scale_colour_gradientn(name = 'Depth', values = c(0, .20, .40, .60, .80, 1.0), colours = colors, limits = c(0, max), guide = 'colourbar', aesthetics = c('colour', 'fill')) #sets color gradient environment for gradient plots (horizontal and vertical)
 tf <- theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), #to remove gridlines
         plot.title = element_text(size = 6, face = 'bold'), axis.title = element_text(size = 6)) #formats plot title
-cap <- labs(caption = 'This graph has low coverage. It may not provide accurate information.') #sets caption for low coverage plots
-wm <- ggpubr::background_image(img) #for watermark
+tl <- theme(legend.text = element_text(size = 6)) #formats legend
+cap <- labs(caption = 'This graph has no coverage.') #sets caption for low coverage plots
+#wm <- ggpubr::background_image(img) #for watermark
 
 
 ########## Horizontal Gradient Plot ##########
@@ -148,10 +146,10 @@ horizontalPlot <- lc(horizontalPlot)
 
 #horizontalPlot #testing
 
-#plot1name <- paste('./Test_plots/Horizontal_gradient', ft, sep = '') #path-specific
+#plot1name <- paste('/Volumes/SamsungUSB/RP_test/Validation_010819_scaled/Test_plots/Horizontal_gradient', ft, sep = '') #testing
 plot1name <- paste(as.character(args[1]), '/Horizontally_colored', ft, sep = '')
 ggsave(as.character(plot1name), horizontalPlot, units = 'mm', width = 175, height = 50)
-cat('file saved to',  plot1name, '\n')
+cat('file saved to ',  plot1name, '\n')
 
 
 ########## Preparing Vertical Gradient Data ##########
@@ -187,16 +185,16 @@ cat('Saving vertical gradient plot... \n')
 verticalPlot <- ggplot(data = df2)+
   geom_rect(aes(xmin = Position, xmax = xend, ymin = Depth, ymax = yend, fill = Depth, color = Depth), size = 0.1)+
   cs+ theme_bw()+
-  tf+ ggtitle(t)
+  tf+ ggtitle(t)+ tl+ xlab('Position')+ ylab('Depth')
 
 verticalPlot <- lc(verticalPlot)
 
 #verticalPlot #testing
 
-#plot2name <- paste('./Test_plots/Vertical_gradient', ft, sep = '') #path-specific
+#plot2name <- paste('/Volumes/SamsungUSB/RP_test/Validation_010819_scaled/Test_plots/Vertical_gradient', ft, sep = '') #testing
 plot2name <- paste(as.character(args[1]), '/Vertically_colored', ft, sep='')
 ggsave(as.character(plot2name), verticalPlot, units = 'mm', width = 175, height = 50)
-cat('file saved to',  plot2name, '\n')
+cat('file saved to ',  plot2name, '\n')
 
 
 ########## Preparing Solid Plot Data ##########
@@ -240,13 +238,13 @@ cat('Saving solid plot... \n')
 solidPlot <- ggplot(data = df3, aes(x = Position, y = Depth))+
   geom_area(fill = 'blue4')+
   theme_bw()+
-  tf+ ggtitle(t)
+  tf+ tl+ ggtitle(t)
 
 solidPlot <- lc(solidPlot);
 
 #solidPlot #testing
 
-#plot3name <- paste('./Test_plots/Solid', ft, sep = '') #path-specific
+#plot3name <- paste('/Volumes/SamsungUSB/RP_test/Validation_010819_scaled/Test_plots/Solid', ft, sep = '') #testing
 plot3name <- paste(as.character(args[1]), '/solid_colored', ft, sep='')
 ggsave(as.character(plot3name), solidPlot, units = 'mm', width = 175, height = 50)
-cat('file saved to',  plot3name, '\n')
+cat('file saved to ',  plot3name, '\n')

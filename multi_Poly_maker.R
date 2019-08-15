@@ -32,15 +32,15 @@ ft <- '.pdf'
 # }
 
 #objects for handling low coverage plots
-img <- png::readPNG('./images-RP/watermark.png')
-cap <- labs(caption = 'This graph has low coverage. It may not provide accurate information.') #sets caption for low coverage plots
-wm <- ggpubr::background_image(img) #for watermark
-
-#reads textfile containing names indexed samples
-#multi.poly.names <- read.table('./erecta_CL9_TR_1_x_6687_0nt.fa_output/multi_poly_names.txt', header = TRUE, stringsAsFactors = FALSE) #path-specific
-multi.poly.names <- read.table('multi_poly_names.txt', header = TRUE, stringsAsFactors = FALSE)
+#img <- png::readPNG('./images-RP/watermark.png')
+#wm <- ggpubr::background_image(img) #for watermark
+cap <- labs(caption = 'This graph has no coverage.') #sets caption for low coverage plots
 
 index.conv <- read.table('Index_conv.txt', header = TRUE, stringsAsFactors=FALSE) #reads textfile containing names of reads
+
+#reads textfile containing names indexed samples
+#multi.poly.names <- read.table('./erecta_CL9_TR_1_x_6687_0nt.fa_output/multi_poly_names.txt', header = TRUE, stringsAsFactors = FALSE) #testing
+multi.poly.names <- read.table('multi_poly_names.txt', header = TRUE, stringsAsFactors = FALSE)
 
 plots <- list()
 
@@ -93,17 +93,13 @@ for (i in 1:NROW(multi.poly.names)) {
 
   #low coverage cases
   if(max(base.counts$Depth) < 1) {
-    polymorphPlot <- polymorphPlot+ wm
-  } else if(max(base.counts$Depth) < 100) {
     polymorphPlot <- polymorphPlot+ cap
-  } else {
-    polymorphPlot <- polymorphPlot
   }
 
   plots[[i]] <- polymorphPlot
 }
 
 allplots <- ggpubr::ggarrange(plotlist = plots, nrow = n, ncol = 1, align = 'hv', common.legend = TRUE) #common.legend = TRUE creates a single legend for all graphs on a page; if you want a separate legend for each graph, set to FALSE
-#file <- paste('./Test_plots/Variation_Reference_Combined', ft, sep = '') #path-specific
+#file <- paste('./Test_plots/Variation_Reference_Combined', ft, sep = '') #testing
 file <- paste('combined_variation_colored', ft, sep = '')
 ggpubr::ggexport(allplots, filename = file, width = 25, height = 25)
