@@ -353,8 +353,8 @@ if [[ $i  ==  "--very-fast" ]] || [[ $i  ==  "--local" ]] || [[ $i  ==  "--fast"
 		a=$i
     
 	fi
-if [[ $i  ==  "-D" ]]; then
-
+if [[ $@  ==  *"-D"* ]]; then
+commands=$@
 a=`echo "$commands" | awk '{for (I=1;I<=NF;I++) if ($I == "-D") {print $I " " $(I+1) " " $(I+2) " " $(I+3)" " $(I+4) " " $(I+5) " " $(I+6) " " $(I+7) " " $(I+8) " " $(I+9) };}' `
 
 
@@ -527,13 +527,12 @@ done
 
 
 
-if [[ $i  ==  "-D" ]]; then
-
+if [[ $@  ==  *"-D"* ]]; then
+commands=$@
 a=`echo "$commands" | awk '{for (I=1;I<=NF;I++) if ($I == "-D") {print $I " " $(I+1) " " $(I+2) " " $(I+3)" " $(I+4) " " $(I+5) " " $(I+6) " " $(I+7) " " $(I+8) " " $(I+9) };}' `
 
 
 fi
-
 
 
 echo "Bowtie2 alignment settings: $a"
