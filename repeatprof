@@ -20,6 +20,7 @@ exit 1
 
 fi
 
+
 rm -f -r  *.out *.bam *fofn* Errors_README.log Single_summary.csv normalized_table.csv #images-RP Single_summary.csv #brew stuff
 
 currentDate=`date`
@@ -124,14 +125,36 @@ if [[ $t  ==  "-o" ]]; then # this if statement says if the flag in the array is
 
 done
 
+
+
 # all the flag  checks are done in the same way for optional flag  as the example i explained above ^
 
 
+verticalplots="false"
+
+	
+for t in "${array[@]}"  #for each element in the array
+do
+
+if [[ $t  ==  "-verticalplots" ]]; then # this if statement says if the flag in the array is -o  (stands for output folder directory ) then check for the next element in the array
+
+        echo "color scaled vertical plots will be produced for each sample per reference"
+	    verticalplots="true"
 
 
 
 
 
+
+    fi
+
+done
+
+
+
+
+
+#
 
 array=(${commands})
 index=0
@@ -597,7 +620,11 @@ do
 
 echo $folder_names #say it
 
-$Rscript $mydir/RP_4.0.R $folder_names $R_packages $Normalized #run $Rscripts
+
+
+
+
+$Rscript $mydir/RP_4.0.R $folder_names $R_packages $Normalized $verticalplots #run $Rscripts
 
 mv $folder_names $the_output
 done < fofn_folders.txt
@@ -703,8 +730,8 @@ done < fofnrefs.txt #keep looping until all refrences inputed  undergone the ana
 
 
 
-#rm -f *csv
-$Rscript $mydir/The_depth_analyser.R 2> /dev/null #run the depth analyzer which produces the final summary table
+rm -f The_summary_final.csv
+$Rscript $mydir/The_depth_analyser.R  #run the depth analyzer which produces the final summary table
 if [[ -f Single_summary.csv ]]; then 
 cat The_summary_final.csv Single_summary.csv  > The_summary_final2.csv
 rm -f The_summary_final.csv
@@ -893,17 +920,36 @@ exit 1
 
 fi
 
-if [[ ! -d $2 ]]; then 
+if  [[ $2 == "-u" ]] ||  [[ $2  ==  "-p" ]]; then # check if the user inputed -u or -p if not give him an error as it is a madantory command
+
+echo "" > /dev/null
+
+
+else
+
+echo "second parameter should be -u or -p"
+exit 1
+
+
+fi
+
+
+
+if [[ ! -d $3 ]]; then 
 
 echo "wrong path to the output folder. Please refer to repeatprof -h to check command structure"
 
 
 fi
-if [[ ! -d $3 ]]; then 
+if [[ ! -d $4 ]]; then 
 
 echo "wrong path to the reads folder. Please refer to repeatprof -h to check command structure"
 
-else 
+fi 
+
+
+reads=$4
+
 if [ $2 = "-p" ]; then
 
 ls ${reads}/*_R1.fastq ${reads}/*_R1.gz ${reads}/*_R1.fq  ${reads}/*_R1.fastq.gz ${reads}/*_R1.fq.gz  ${reads}/*_1.fq ${reads}/*_1.fq.gz ${reads}/*_1.gz ${reads}/*_1.fastq ${reads}/*_1.fastq.gz > fofn1.txt 2>/dev/null
@@ -953,10 +999,76 @@ fi
 
 
 
+ lines=`cat user_provided.txt | wc -l`
+lines=`echo $[$lines-1]`
+echo "$lines"
+MAX=`wc -l < fofn1.txt`
+
+current=`pwd`
+
+if [[ $lines -ne $MAX ]]; then
+           echo "your user-provided doesnt match your reads in the reads path you provided. Please double check your steps"
+		   echo "if you created your user_provided.txt using -u you need to have -u in your profile command same for -p"
+		   exit 1 
+ fi		
+
+if [[ -d ${3}/all_depth_cvs ]]; then
+
+rm -f -r depth_all_cvs
+
+cp  -r ${3}/all_depth_cvs $current
+
+else
+
+   echo "the output folder has been altred. all_depth_cvs is missing. corr analysis cant continue"
+   
+
+   exit 1
+
+fi 
+
+if [[ -f ${3}/index_conv.txt ]]; then
+
+rm -f index_conv
+
+
+cp ${3}/index_conv.txt $current
+
+
+else
+
+   echo "the output folder has been altered. index_conv is missing. corr analysis cant continue"
+   exit 1
+   
+   
+fi 
 
 
 
-fi
+
+rm -f -r  correlation_analysis/
+
+mkdir correlation_analysis
+mkdir correlation_analysis/correlation_data
+mkdir correlation_analysis/correlation_histogram
+mkdir correlation_analysis/correlation_cross_refrence_boxplots
+mkdir correlation_analysis/correlation_refrence_specific_boxplots
+
+
+
+
+
+
+
+
+
+
+$Rscript $mydir/all_corr.R $R_packages 1
+
+rm -f -r depth_all_cvs
+rm -f index_conv
+
+ 
 
 
 
@@ -969,7 +1081,7 @@ fi
 
 
 if [ "$1" == "clean" ]; then
-rm -f -r *bam *fofn* *.out* *multi_poly_names* *_output* *_conv* *summary* *bt2* *ref_temp* *bowtie.log* *ReadMe* *_cvs* *_temp* *db.2* *Rplots* all_refs.fa Refrences_used #images-RP #brew stuff
+rm -f -r *bam *fofn* *.out* *multi_poly_names* correlation_analysis *_output* *_conv* *summary* *bt2* *ref_temp* *bowtie.log* *ReadMe* *_cvs* *_temp* *db.2* *Rplots* all_refs.fa Refrences_used #images-RP #brew stuff
 rm -f  -r R_all_correlation_errors.txt normalized_table.csv single_cvs Single_summary.csv
 echo "remians of a broken run were cleaned successfuly "
 fi

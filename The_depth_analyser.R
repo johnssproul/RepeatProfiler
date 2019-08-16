@@ -6,6 +6,7 @@ multmerge <- function(mypath){
 
 all.depth <- multmerge('all_depth_cvs')
 The.summary <- read.table('The_summary.txt', header = TRUE, stringsAsFactors = FALSE)
+The.summary <- The.summary[order(The.summary$Reference),] 
 
 #initialize data frame
 The.summary$Ref.Length <- NA
