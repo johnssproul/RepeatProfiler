@@ -1,11 +1,9 @@
+print('Full correlation analysis is starting')
 args <- commandArgs(trailingOnly = TRUE)
-
-cat('Full correlation analysis is starting... \n')
-
 #.libPaths(as.character(args[1])) #brew stuff
 
 library(ggplot2)
-
+ft<-".png"
 
 Normalized <- as.character(args[2]) #normalize stuff
 print(paste('CorrNormalized', Normalized))
@@ -17,29 +15,32 @@ multmerge <- function(mypath){
 }
 
 all_depth_cvs <- multmerge('all_depth_cvs')
+index.conv <- read.table('Index_conv.txt', header = TRUE, stringsAsFactors = FALSE)
 
 #normalization codes
-if(Normalized == "true"){
+if(Normalized=="true"){
   Normalizetable <- read.csv('normalized_table.csv', header = TRUE, stringsAsFactors = FALSE) #reads textfile containing names of reads
   names.all <- colnames(all_depth_cvs)
 
-  for(x in 2:NCOL(all_depth_cvs)){
-    name <- names.all[x]
+   for(x in 2:NCOL(all_depth_cvs)){
+    
+    name<-names.all[x]
     name <- strsplit(name, '_')
     name <- name[[1]]
     name <- as.numeric(name[length(name)])
+    
 
     normalvalue <- Normalizetable[name,2]
     print(normalvalue)
-
+    
     all_depth_cvs[,x] <- all_depth_cvs[,x]/normalvalue
   }
 }
-#
+###
 
 user_supplied <- read.table('user_provided.txt', header = TRUE, stringsAsFactors = FALSE)
 
-###intalize the all_corr table
+#intalize the all_corr table
 all_corr <- data.frame(groups = as.character(), stringsAsFactors = FALSE)
 groups <- unique(user_supplied$Group)
 groupsxothers <- paste(groups, 'xOthers', sep = '')#doing cross group correlation
@@ -89,6 +90,7 @@ if(NCOL(all_depth_cvs) > 2){
           name_col <- as.numeric(name_col[length(name_col)])
 
           group_col <- user_supplied[name_col,'Group']
+          ###
 
           #find the name of the refrence
           name_full <- all_names[r]
@@ -102,6 +104,7 @@ if(NCOL(all_depth_cvs) > 2){
           name_full <- name_full[name_full != 'fa']
           name_full <- name_full[name_full != 'txt']
           name_full <- paste(name_full, collapse = '.')
+          ###
 
           if(!(any(colnames(all_corr) == name_full)))  {
             all_corr$place_holder <- 0
@@ -127,7 +130,7 @@ if(NCOL(all_depth_cvs) > 2){
       }
 
       #start for cross correlation analysis
-      cat('Start cross correlation... \n')
+      print('start cross corr')
 
       for (x in 1:NROW(groupsxothers)){
         thegroup <- strsplit(groupsxothers[x], 'x', fixed = TRUE)
@@ -154,6 +157,7 @@ if(NCOL(all_depth_cvs) > 2){
               print('new sample')
 
               for (c in 1:NCOL(current_cvs_samples)) {
+
                 #get the number of groups
                 all_names <- colnames(current_cvs_samples)
                 name_row <- all_names[r]
@@ -169,8 +173,9 @@ if(NCOL(all_depth_cvs) > 2){
                 name_col <- as.numeric(name_col[length(name_col)])
 
                 group_col <- user_supplied[name_col,'Group']
+                ###
 
-                #find the name of the refrence
+                #in this block the code will find the name of the refrence
                 name_full <- all_names[r]
                 name_full <- strsplit(name_full, '_')
                 name_full <- name_full[[1]]
@@ -182,6 +187,7 @@ if(NCOL(all_depth_cvs) > 2){
                 name_full <- name_full[name_full != 'fa']
                 name_full <- name_full[name_full != 'txt']
                 name_full <- paste(name_full, collapse = '.')
+                ###
 
                 cor <- cor.test(current_cvs_samples[,r], current_cvs_samples[,c], methods = c('spearman'))$estimate
 
@@ -208,13 +214,12 @@ if(NCOL(all_depth_cvs) > 2){
         print(comparison_counter)
 
         all_corr[which(all_corr$groups == groupsxothers[x]),name_full] <- all_corr[which(all_corr$groups == groupsxothers[x]),name_full]/comparison_counter
-      } #end of cross correlation analysis
+      } # end of cross correlation analysis
 
       print(name_full)
       df <- df[,order(colnames(df),decreasing = FALSE)]
       df <- as.data.frame(df)
 
-      #prepare data frame for all references plots
       for(i in 1:length(colnames(df))) {
         for(j in 1:length(df[[i]])) {
           if(!is.na(df[[i]][j])) {
@@ -228,26 +233,205 @@ if(NCOL(all_depth_cvs) > 2){
 
       all <- data.frame(all_species, all_groups, all_correlation)
 
-      pathtostoredf <- paste('full_correlation_graphs/', name_full, '.csv', sep = '')
+      pathtostoredf <- paste('correlation_analysis/correlation_data/', name_full, '.csv', sep = '')
       write.csv(df, file = pathtostoredf, row.names = FALSE)
 
-      pathtostoreplot <- paste('full_correlation_graphs/', name_full, '_corrboxplot.pdf', sep = '')
-      pdf(pathtostoreplot, width = 15)
+      #plot_title <- paste('correlation_analysis/', name_full, 'corrbarplot.pdf', sep = '_') #path-specific
+      plot_title <- paste('correlation_analysis/correlation_refrence_specific_boxplots/',name_full, '_corrbarplot.pdf', sep = '')
+      pdf(plot_title, width = 15)
 
       boxplot(df, na.rm = TRUE, main = name_full,
-              xlab = 'Group Comparision Made',
-              ylab = 'Correlation Value',
+              xlab = 'Correlation Value',
+              ylab = 'Group Comparision made',
               boxwex = 0.8,
+              #horizontal = TRUE, #delete for vertical boxplots
               col = 'darkgoldenrod1', border = 'firebrick')
 
       dev.off()
+#############start histogram plotting
+      
+      
+      
+
+      
+      colnamestochange<-colnames(current_cvs_samples)
+      
+      for(x in 1:NCOL(current_cvs_samples)){
+        nametochange <-colnamestochange[x]
+        
+        name.second <- strsplit(nametochange, '_',fixed = TRUE)
+        name.second <- name.second[[1]]
+        name.second <- as.numeric(name.second[length(name.second)])
+        
+        readname = index.conv[name.second,'Read1']
+          z = as.numeric(which(user_supplied$Read1 == readname))
+        groupname = user_supplied[z,'Group']
+        
+        if(NCOL(user_supplied)==3){ # THIS MEANS THE DATA IS READ PAIRED 
+          
+          print("paired")
+          readname<-strsplit(readname,"_")
+          readname<-readname[[1]]
+          readname<-readname[1:length(readname)-1]
+          readname=paste(readname,collapse="_")
+          
+          
+        }else if (NCOL(user_supplied)==2){
+          
+          readname<-strsplit(readname,".",fixed = TRUE)
+          readname<-readname[[1]]
+          
+          #this will remove extentions 
+          readname <- readname[readname != "fq"]
+          readname <- readname[readname != "fastq"]
+          readname <- readname[readname != "gz"]
+          
+          
+          
+          readname=paste(readname,collapse=".")
+          
+        }
+        
+        nametochange <- strsplit(nametochange, '_')
+        nametochange <- nametochange[[1]]
+        
+        nametochange[length(nametochange)]<-paste(readname,groupname,sep = "_")
+        
+        nametochange<-paste(nametochange,collapse = "_")
+        
+        print(readname)
+        names(current_cvs_samples)[x] <-as.character(nametochange)
+        
+        
+        
+        
+        
+      }
+      
+      
+      #drawing historgram
+      
+      num.rows = ncol(current_cvs_samples)
+      cor.matrix = matrix(NA, num.rows, num.rows)
+      rownames(cor.matrix) <- colnames(current_cvs_samples)
+      colnames(cor.matrix) <- colnames(current_cvs_samples)
+      
+      #fill correlation matrix with respective correlations
+      for (r in 1:nrow(cor.matrix)) {
+        for (c in 1:ncol(cor.matrix)) {
+          cor = cor.test(current_cvs_samples[,r], current_cvs_samples[,c], methods = c('spearman'))$estimate
+          
+          if(is.na(cor)){
+            cor = 0
+          }
+          
+          cor.matrix[r,c] <- cor
+        }
+      }
+      
+      #save cor.matrix to .csv file
+      #matrix.name = './Test_plots/cor.csv' #path-specific
+      matrix.name = paste("correlation_analysis",'/correlation_data/',name_full,'_matrix.csv', sep = '')
+      write.csv(cor.matrix, file = matrix.name)
+      
+      
+      #prepare dataframe of correlations based on groups
+      all.cor <- data.frame(Correlation = numeric(), Grouping = character(), stringsAsFactors = FALSE)
+      
+      row.counter = 1
+      
+      #loops through all reads listed in user_supplied.txt and does correlation test within and between specified groupings
+      for (first in 1:NCOL(current_cvs_samples)) {
+        names.all <- colnamestochange #colnames(all.depth.cvs)
+        name <- names.all[first]
+        name.first <- strsplit(name, '_')
+        name.first <- name.first[[1]]
+        name.first <- as.numeric(name.first[length(name.first)])
+        
+        read1.first = index.conv[name.first,'Read1']
+        f = as.numeric(which(user_supplied$Read1 == read1.first))
+        group.first = user_supplied[f, 'Group']
+        
+        number = as.numeric(first)
+        
+        for (second in number:ncol(current_cvs_samples)) {
+          name <- names.all[second]
+          name.second <- strsplit(name, '_')
+          name.second <- name.second[[1]]
+          name.second <- as.numeric(name.second[length(name.second)])
+          
+          read1.second = index.conv[name.second,'Read1']
+          z = as.numeric(which(user_supplied$Read1 == read1.second))
+          group.second = user_supplied[z,'Group']
+          
+          cor = cor.test(current_cvs_samples[,first], current_cvs_samples[,second], methods = c('spearman'))$estimate
+          
+          if(is.na(cor)){
+            cor = 0
+          }
+          
+          if(group.first == group.second){
+            group = 'Within'
+          }else{
+            group = 'Between'
+          }
+          
+          all.cor[row.counter,] <- c(cor, group)
+          
+          row.counter = row.counter+1
+        }
+      }
+      
+      #makes all data in Correlation column numeric
+      all.cor$Correlation <- as.numeric(all.cor$Correlation)
+      
+      t <- paste('Correlation Plot of ', name_full, sep = '') #title
+      
+      #creates stacked histogram object of correlations
+      correlationPlot <- ggplot(all.cor, aes(x = Correlation, group = Grouping, fill = Grouping, color = Grouping))+
+        scale_x_continuous(breaks = round(seq(min(all.cor$Correlation), max(all.cor$Correlation), by = 0.5), 1))+
+        geom_histogram(position = 'stack', alpha = 0.5, binwidth = 0.05)+
+        scale_colour_manual(values = c('darkorchid', 'seagreen4'))+
+        scale_fill_manual(values = c('darkorchid', 'seagreen4'))+
+        theme_bw()+
+        theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), #to remove gridlines
+              plot.title = element_text(size = 6, face = 'bold'), axis.title = element_text(size = 6))+ #formats plot title
+        ylab('Count')+
+        ggtitle(t)
+      
+      #correlationPlot #testing
+      
+      #saves correlation plot to plot.name
+      #plot.name = paste('./Test_plots/Correlation_plot', ft, sep = '') #path-specific
+      plot.name = paste("correlation_analysis",'/correlation_histogram/',name_full, ft, sep = '')
+      ggsave(as.character(plot.name), correlationPlot, units = 'mm', width = 175, height = 50)
+      cat('file saved to',  plot.name, '\n')
+      
+      
+      
+      
+      
+      
+      
+      
+
+      
+      
+      
+      
+      
+#end of histogram plots      
     }else{
       cat('Correlation analysis and plot for one of the refrences couldnt be done because  there is only 1 sample with non-zero depth values for this reference .\n', file = 'R_all_correlation_errors.txt', append = TRUE)
       print('Correlation analysis and plot for one of the refrences couldnt be done because  there is only 1 sample with non-zero depth values for this reference')
     }
 
-    print('New loop')
+    print('new loop')
   }
+  
+
+  
+  
   #this part is to get the average of each filed where we summed the correlation
   for (i in 1:NROW(groups)) {
     unique_comparision <- 0
@@ -276,26 +460,26 @@ all_corr[is.na(all_corr)] <- 'No correlation coefficient calculated due to lack 
 all_corr <- all_corr[order(all_corr$groups),]
 all_corr <- as.data.frame(all_corr)
 
-write.csv(all_corr, 'full_correlation_analysis.csv',row.names = FALSE)
+write.csv(all_corr, 'correlation_analysis/full_correlation_analysis.csv',row.names = FALSE)
 
 ########## Plotting All References by Groups Plots ##########
-cat('Printing full_correlation_graph')
 for (i in 1:length(groups)) {
   data <- subset(all, (grepl(groups[i], all$all_groups)))
   t <- paste(groups[i], 'Correlation for References', sep = ' ')
-  file <- paste('full_correlation_graphs/', groups[i], '_all_refs.pdf', sep = '')
+  file <- paste('correlation_analysis/correlation_cross_refrence_boxplots/', groups[i], '_boxplot', '_corrbarplot.pdf', sep = '')
 
   plot <- ggplot(data = data, aes(x = all_species, y = all_correlation, fill = all_groups))+
     geom_boxplot(data = data, position = 'dodge2', width = 0.7, outlier.size = 0.2, colour = 'gray25', size = 0.2)+
     scale_fill_manual(name = 'Groups', values = c('darkorchid2', 'seagreen3'))+
-    xlab('')+ ylab('Correlation')+
+    guides(fill = guide_legend(reverse = TRUE))+
+    xlab('Correlation')+ ylab('Species')+
     theme_bw()+ theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), #to remove gridlines
                       plot.title = element_text(size = 6, face = 'bold'),
-                      axis.title = element_text(size = 6), axis.text = element_text(size = 6))+ #formats plot title
-    theme(axis.text.x = element_text(angle = 90, hjust = 1), #flips reference names to be readable
-          legend.text = element_text(size = 6))+ #formats legend
+                      axis.title = element_text(size = 6), axis.text=element_text(size=6))+ #formats plot title
+    coord_flip()+
     ggtitle(t)
 
+  
   ggsave(as.character(file), plot, width = 8, height = 8)
 }
 
