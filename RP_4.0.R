@@ -7,12 +7,12 @@ cat('Rscript RP_4.0.R started: ', args[1], '\n')
 #.libPaths(as.character(args[2])) #brew stuff
 
 library(ggplot2)
-
+verticalplots<-as.character(args[4])
 
 Normalized <- as.character(args[3]) #change it to args[3] when brew prep
 print(Normalized)
 
-ft <- '.pdf'
+ft <- '.png'
 #code if file type specified
 # if(is.null(args[3]) || is.na(args[3])) {
 #   ft <- '.png'
@@ -147,12 +147,14 @@ horizontalPlot <- lc(horizontalPlot)
 #horizontalPlot #testing
 
 #plot1name <- paste('/Volumes/SamsungUSB/RP_test/Validation_010819_scaled/Test_plots/Horizontal_gradient', ft, sep = '') #testing
-plot1name <- paste(as.character(args[1]), '/Horizontal_gradient', ft, sep = '')
+plot1name <- paste(as.character(args[1]), '/Horizontally_colored', ft, sep = '')
 ggsave(as.character(plot1name), horizontalPlot, units = 'mm', width = 175, height = 50)
 cat('file saved to ',  plot1name, '\n')
 
 
 ########## Preparing Vertical Gradient Data ##########
+
+if (verticalplots=="true"){
 cat('Preparing vertical gradient plot data... \n')
 
 #defines a function that splits the depth for vertical plot by=n
@@ -189,13 +191,12 @@ verticalPlot <- ggplot(data = df2)+
 
 verticalPlot <- lc(verticalPlot)
 
-#verticalPlot #testing
 
 #plot2name <- paste('/Volumes/SamsungUSB/RP_test/Validation_010819_scaled/Test_plots/Vertical_gradient', ft, sep = '') #testing
-plot2name <- paste(as.character(args[1]), '/Vertical_gradient', ft, sep='')
+plot2name <- paste(as.character(args[1]), '/Vertically_colored', ft, sep='')
 ggsave(as.character(plot2name), verticalPlot, units = 'mm', width = 175, height = 50)
 cat('file saved to ',  plot2name, '\n')
-
+}
 
 ########## Preparing Solid Plot Data ##########
 cat('Preparing solid plot data... \n')
@@ -245,6 +246,6 @@ solidPlot <- lc(solidPlot);
 #solidPlot #testing
 
 #plot3name <- paste('/Volumes/SamsungUSB/RP_test/Validation_010819_scaled/Test_plots/Solid', ft, sep = '') #testing
-plot3name <- paste(as.character(args[1]), '/Solid_color', ft, sep='')
+plot3name <- paste(as.character(args[1]), '/solid_colored', ft, sep='')
 ggsave(as.character(plot3name), solidPlot, units = 'mm', width = 175, height = 50)
 cat('file saved to ',  plot3name, '\n')
