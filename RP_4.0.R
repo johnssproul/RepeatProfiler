@@ -12,7 +12,7 @@ verticalplots<-as.character(args[4])
 Normalized <- as.character(args[3]) #change it to args[3] when brew prep
 print(Normalized)
 
-ft <- '.png'
+ft <- '.pdf'
 #code if file type specified
 # if(is.null(args[3]) || is.na(args[3])) {
 #   ft <- '.png'

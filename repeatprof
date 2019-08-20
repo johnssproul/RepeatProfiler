@@ -132,7 +132,7 @@ done
 
 verticalplots="false"
 
-	
+
 for t in "${array[@]}"  #for each element in the array
 do
 
@@ -165,9 +165,9 @@ for p in "${array[@]}"
 do
 if [[ $p  ==  "-corr" ]]; then
 	((index ++))
-#this is code to get reads fofn early 
+#this is code to get reads fofn early
 
-if [ $2 = "-p" ]; then #if user specified paired data  then look for this 
+if [ $2 = "-p" ]; then #if user specified paired data  then look for this
 
 ls ${4}/*_R1.fastq ${4}/*_R1.gz ${4}/*_R1.fq ${4}/*_R1.fq.gz  ${4}/*_1.fq ${4}/*_1.fq.gz ${4}/*_1.gz ${4}/*_1.fastq > fofn1.txt 2>/dev/null
 
@@ -180,40 +180,40 @@ if [ $2 = "-u" ]; then
 
 if [[ -f $reads ]]; then
 
-if [[ $reads == *.fq ]] || [[ $reads == *.fastq ]] || [[ $reads == *.gz ]]; then 
+if [[ $reads == *.fq ]] || [[ $reads == *.fastq ]] || [[ $reads == *.gz ]]; then
 ls $reads > fofn1.txt
 
 ls $reads > fofn2.txt
 
-else 
+else
 
 echo "The path to the file you provided as single end unpaired read is wrong or the file is in a unsupported  format  "
 
 echo "make sure it is in  and has fastq or fq or .fastq.gz or .fq.gz  extention "
 
 
-fi 
+fi
 
 
-else 
+else
   ls ${reads}/*.fastq ${reads}/*.gz ${reads}/*.fq     > fofn1.txt 2>/dev/null
 
   ls ${reads}/*.fastq ${reads}/*.gz ${reads}/*.fq    > fofn2.txt 2>/dev/null
 
 
-fi 
+fi
 
 fi
 
 
-#we check if the lines of the fofn for pair 1 is equal to lines fofn of pair 2 if not then give an error because that mean user has missing data if paired  
+#we check if the lines of the fofn for pair 1 is equal to lines fofn of pair 2 if not then give an error because that mean user has missing data if paired
 
-reads1_check=`cat fofn1.txt | wc -l` 
+reads1_check=`cat fofn1.txt | wc -l`
 reads2_check=`cat fofn2.txt | wc -l `
 
 
 
-if [[ $reads1_check == 0 && $reads2_check == 0 ]];then #if both are empty then there was no reads of correct format to begin with 
+if [[ $reads1_check == 0 && $reads2_check == 0 ]];then #if both are empty then there was no reads of correct format to begin with
 echo ""
 
 echo "The path of a file of  paired  read  provided doesnt contain any paired read that has correct format."| tee -a Errors_README.log
@@ -236,7 +236,7 @@ fi
 MAX=`wc -l < fofn1.txt`
 
 
-#ends early  reads check 
+#ends early  reads check
 
 	user_prov=${array[index]}
 	    if [[ -f $user_prov ]]; then
@@ -246,14 +246,14 @@ MAX=`wc -l < fofn1.txt`
 	    if [[ $lines -ne $MAX ]]; then
            echo "your user-provided doesnt match your reads in the reads path you provided. Please double check your steps"
 		   echo "if you created your user_provided.txt using -u you need to have -u in your profile command same for -p"
-		   exit 1 
-         fi		
-        
+		   exit 1
+         fi
+
 		currentdir=`pwd`
 
 		 cp $user_prov  $currentdir
-		 
-		 
+
+
 
 		elif [[ -f user_provided.txt ]]; then
         lines=`cat user_provided.txt | wc -l`
@@ -262,8 +262,8 @@ MAX=`wc -l < fofn1.txt`
 	    if [[ $lines -ne $MAX ]]; then
            echo "your user-provided doesnt match your reads in the reads path you provided. Please double check your steps"
 		   echo "if you created your user_provided.txt using -u you need to have -u in your profile command same for -p"
-		   exit 1 
-         fi		
+		   exit 1
+         fi
 	     echo '' > /dev/null
 
 		else
@@ -282,7 +282,7 @@ MAX=`wc -l < fofn1.txt`
 
 
 
-    
+
     fi
 	((index ++))
 done
@@ -372,17 +372,17 @@ rm -f -r all_depth_cvs  2> /dev/null
 mkdir all_depth_cvs #this creates all_depth_cvs where it store  a table of postion of refrence and the coverage depth (the folder will be used later by $Rscripts)
 
 
-Normalized=false #this is equal 1 always unless the user chooses to normalize 
+Normalized=false #this is equal 1 always unless the user chooses to normalize
 
 rm -f *out  2> /dev/null
 
-#here we will insert single copy stuff 
+#here we will insert single copy stuff
 
 for i in "${array[@]}"
 do
 
 if [[ $i == "-singlecopy" ]]; then
-  
+
 
 
 
@@ -395,7 +395,7 @@ do
 
 if [[ $i  ==  "--very-fast" ]] || [[ $i  ==  "--local" ]] || [[ $i  ==  "--fast" ]] || [[ $i  ==  "--sensitive" ]] || [[ $i  == "--very-sensitive" ]] || [[ $i  ==  "--very-fast-local" ]] || [[ $i  ==  "--fast-local" ]] || [[ $i  ==  "--sensitive-local" ]] || [[ $i  ==  "--very-sensitive-local" ]]; then
 		a=$i
-    
+
 	fi
 if [[ $@  ==  *"-D"* ]]; then
 commands=$@
@@ -418,7 +418,7 @@ echo ""
 
 bash $mydir/singlecopy.sh $mydir $4 $2 "2" $a
 
-retval=$? 
+retval=$?
 
 if [ $retval -ne 0 ]; then #if an error occured and the exit code isnt 0  then exit. The error message will be printed from singlecopy.sh not here
 
@@ -435,19 +435,19 @@ $Rscript $mydir/single_copy_calculator.R $readnumbers
 
 echo "Normalization calcaulations ended "
 
-### 
+###
 
 fi
-done 
+done
 
-###end of single copy stuff 
+###end of single copy stuff
 
 
 ls $refs/*.fa > fofnrefs.txt  2> /dev/null #the folder where fasta spliter stores all the .fa file after splitting them. This line just gets a list of these refrences with their paths
 
-fofncheck=`cat fofnrefs.txt | wc -l` 
+fofncheck=`cat fofnrefs.txt | wc -l`
 
-if [[ $fofncheck == 0 ]];then #if both are empty then there was no reads of correct format to begin with 
+if [[ $fofncheck == 0 ]];then #if both are empty then there was no reads of correct format to begin with
 
 echo "it seems like you had only _singlecopy refrences in your fasta file.The program also additional  actual sequences to analyze"
 echo "or rerun without -singlecopy if you want to anlayze any sequence in the fasta file "
@@ -625,7 +625,7 @@ $Rscript $mydir/polymorphism_2.0.R $output $R_packages  # call polymorphism $Rsc
 rm -f -r $output
 
 mkdir $output
-mv  *.png  pileup_counted.txt  $output
+mv  *.pdf  pileup_counted.txt  $output
 #mv $output $the_output  # we are not moving now  we move in next pile up loop
 
 ((numPairpile ++))
@@ -751,11 +751,11 @@ done < fofnrefs.txt #keep looping until all refrences inputed  undergone the ana
 
 rm -f The_summary_final.csv
 $Rscript $mydir/The_depth_analyser.R  #run the depth analyzer which produces the final summary table
-if [[ -f Single_summary.csv ]]; then 
+if [[ -f Single_summary.csv ]]; then
 cat The_summary_final.csv Single_summary.csv  > The_summary_final2.csv
 rm -f The_summary_final.csv
 mv The_summary_final2.csv The_summary_final.csv
-fi 
+fi
 
 Number=`wc -l < fofn_bam.txt`
 
@@ -796,7 +796,7 @@ mkdir correlation_analysis/correlation_refrence_specific_boxplots
 
 rm -f *_corrbarplot.pdf*
 
-rm -f full_correlation_analysis.csv 
+rm -f full_correlation_analysis.csv
 
 
 $Rscript $mydir/all_corr.R $R_packages $Normalized
@@ -832,7 +832,7 @@ if [[ -f normalized_table.csv ]]; then
 
 mv  normalized_table.csv $The_folder
 
-fi 
+fi
 
 
 
@@ -890,28 +890,28 @@ if [ $2 = "-u" ]; then
 
 if [[ -f $reads ]]; then
 
-if [[ $reads == *.fq ]] || [[ $reads == *.fastq ]] || [[ $reads == *.gz ]]; then 
+if [[ $reads == *.fq ]] || [[ $reads == *.fastq ]] || [[ $reads == *.gz ]]; then
 ls $reads > fofn1.txt
 
 ls $reads > fofn2.txt
 
-else 
+else
 
 echo "The path to the file you provided as single end unpaired read is wrong or the file is in a unsupported  format  "
 
 echo "make sure it is in  and has fastq or fq or .fastq.gz or .fq.gz  extention "
 
 
-fi 
+fi
 
 
-else 
+else
   ls ${reads}/*.fastq ${reads}/*.gz ${reads}/*.fq     > fofn1.txt 2>/dev/null
 
   ls ${reads}/*.fastq ${reads}/*.gz ${reads}/*.fq    > fofn2.txt 2>/dev/null
 
 
-fi 
+fi
 
 fi
 
@@ -951,7 +951,7 @@ if [[ ! -f user_provided.txt ]]; then
 echo "user_provided.txt isnt in your current directory. Please make sure it is or you create it using pre-corr"
 echo "refer to github page or repeatprof -h for more help"
 
-exit 1 
+exit 1
 
 fi
 
@@ -970,17 +970,17 @@ fi
 
 
 
-if [[ ! -d $3 ]]; then 
+if [[ ! -d $3 ]]; then
 
 echo "wrong path to the output folder. Please refer to repeatprof -h to check command structure"
 
 
 fi
-if [[ ! -d $4 ]]; then 
+if [[ ! -d $4 ]]; then
 
 echo "wrong path to the reads folder. Please refer to repeatprof -h to check command structure"
 
-fi 
+fi
 
 
 reads=$4
@@ -1001,28 +1001,28 @@ if [ $2 = "-u" ]; then
 
 if [[ -f $reads ]]; then
 
-if [[ $reads == *.fq ]] || [[ $reads == *.fastq ]] || [[ $reads == *.gz ]]; then 
+if [[ $reads == *.fq ]] || [[ $reads == *.fastq ]] || [[ $reads == *.gz ]]; then
 ls $reads > fofn1.txt
 
 ls $reads > fofn2.txt
 
-else 
+else
 
 echo "The path to the file you provided as single end unpaired read is wrong or the file is in a unsupported  format  "
 
 echo "make sure it is in  and has fastq or fq or .fastq.gz or .fq.gz  extention "
 
 
-fi 
+fi
 
 
-else 
+else
   ls ${reads}/*.fastq ${reads}/*.gz ${reads}/*.fq     > fofn1.txt 2>/dev/null
 
   ls ${reads}/*.fastq ${reads}/*.gz ${reads}/*.fq    > fofn2.txt 2>/dev/null
 
 
-fi 
+fi
 reads1_check=`cat fofn1.txt | wc -l`
 reads2_check=`cat fofn2.txt | wc -l `
 
@@ -1066,8 +1066,8 @@ current=`pwd`
 if [[ $lines -ne $MAX ]]; then
            echo "your user-provided doesnt match your reads in the reads path you provided. Please double check your steps"
 		   echo "if you created your user_provided.txt using -u you need to have -u in your profile command same for -p"
-		   exit 1 
- fi		
+		   exit 1
+ fi
 
 if [[ -d ${3}/all_depth_cvs ]]; then
 
@@ -1078,11 +1078,11 @@ cp  -r ${3}/all_depth_cvs $current
 else
 
    echo "the output folder has been altred. all_depth_cvs is missing. corr analysis cant continue"
-   
+
 
    exit 1
 
-fi 
+fi
 
 if [[ -f ${3}/index_conv.txt ]]; then
 
@@ -1096,9 +1096,9 @@ else
 
    echo "the output folder has been altered. index_conv is missing. corr analysis cant continue"
    exit 1
-   
-   
-fi 
+
+
+fi
 
 
 
@@ -1125,7 +1125,7 @@ $Rscript $mydir/all_corr.R $R_packages 1
 rm -f -r depth_all_cvs
 rm -f index_conv
 
- 
+
 
 
 

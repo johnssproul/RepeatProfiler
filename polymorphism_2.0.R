@@ -9,7 +9,7 @@ cat('Saving variation plot... \n')
 library(ggplot2)
 
 
-ft <- '.png'
+ft <- '.pdf'
 
 #code if file type specified
 # if(is.null(args[3]) || is.na(args[3])) {
