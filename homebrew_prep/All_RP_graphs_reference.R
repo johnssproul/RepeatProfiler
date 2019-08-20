@@ -5,13 +5,13 @@ cat('Saving scaled per reference plots (horizontal gradient)... \n')
 print(as.character(args[1])) #brew stuff
 .libPaths(as.character(args[1])) #brew stuff
 
-Normalized=as.character(args[2])
 library(ggplot2)
 
 
+Normalized <- as.character(args[2])
+
 n <- 8
 ft <- '.pdf'
-
 #code if plots per page or file type specified (not implemented yet)
 # if (is.null(args[2]) || is.na(args[2])) { #if nothing is specified, set defaults
 # } else if(is.null(args[3]) || is.na(args[3])) { #if nothing is specified for arg[3]
@@ -38,38 +38,30 @@ multmerge <- function(mypath){
   Reduce(function(x, y) {merge(x, y, all = TRUE)}, datalist)
 }
 
-img <- png::readPNG('./images-RP/watermark.png') #get watermark image
+#img <- png::readPNG('./images-RP/watermark.png') #get watermark image
 
 index.conv <- read.table('Index_conv.txt', header = TRUE, stringsAsFactors = FALSE) #reads textfile containing names of reads
 all.depth.csv <- multmerge('temp_cvs')
-# all.depth.csv<-cbind(Position=all.depth.csv[,1],all.depth.csv[,2:NCOL(all.depth.csv)]/Normalized) #this is for normalization
+# all.depth.csv<-cbind(Position=all.depth.csv[,1],all.depth.csv[,2:NCOL(all.depth.csv)]/Normalized) #normalization
 
-#this is normalization codes
-if(Normalized=="true"){
-  
-Normalizetable<-read.csv('normalized_table.csv', header = TRUE, stringsAsFactors = FALSE) #reads textfile containing names of reads
+### normalization
+if(Normalized == 'true'){
 
+Normalizetable <- read.csv('normalized_table.csv', header = TRUE, stringsAsFactors = FALSE) #reads textfile containing names of reads
 names.all <- colnames(all.depth.csv)
 
-for(x in 2:NCOL(all.depth.csv)){
-  
-  name<-names.all[x]
-  name <- strsplit(name, '_')
-  name <- name[[1]]
-  name <- as.numeric(name[length(name)])
-  
-  normalvalue<-Normalizetable[name,2]
-  
-  all.depth.csv[,x]<-all.depth.csv[,x]/normalvalue
-  
-  
-  
-}
+  for(x in 2:NCOL(all.depth.csv)){
+    name <- names.all[x]
+    name <- strsplit(name, '_')
+    name <- name[[1]]
+    name <- as.numeric(name[length(name)])
+
+    normalvalue <- Normalizetable[name,2]
+
+    all.depth.csv[,x] <- all.depth.csv[,x]/normalvalue
+  }
 }
 #
-
-
-
 
 #calculates maximum depth based on all.depth.csv dataframe
 max <- 0
@@ -90,8 +82,8 @@ cs <- scale_colour_gradientn(name = 'Depth', values = c(0, .20, .40, .60, .80, 1
 tf <- theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), #to remove gridlines
             plot.title = element_text(size = 10, face = 'bold'), axis.title = element_text(size = 6)) #formats plot title
 tl <- theme(legend.text = element_text(size = 6)) #formats legend
-cap <- labs(caption = 'This graph has low coverage. It may not provide accurate information.') #sets caption for low coverage plots
-wm <- ggpubr::background_image(img) #for watermark
+cap <- labs(caption = 'This graph has no coverage.') #sets caption for low coverage plots
+#wm <- ggpubr::background_image(img) #for watermark
 
 
 ########## Plotting Loop ##########
@@ -123,8 +115,6 @@ for(i in 2:NCOL(all.depth.csv)){
   df1 <- subset(all.depth.csv, select = c('Position', depth.column))
   df1 <- na.omit(df1)
   colnames(df1)[2] <- 'Depth'
-  
-
 
 
   ########## Horizontal Gradient Plot ##########
@@ -135,17 +125,13 @@ for(i in 2:NCOL(all.depth.csv)){
 
   #low coverage cases
   if(max(df1$Depth) < 1) {
-    horizontalPlot <- horizontalPlot+ wm
-  } else if(max(df1$Depth) < 100) {
     horizontalPlot <- horizontalPlot+ cap
-  } else {
-    horizontalPlot <- horizontalPlot
   }
 
   plots[[i-1]] <- horizontalPlot
 }
 
 allplots <- ggpubr::ggarrange(plotlist = plots, nrow = n, ncol = 1, align = 'hv', common.legend = TRUE) #common.legend = TRUE creates a single legend for all graphs on a page; if you want a separate legend for each graph, set to FALSE
-#file <- paste('./Test_plots/Horizontal_Reference_Combined', ft, sep = '') #path-specific
+#file <- paste('./Test_plots/Horizontal_Reference_Combined', ft, sep = '') #testing
 file <- paste('combined_horizontal_colored', ft, sep = '')
 ggpubr::ggexport(allplots, filename = file, width = 25, height = 25)

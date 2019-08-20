@@ -18,10 +18,34 @@ if [ $3 = "-p" ]; then #if user specified paired data  then look for this
   ls ${reads}/*_R2.fastq ${reads}/*_R2.gz ${reads}/*_R2.fq ${reads}/*_R2.fq.gz  ${reads}/*_2.fq.gz  ${reads}/*_2.fq ${reads}/*_2.gz ${reads}/*_2.fastq > fofn2.txt 2>/dev/null
 fi
 
-if [ $3 = "-u" ]; then #if user specified unpaired data  then look for that. We use it double here because rest of the code was built on paired data, but dont worry it gets dealt with later
+if [ $3 = "-u" ]; then
+#if user specified unpaired data  then look for that. We use it double here because rest of the code was built on paired data, but dont worry it gets dealt with laterye
+
+if [[ -f $reads ]]; then
+
+if [[ $reads == *.fq ]] || [[ $reads == *.fastq ]] || [[ $reads == *.gz ]]; then 
+ls $reads > fofn1.txt
+
+ls $reads > fofn2.txt
+
+else 
+
+echo "The path to the file you provided as single end unpaired read is wrong or the file is in a unsupported  format  "
+
+echo "make sure it is in  and has fastq or fq or .fastq.gz or .fq.gz  extention "
+
+
+fi 
+
+
+else 
   ls ${reads}/*.fastq ${reads}/*.gz ${reads}/*.fq     > fofn1.txt 2>/dev/null
 
   ls ${reads}/*.fastq ${reads}/*.gz ${reads}/*.fq    > fofn2.txt 2>/dev/null
+
+
+fi 
+
 fi
 
 #we check if the lines of the fofn for pair 1 is equal to lines fofn of pair 2 if not then give an error because that mean user has missing data if paired

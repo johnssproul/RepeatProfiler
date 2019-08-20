@@ -159,6 +159,8 @@ done
 array=(${commands})
 index=0
 
+reads=$4
+echo "start"
 for p in "${array[@]}"
 do
 if [[ $p  ==  "-corr" ]]; then
@@ -173,15 +175,33 @@ ls ${4}/*_R2.fastq ${4}/*_R2.gz ${4}/*_R2.fq ${4}/*_R2.fq.gz  ${4}/*_2.fq.gz  ${
 
 
 fi
-if [ $2 = "-u" ]; then #if user specified unpaired data  then look for that. We use it double here because rest of the code was built on paired data, but dont worry it gets dealt with later
+if [ $2 = "-u" ]; then
+#if user specified unpaired data  then look for that. We use it double here because rest of the code was built on paired data, but dont worry it gets dealt with laterye
 
-ls ${4}/*.fastq ${4}/*.gz ${4}/*.fq     > fofn1.txt 2>/dev/null
+if [[ -f $reads ]]; then
 
-ls ${4}/*.fastq ${4}/*.gz ${4}/*.fq    > fofn2.txt 2>/dev/null
+if [[ $reads == *.fq ]] || [[ $reads == *.fastq ]] || [[ $reads == *.gz ]]; then 
+ls $reads > fofn1.txt
+
+ls $reads > fofn2.txt
+
+else 
+
+echo "The path to the file you provided as single end unpaired read is wrong or the file is in a unsupported  format  "
+
+echo "make sure it is in  and has fastq or fq or .fastq.gz or .fq.gz  extention "
 
 
+fi 
 
 
+else 
+  ls ${reads}/*.fastq ${reads}/*.gz ${reads}/*.fq     > fofn1.txt 2>/dev/null
+
+  ls ${reads}/*.fastq ${reads}/*.gz ${reads}/*.fq    > fofn2.txt 2>/dev/null
+
+
+fi 
 
 fi
 
@@ -287,7 +307,7 @@ commands=$@
 
 
 if [[ -d $3 ]]; then # checking if 3rd parameter (refrence path) for profile is directory or a file
-#if it is a directory then sum up all the .fa files and put them into one and send them to fasta splitter  to prepare them as  single fasta sequences for analysis
+#if it is a directory then sum up all the .fa files and put them int	o one and send them to fasta splitter  to prepare them as  single fasta sequences for analysis
 	rm -f -r Refrences_used
 	mkdir Refrences_used
 	path_refs=`cat $3/*.fa > all_refs.fa`
@@ -319,6 +339,7 @@ elif [[ -f $3 ]]; then # if the refrence entered as a file  then just send it to
 
 
 bash $mydir/Fasta_splitter.sh $3
+
 
 retval=$? #check if any error occured by getting the exit code
 
@@ -408,13 +429,11 @@ fi
 Normalized=true
 readnumbers=`cat fofnsingle.txt | wc -l`
 echo "The Normalization values calculated:"
-$Rscript $mydir/single_copy_Calculator.R $readnumbers
+$Rscript $mydir/single_copy_calculator.R $readnumbers
 
-#rm -f The_summary.txt 
 
 
 echo "Normalization calcaulations ended "
-
 
 ### 
 
@@ -867,18 +886,34 @@ reads2_check=`cat fofn2.txt | wc -l `
 
 fi
 if [ $2 = "-u" ]; then
+#if user specified unpaired data  then look for that. We use it double here because rest of the code was built on paired data, but dont worry it gets dealt with laterye
 
-ls ${reads}/*.fastq ${reads}/*.gz ${reads}/*.fq     > fofn1.txt 2>/dev/null
+if [[ -f $reads ]]; then
 
-ls ${reads}/*.fastq ${reads}/*.gz ${reads}/*.fq    > fofn2.txt 2>/dev/null
+if [[ $reads == *.fq ]] || [[ $reads == *.fastq ]] || [[ $reads == *.gz ]]; then 
+ls $reads > fofn1.txt
+
+ls $reads > fofn2.txt
+
+else 
+
+echo "The path to the file you provided as single end unpaired read is wrong or the file is in a unsupported  format  "
+
+echo "make sure it is in  and has fastq or fq or .fastq.gz or .fq.gz  extention "
 
 
+fi 
 
-reads1_check=`cat fofn1.txt | wc -l`
-reads2_check=`cat fofn2.txt | wc -l `
+
+else 
+  ls ${reads}/*.fastq ${reads}/*.gz ${reads}/*.fq     > fofn1.txt 2>/dev/null
+
+  ls ${reads}/*.fastq ${reads}/*.gz ${reads}/*.fq    > fofn2.txt 2>/dev/null
+
+
+fi 
 
 fi
-
 
 
 
@@ -962,17 +997,39 @@ reads2_check=`cat fofn2.txt | wc -l `
 
 fi
 if [ $2 = "-u" ]; then
+#if user specified unpaired data  then look for that. We use it double here because rest of the code was built on paired data, but dont worry it gets dealt with laterye
 
-ls ${reads}/*.fastq ${reads}/*.gz ${reads}/*.fq     > fofn1.txt 2>/dev/null
+if [[ -f $reads ]]; then
 
-ls ${reads}/*.fastq ${reads}/*.gz ${reads}/*.fq    > fofn2.txt 2>/dev/null
+if [[ $reads == *.fq ]] || [[ $reads == *.fastq ]] || [[ $reads == *.gz ]]; then 
+ls $reads > fofn1.txt
+
+ls $reads > fofn2.txt
+
+else 
+
+echo "The path to the file you provided as single end unpaired read is wrong or the file is in a unsupported  format  "
+
+echo "make sure it is in  and has fastq or fq or .fastq.gz or .fq.gz  extention "
 
 
+fi 
 
+
+else 
+  ls ${reads}/*.fastq ${reads}/*.gz ${reads}/*.fq     > fofn1.txt 2>/dev/null
+
+  ls ${reads}/*.fastq ${reads}/*.gz ${reads}/*.fq    > fofn2.txt 2>/dev/null
+
+
+fi 
 reads1_check=`cat fofn1.txt | wc -l`
 reads2_check=`cat fofn2.txt | wc -l `
 
 fi
+
+
+
 
 
 

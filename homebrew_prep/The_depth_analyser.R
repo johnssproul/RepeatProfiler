@@ -6,6 +6,7 @@ multmerge <- function(mypath){
 
 all.depth <- multmerge('all_depth_cvs')
 The.summary <- read.table('The_summary.txt', header = TRUE, stringsAsFactors = FALSE)
+The.summary <- The.summary[order(The.summary$Reference),] 
 
 #initialize data frame
 The.summary$Ref.Length <- NA
@@ -37,7 +38,7 @@ for(i in 2:ncol(all.depth)){
 
 #handles single reads
 if(all(The.summary$Read1 == The.summary$Read2)){
-  The.summary$Read2<-NULL
+  The.summary$Read2 <- NULL
   names(The.summary)[names(The.summary) == 'Read1'] <- 'Read'
 }
 

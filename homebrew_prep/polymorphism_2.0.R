@@ -1,9 +1,8 @@
 #!/usr/bin/env Rscript
 args <- commandArgs(trailingOnly = TRUE)
-#args[1] <- 'erecta_CL1_TR_1_x_181_0nt.fa_011' #path-specific
+#args[1] <- 'erecta_CL1_TR_1_x_181_0nt.fa_011' #testing
 
-cat('Saving variation plot...', args[1], '... \n')
-
+cat('Saving variation plot... \n')
 .libPaths(as.character(args[2])) #brew stuff
 
 library(ggplot2)
@@ -21,11 +20,11 @@ ft <- '.png'
 # }
 
 #objects for handling low coverage plots
-img <- png::readPNG('./images-RP/watermark.png')
-cap <- labs(caption = 'This graph has low coverage. It may not provide accurate information.') #sets caption for low coverage plots
-wm <- ggpubr::background_image(img) #for watermark
+#img <- png::readPNG('./images-RP/watermark.png')
+#wm <- ggpubr::background_image(img) #for watermark
+cap <- labs(caption = 'This graph has no coverage.') #sets caption for low coverage plots
 
-index.conv <- read.table('Index_conv.txt', header = TRUE, stringsAsFactors = FALSE) #reads textfile containing names of reads
+index.conv <- read.table('Index_conv.txt', header = TRUE, stringsAsFactors = FALSE) #reads text file containing names of reads
 
 #gets names of reads and stores as objects to be used for title
 name <- args[1]
@@ -43,7 +42,7 @@ if(read1.first != read2.first){
 }
 
 #creates dataframe of counts for bases
-#base.counts <- read.table('./erecta_CL1_TR_1_x_181_0nt.fa_output/erecta_CL1_TR_1_x_181_0nt.fa_011/pileup_counted.txt', header = TRUE) #path-specific
+#base.counts <- read.table('./erecta_CL1_TR_1_x_181_0nt.fa_output/erecta_CL1_TR_1_x_181_0nt.fa_011/pileup_counted.txt', header = TRUE) #testing
 base.counts <- read.table('pileup_counted.txt', header = TRUE)
 head(base.counts[1])
 
@@ -72,16 +71,12 @@ polymorphPlot <- ggplot(base.countsRed.m, aes(x = Position, y = Depth, fill = Ba
 
 #low coverage cases
 if(max(base.counts$Depth) < 1) {
-  polymorphPlot <- polymorphPlot+ wm
-} else if(max(base.counts$Depth) < 100) {
   polymorphPlot <- polymorphPlot+ cap
-} else {
-  polymorphPlot <- polymorphPlot
 }
 
 #polymorphPlot #testing
 
-#plot.name <- paste('./Test_plots/Variation_plot', ft, sep = '') #path-specific
+#plot.name <- paste('./Test_plots/Variation_plot', ft, sep = '') #testing
 plot.name <- paste('Variation_plot', ft, sep = '')
 ggsave(as.character(plot.name), polymorphPlot, units = 'mm', width = 175, height = 50)
-cat('file saved to',  plot.name, '\n')
+cat('file saved to ',  plot.name, '\n')

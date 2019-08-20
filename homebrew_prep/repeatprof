@@ -20,7 +20,8 @@ exit 1
 
 fi
 
-rm -f -r  *.out *.bam *fofn* Errors_README.log normalized_table.csv images-RP Single_summary.csv #brew stuff
+
+rm -f -r  *.out *.bam *fofn* Errors_README.log Single_summary.csv normalized_table.csv #images-RP Single_summary.csv #brew stuff
 
 currentDate=`date`
 currentDate=`tr ' :' '_' <<<"$currentDate"`
@@ -30,15 +31,15 @@ echo "generating symlinks"
 
 
 
-#brew link --overwrite >/dev/null 2>&1  #brew stuff
+brew link --overwrite >/dev/null 2>&1  #brew stuff
 
 
 mydir=`echo "$(brew --cellar repeatprof)/0.92/libexec"` #brew stuff
 
-R_packages="placeholder"
+#R_packages="placeholder"
 R_packages=`echo "$(brew --cellar repeatprof)/0.92/R_packages"` #brew stuff
 
-images=`echo "$(brew --cellar repeatprof)/0.92/images-RP"`  #brew stuff
+#images=`echo "$(brew --cellar repeatprof)/0.92/images-RP"`  #brew stuff
 Rscript=`echo "$(brew --prefix R)/bin/Rscript"`  #brew stuff
 
 #mydir=`pwd` #comment when running it for brew
@@ -48,7 +49,7 @@ Rscript=`echo "$(brew --prefix R)/bin/Rscript"`  #brew stuff
 
 
 
-if  [[ $1 == "profile" ]] ||  [[ $1  ==  "clean" ]] || [[ $1 ==  "-h" ]] || [[ $1 == "pre-corr" ]]; then  # check if the 2nd parameter is any of these. If not, terminate the program and tell the user.
+if  [[ $1 == "profile" ]] || [[ $1 == "corr" ]] ||  [[ $1  ==  "clean" ]] || [[ $1 ==  "-h" ]] || [[ $1 == "pre-corr" ]]; then  # check if the 2nd parameter is any of these. If not, terminate the program and tell the user.
 
 echo "" > /dev/null
 
@@ -69,7 +70,7 @@ currentdir=`pwd`
 
 if [ "$1" == "profile" ]; then  # check if the second parameter is profile, If yes then preform profiling stuff
 
-cp -r $images $currentdir #brew stuff images-RP
+#cp -r $images $currentdir #brew stuff images-RP
 if  [[ $2 == "-u" ]] ||  [[ $2  ==  "-p" ]]; then # check if the user inputed -u or -p if not give him an error as it is a madantory command
 
 echo "" > /dev/null
@@ -124,18 +125,42 @@ if [[ $t  ==  "-o" ]]; then # this if statement says if the flag in the array is
 
 done
 
+
+
 # all the flag  checks are done in the same way for optional flag  as the example i explained above ^
 
 
+verticalplots="false"
+
+	
+for t in "${array[@]}"  #for each element in the array
+do
+
+if [[ $t  ==  "-verticalplots" ]]; then # this if statement says if the flag in the array is -o  (stands for output folder directory ) then check for the next element in the array
+
+        echo "color scaled vertical plots will be produced for each sample per reference"
+	    verticalplots="true"
 
 
 
 
 
+
+    fi
+
+done
+
+
+
+
+
+#
 
 array=(${commands})
 index=0
 
+reads=$4
+echo "start"
 for p in "${array[@]}"
 do
 if [[ $p  ==  "-corr" ]]; then
@@ -150,15 +175,33 @@ ls ${4}/*_R2.fastq ${4}/*_R2.gz ${4}/*_R2.fq ${4}/*_R2.fq.gz  ${4}/*_2.fq.gz  ${
 
 
 fi
-if [ $2 = "-u" ]; then #if user specified unpaired data  then look for that. We use it double here because rest of the code was built on paired data, but dont worry it gets dealt with later
+if [ $2 = "-u" ]; then
+#if user specified unpaired data  then look for that. We use it double here because rest of the code was built on paired data, but dont worry it gets dealt with laterye
 
-ls ${4}/*.fastq ${4}/*.gz ${4}/*.fq     > fofn1.txt 2>/dev/null
+if [[ -f $reads ]]; then
 
-ls ${4}/*.fastq ${4}/*.gz ${4}/*.fq    > fofn2.txt 2>/dev/null
+if [[ $reads == *.fq ]] || [[ $reads == *.fastq ]] || [[ $reads == *.gz ]]; then 
+ls $reads > fofn1.txt
+
+ls $reads > fofn2.txt
+
+else 
+
+echo "The path to the file you provided as single end unpaired read is wrong or the file is in a unsupported  format  "
+
+echo "make sure it is in  and has fastq or fq or .fastq.gz or .fq.gz  extention "
 
 
+fi 
 
 
+else 
+  ls ${reads}/*.fastq ${reads}/*.gz ${reads}/*.fq     > fofn1.txt 2>/dev/null
+
+  ls ${reads}/*.fastq ${reads}/*.gz ${reads}/*.fq    > fofn2.txt 2>/dev/null
+
+
+fi 
 
 fi
 
@@ -264,7 +307,7 @@ commands=$@
 
 
 if [[ -d $3 ]]; then # checking if 3rd parameter (refrence path) for profile is directory or a file
-#if it is a directory then sum up all the .fa files and put them into one and send them to fasta splitter  to prepare them as  single fasta sequences for analysis
+#if it is a directory then sum up all the .fa files and put them int	o one and send them to fasta splitter  to prepare them as  single fasta sequences for analysis
 	rm -f -r Refrences_used
 	mkdir Refrences_used
 	path_refs=`cat $3/*.fa > all_refs.fa`
@@ -296,6 +339,7 @@ elif [[ -f $3 ]]; then # if the refrence entered as a file  then just send it to
 
 
 bash $mydir/Fasta_splitter.sh $3
+
 
 retval=$? #check if any error occured by getting the exit code
 
@@ -351,13 +395,25 @@ do
 
 if [[ $i  ==  "--very-fast" ]] || [[ $i  ==  "--local" ]] || [[ $i  ==  "--fast" ]] || [[ $i  ==  "--sensitive" ]] || [[ $i  == "--very-sensitive" ]] || [[ $i  ==  "--very-fast-local" ]] || [[ $i  ==  "--fast-local" ]] || [[ $i  ==  "--sensitive-local" ]] || [[ $i  ==  "--very-sensitive-local" ]]; then
 		a=$i
-    fi
+    
+	fi
+if [[ $@  ==  *"-D"* ]]; then
+commands=$@
+a=`echo "$commands" | awk '{for (I=1;I<=NF;I++) if ($I == "-D") {print $I " " $(I+1) " " $(I+2) " " $(I+3)" " $(I+4) " " $(I+5) " " $(I+6) " " $(I+7) " " $(I+8) " " $(I+9) };}' `
+
+
+fi
+
 done
+
+
+
+
 
 echo ""
 
 
-echo "The alignment setting for single copy calculations  is $a"
+	echo "The alignment setting for single copy calculations  is $a"
 
 
 bash $mydir/singlecopy.sh $mydir $4 $2 "2" $a
@@ -373,13 +429,11 @@ fi
 Normalized=true
 readnumbers=`cat fofnsingle.txt | wc -l`
 echo "The Normalization values calculated:"
-$Rscript $mydir/single_copy_Calculator.R $readnumbers
+$Rscript $mydir/single_copy_calculator.R $readnumbers
 
-#rm -f The_summary.txt 
 
 
 echo "Normalization calcaulations ended "
-
 
 ### 
 
@@ -523,7 +577,6 @@ a=`echo "$commands" | awk '{for (I=1;I<=NF;I++) if ($I == "-D") {print $I " " $(
 fi
 
 
-
 echo "Bowtie2 alignment settings: $a"
 
 ####
@@ -586,7 +639,11 @@ do
 
 echo $folder_names #say it
 
-$Rscript $mydir/RP_4.0.R $folder_names $R_packages $Normalized #run $Rscripts
+
+
+
+
+$Rscript $mydir/RP_4.0.R $folder_names $R_packages $Normalized $verticalplots #run $Rscripts
 
 mv $folder_names $the_output
 done < fofn_folders.txt
@@ -692,8 +749,8 @@ done < fofnrefs.txt #keep looping until all refrences inputed  undergone the ana
 
 
 
-#rm -f *csv
-$Rscript $mydir/The_depth_analyser.R 2> /dev/null #run the depth analyzer which produces the final summary table
+rm -f The_summary_final.csv
+$Rscript $mydir/The_depth_analyser.R  #run the depth analyzer which produces the final summary table
 if [[ -f Single_summary.csv ]]; then 
 cat The_summary_final.csv Single_summary.csv  > The_summary_final2.csv
 rm -f The_summary_final.csv
@@ -712,7 +769,7 @@ $Rscript $mydir/All_RP_graphs.R $Number $R_packages $Normalized
 mv  refrences_wide_color_scaled_graphs $The_folder
 
 
-mv  *ReadMe*  $The_folder #move read me to the final folder
+mv  *ReadMe* The_summary.txt  $The_folder #move read me to the final folder
 
 rm -f The_summary.txt ref_temp.txt bowtie.log  *db.2*
 
@@ -728,15 +785,26 @@ if [[ !(-f user_provided.txt) ]]; then
 echo "user_provided.txt wasnt provided, so the FULL correlation analysis wasnt   conducted " > R_all_correlation_errors.txt
 
 else
-rm -f -r full_correlation_graphs
+rm -f -r correlation_analysis
 
-mkdir full_correlation_graphs
+mkdir correlation_analysis
+mkdir correlation_analysis/correlation_data
+mkdir correlation_analysis/correlation_histogram
+mkdir correlation_analysis/correlation_cross_refrence_boxplots
+mkdir correlation_analysis/correlation_refrence_specific_boxplots
+
+
 rm -f *_corrbarplot.pdf*
-$Rscript $mydir/all_corr.R $R_packages $Normalized
-mv *_corrbarplot.pdf*  full_correlation_graphs
-mv  full_correlation_graphs $The_folder
 
-mv full_correlation_analysis.csv $The_folder
+rm -f full_correlation_analysis.csv 
+
+
+$Rscript $mydir/all_corr.R $R_packages $Normalized
+
+
+
+mv  correlation_analysis $The_folder
+
 
 fi
 
@@ -744,6 +812,8 @@ if [ -f R_all_correlation_errors.txt ]; then
 
 
 mv R_all_correlation_errors.txt $The_folder
+
+
 fi
 
 
@@ -767,7 +837,7 @@ fi
 
 
 rm -f  *fofn* *.out *.bam all_refs.fa
-rm -f -r images-RP  #brew stuff
+#rm -f -r images-RP  #brew stuff
 rm -f -r multi_poly multi_poly_names.txt Index_conv.txt #comment when testing
 
 #design of the cow was borrowed from the famous cowsay package
@@ -816,18 +886,34 @@ reads2_check=`cat fofn2.txt | wc -l `
 
 fi
 if [ $2 = "-u" ]; then
+#if user specified unpaired data  then look for that. We use it double here because rest of the code was built on paired data, but dont worry it gets dealt with laterye
 
-ls ${reads}/*.fastq ${reads}/*.gz ${reads}/*.fq     > fofn1.txt 2>/dev/null
+if [[ -f $reads ]]; then
 
-ls ${reads}/*.fastq ${reads}/*.gz ${reads}/*.fq    > fofn2.txt 2>/dev/null
+if [[ $reads == *.fq ]] || [[ $reads == *.fastq ]] || [[ $reads == *.gz ]]; then 
+ls $reads > fofn1.txt
+
+ls $reads > fofn2.txt
+
+else 
+
+echo "The path to the file you provided as single end unpaired read is wrong or the file is in a unsupported  format  "
+
+echo "make sure it is in  and has fastq or fq or .fastq.gz or .fq.gz  extention "
 
 
+fi 
 
-reads1_check=`cat fofn1.txt | wc -l`
-reads2_check=`cat fofn2.txt | wc -l `
+
+else 
+  ls ${reads}/*.fastq ${reads}/*.gz ${reads}/*.fq     > fofn1.txt 2>/dev/null
+
+  ls ${reads}/*.fastq ${reads}/*.gz ${reads}/*.fq    > fofn2.txt 2>/dev/null
+
+
+fi 
 
 fi
-
 
 
 
@@ -858,8 +944,201 @@ echo ""
 
 fi
 
+if [ "$1" == "corr" ]; then
+
+if [[ ! -f user_provided.txt ]]; then
+
+echo "user_provided.txt isnt in your current directory. Please make sure it is or you create it using pre-corr"
+echo "refer to github page or repeatprof -h for more help"
+
+exit 1 
+
+fi
+
+if  [[ $2 == "-u" ]] ||  [[ $2  ==  "-p" ]]; then # check if the user inputed -u or -p if not give him an error as it is a madantory command
+
+echo "" > /dev/null
+
+
+else
+
+echo "second parameter should be -u or -p"
+exit 1
+
+
+fi
+
+
+
+if [[ ! -d $3 ]]; then 
+
+echo "wrong path to the output folder. Please refer to repeatprof -h to check command structure"
+
+
+fi
+if [[ ! -d $4 ]]; then 
+
+echo "wrong path to the reads folder. Please refer to repeatprof -h to check command structure"
+
+fi 
+
+
+reads=$4
+
+if [ $2 = "-p" ]; then
+
+ls ${reads}/*_R1.fastq ${reads}/*_R1.gz ${reads}/*_R1.fq  ${reads}/*_R1.fastq.gz ${reads}/*_R1.fq.gz  ${reads}/*_1.fq ${reads}/*_1.fq.gz ${reads}/*_1.gz ${reads}/*_1.fastq ${reads}/*_1.fastq.gz > fofn1.txt 2>/dev/null
+
+ls ${reads}/*_R2.fastq ${reads}/*_R2.gz ${reads}/*_R2.fastq.gz ${reads}/*_R2.fq ${reads}/*_R2.fq.gz  ${reads}/*_2.fq.gz  ${reads}/*_2.fq ${reads}/*_2.gz ${reads}/*_2.fastq ${reads}/*_2.fastq.gz 	 > fofn2.txt 2>/dev/null
+
+
+reads1_check=`cat fofn1.txt | wc -l`
+reads2_check=`cat fofn2.txt | wc -l `
+
+fi
+if [ $2 = "-u" ]; then
+#if user specified unpaired data  then look for that. We use it double here because rest of the code was built on paired data, but dont worry it gets dealt with laterye
+
+if [[ -f $reads ]]; then
+
+if [[ $reads == *.fq ]] || [[ $reads == *.fastq ]] || [[ $reads == *.gz ]]; then 
+ls $reads > fofn1.txt
+
+ls $reads > fofn2.txt
+
+else 
+
+echo "The path to the file you provided as single end unpaired read is wrong or the file is in a unsupported  format  "
+
+echo "make sure it is in  and has fastq or fq or .fastq.gz or .fq.gz  extention "
+
+
+fi 
+
+
+else 
+  ls ${reads}/*.fastq ${reads}/*.gz ${reads}/*.fq     > fofn1.txt 2>/dev/null
+
+  ls ${reads}/*.fastq ${reads}/*.gz ${reads}/*.fq    > fofn2.txt 2>/dev/null
+
+
+fi 
+reads1_check=`cat fofn1.txt | wc -l`
+reads2_check=`cat fofn2.txt | wc -l `
+
+fi
+
+
+
+
+
+
+
+
+
+if [[ $reads1_check == 0 && $reads2_check == 0 ]];then
+echo ""
+
+echo "The path of a file of  paired  read  provided doesnt contain any paired read that has correct format."| tee -a Errors_README.log
+echo "Make sure your read pairs  are in .fastq or .gz or .fq AND revise the path inputed"| tee -a Errors_README.log
+echo "Analysis wont be able to continue due to the failure of finding reads"
+exit 1
+
+
+fi
+
+if [ "$reads1_check" != "$reads2_check" ]; then
+
+echo "There is a pair of read missing. Please check the folder where you have your paired reads "| tee -a Errors_README.log
+exit 1
+fi
+
+
+
+
+ lines=`cat user_provided.txt | wc -l`
+lines=`echo $[$lines-1]`
+echo "$lines"
+MAX=`wc -l < fofn1.txt`
+
+current=`pwd`
+
+if [[ $lines -ne $MAX ]]; then
+           echo "your user-provided doesnt match your reads in the reads path you provided. Please double check your steps"
+		   echo "if you created your user_provided.txt using -u you need to have -u in your profile command same for -p"
+		   exit 1 
+ fi		
+
+if [[ -d ${3}/all_depth_cvs ]]; then
+
+rm -f -r depth_all_cvs
+
+cp  -r ${3}/all_depth_cvs $current
+
+else
+
+   echo "the output folder has been altred. all_depth_cvs is missing. corr analysis cant continue"
+   
+
+   exit 1
+
+fi 
+
+if [[ -f ${3}/index_conv.txt ]]; then
+
+rm -f index_conv
+
+
+cp ${3}/index_conv.txt $current
+
+
+else
+
+   echo "the output folder has been altered. index_conv is missing. corr analysis cant continue"
+   exit 1
+   
+   
+fi 
+
+
+
+
+rm -f -r  correlation_analysis/
+
+mkdir correlation_analysis
+mkdir correlation_analysis/correlation_data
+mkdir correlation_analysis/correlation_histogram
+mkdir correlation_analysis/correlation_cross_refrence_boxplots
+mkdir correlation_analysis/correlation_refrence_specific_boxplots
+
+
+
+
+
+
+
+
+
+
+$Rscript $mydir/all_corr.R $R_packages 1
+
+rm -f -r depth_all_cvs
+rm -f index_conv
+
+ 
+
+
+
+
+
+
+fi
+#end of modular corr
+
+
+
 if [ "$1" == "clean" ]; then
-rm -f -r *bam *fofn* *.out* *multi_poly_names* *_output* *_conv* *summary* *bt2* *ref_temp* *bowtie.log* *ReadMe* *_cvs* *_temp* *db.2* *Rplots* all_refs.fa Refrences_used images-RP #brew stuff
+rm -f -r *bam *fofn* *.out* *multi_poly_names* correlation_analysis *_output* *_conv* *summary* *bt2* *ref_temp* *bowtie.log* *ReadMe* *_cvs* *_temp* *db.2* *Rplots* all_refs.fa Refrences_used #images-RP #brew stuff
 rm -f  -r R_all_correlation_errors.txt normalized_table.csv single_cvs Single_summary.csv
 echo "remians of a broken run were cleaned successfuly "
 fi
