@@ -671,25 +671,25 @@ rm -f Closely_related_reads_analysis.txt #we dont need this anymore
 
 
 
-if [[ $@  ==  *"-corr"* ]]; then #if the user enter -corr check for user_provided.txt is in the same directory then run it and see if there is errors and run it
+# if [[ $@  ==  *"-corr"* ]]; then #if the user enter -corr check for user_provided.txt is in the same directory then run it and see if there is errors and run it
 
-rm -f  R_correlation_errors.txt
+# rm -f  R_correlation_errors.txt
 
-if [[ !(-f user_provided.txt) ]]; then
+# if [[ !(-f user_provided.txt) ]]; then
 
-echo "user_provided.txt wasnt provided, so the graph of correlation between reads for a refrence  wont be produced. Only the matrix." > R_correlation_errors.txt
+# echo "user_provided.txt wasnt provided, so the graph of correlation between reads for a refrence  wont be produced. Only the matrix." > R_correlation_errors.txt
 
-fi
-
-
-$Rscript $mydir/Corr_test.R $the_output $R_packages $Normalized  2> /dev/null
+# fi
 
 
-if [ -f R_correlation_errors.txt ]; then
+# $Rscript $mydir/Corr_test.R $the_output $R_packages $Normalized  2> /dev/null
 
 
-mv R_correlation_errors.txt $the_output
-fi
+# if [ -f R_correlation_errors.txt ]; then
+
+
+# mv R_correlation_errors.txt $the_output
+# fi
 
 
 
@@ -750,7 +750,7 @@ done < fofnrefs.txt #keep looping until all refrences inputed  undergone the ana
 
 
 rm -f The_summary_final.csv
-$Rscript $mydir/The_depth_analyser.R  #run the depth analyzer which produces the final summary table
+$Rscript $mydir/The_depth_analyser.R $Normalized  #run the depth analyzer which produces the final summary table
 if [[ -f Single_summary.csv ]]; then 
 cat The_summary_final.csv Single_summary.csv  > The_summary_final2.csv
 rm -f The_summary_final.csv
@@ -800,9 +800,35 @@ rm -f full_correlation_analysis.csv
 
 
 $Rscript $mydir/all_corr.R $R_packages $Normalized
+#this text file for correlation
+echo "*****correlation analysis*****"  > correlation_README.txt  
+
+echo "" >> correlation_README.txt
+echo "" >> correlation_README.txt
+echo "4 output folders are outputed in Correlation analysis." >> correlation_README.txt
+echo "">> correlation_README.txt
+echo "First folder: correlation_boxplots_by_group">> correlation_README.txt
+echo "This folder contains boxplots for each group you inputed in your user_groups.txt. The boxplots show how does a group varry among all references used in the run. Each group has its own plot.">> correlation_README.txt
+echo "">> correlation_README.txt
+
+echo "Second folder: correlation_boxplots_by_reference">> correlation_README.txt
+echo " This folder contains boxplots for each refrence you inputed in your user_groups.txt. The box plots show how  all groups vary for a reference inputed. Each refrence has its own plot.">> correlation_README.txt
+echo "">> correlation_README.txt
+echo "Third folder: correlation_data">> correlation_README.txt
+echo " This folder contains correlation matrices for each refrence inputed. The matrices shows all the correlation values among all samples for a reference. Each refrence has its own matrix.">> correlation_README.txt
+echo "">> correlation_README.txt
+echo "Fourth folder:correlation_histograms">> correlation_README.txt
+echo " This folder contains histograms for each refrence inputed. The histograms shows within and between groups correlation values for each refrence. Each reference has a its own historgram">> correlation_README.txt
+
+echo "">> correlation_README.txt
+echo "Last file: correlation_summary.csv">> correlation_README.txt
+echo "  This table contains average values of within and between each group correlation value for each reference. This table is a summary and contain information for all correlation done in the run">> correlation_README.txt
+
+mv correlation_README.txt correlation_analysis/
 
 
 
+#
 mv  correlation_analysis $The_folder
 
 

@@ -1,4 +1,4 @@
-print('Full correlation analysis is starting')
+print('Starting correlation analysis')
 args <- commandArgs(trailingOnly = TRUE)
 #.libPaths(as.character(args[1])) #brew stuff
 
@@ -14,15 +14,15 @@ multmerge <- function(mypath){
   Reduce(function(x,y) {merge(x, y, all = TRUE)}, datalist)
 }
 
-all_depth_cvs <- multmerge('all_depth_cvs')
+map_depth_allrefs <- multmerge('map_depth_allrefs')
 index.conv <- read.table('Index_conv.txt', header = TRUE, stringsAsFactors = FALSE)
 
 #normalization codes
 if(Normalized=="true"){
   Normalizetable <- read.csv('normalized_table.csv', header = TRUE, stringsAsFactors = FALSE) #reads textfile containing names of reads
-  names.all <- colnames(all_depth_cvs)
+  names.all <- colnames(map_depth_allrefs)
 
-   for(x in 2:NCOL(all_depth_cvs)){
+   for(x in 2:NCOL(map_depth_allrefs)){
     
     name<-names.all[x]
     name <- strsplit(name, '_')
@@ -33,12 +33,12 @@ if(Normalized=="true"){
     normalvalue <- Normalizetable[name,2]
     print(normalvalue)
     
-    all_depth_cvs[,x] <- all_depth_cvs[,x]/normalvalue
+    map_depth_allrefs[,x] <- map_depth_allrefs[,x]/normalvalue
   }
 }
 ###
 
-user_supplied <- read.table('user_provided.txt', header = TRUE, stringsAsFactors = FALSE)
+user_supplied <- read.table('user_groups.txt', header = TRUE, stringsAsFactors = FALSE)
 
 #intalize the all_corr table
 all_corr <- data.frame(groups = as.character(), stringsAsFactors = FALSE)
@@ -58,15 +58,15 @@ all_counter <- 1
 number_of_samples <- NROW(user_supplied)
 ###
 
-if(NCOL(all_depth_cvs) > 2){
-  all_depth_cvs <- all_depth_cvs[,-1] #remove position column
-  intial_col <- NCOL(all_depth_cvs)
+if(NCOL(map_depth_allrefs) > 2){
+  map_depth_allrefs <- map_depth_allrefs[,-1] #remove position column
+  intial_col <- NCOL(map_depth_allrefs)
 
-  while(NCOL(all_depth_cvs) > 0){
-    current_cvs_samples <- all_depth_cvs[,1:number_of_samples]
-    current_cvs_samples <- na.omit(current_cvs_samples) #deletesNA values caused by other refrences positions
+  while(NCOL(map_depth_allrefs) > 0){
+    current_cvs_samples <- map_depth_allrefs[,1:number_of_samples]
+    current_cvs_samples <- na.omit(current_cvs_samples) #deletesNA values caused by other references positions
     current_cvs_samples <- current_cvs_samples[, colSums(current_cvs_samples != 0) > 0] #remove columns containing only zeroes
-    all_depth_cvs <- all_depth_cvs[,-(1:number_of_samples)]
+    map_depth_allrefs <- map_depth_allrefs[,-(1:number_of_samples)]
     df <- data.frame(matrix(ncol = NROW(allgroups), nrow = 0)) #initialize the table to produce boxplots
     colnames(df) <- allgroups
     rowcounter <- 0
@@ -237,7 +237,7 @@ if(NCOL(all_depth_cvs) > 2){
       write.csv(df, file = pathtostoredf, row.names = FALSE)
 
       #plot_title <- paste('correlation_analysis/', name_full, 'corrbarplot.pdf', sep = '_') #testing
-      plot_title <- paste('correlation_analysis/correlation_refrence_specific_boxplots/',name_full, '_corrbarplot.pdf', sep = '')
+      plot_title <- paste('correlation_analysis/correlation_boxplots_by_reference/',name_full, '_boxplot.pdf', sep = '')
       pdf(plot_title, width = 15)
 
       boxplot(df, na.rm = TRUE, main = name_full,
@@ -385,13 +385,13 @@ if(NCOL(all_depth_cvs) > 2){
       
       #saves correlation plot to plot.name
       #plot.name <- paste('./Test_plots/Correlation_plot', ft, sep = '') #testing
-      plot.name <- paste("correlation_analysis",'/correlation_histogram/',name_full, ft, sep = '')
+      plot.name <- paste("correlation_analysis",'/correlation_histograms/',name_full, ft, sep = '')
       ggsave(as.character(plot.name), correlationPlot, units = 'mm', width = 175, height = 50)
       cat('file saved to',  plot.name, '\n')
 #end of histogram plots      
     }else{
-      cat('Correlation analysis and plot for one of the refrences couldnt be done because  there is only 1 sample with non-zero depth values for this reference .\n', file = 'R_all_correlation_errors.txt', append = TRUE)
-      print('Correlation analysis and plot for one of the refrences couldnt be done because  there is only 1 sample with non-zero depth values for this reference')
+      cat('Correlation analysis and profile generation skipped for one or more references skipped due to zero-depth values.\n', file = 'R_all_correlation_errors.txt', append = TRUE)
+      print('Correlation analysis and profile generation skipped for one or more references skipped due to zero-depth values')
     }
 
     print('new loop')
@@ -416,22 +416,22 @@ if(NCOL(all_depth_cvs) > 2){
     all_corr[which(all_corr$groups == current_group),2:NCOL(all_corr)] <- all_corr[which(all_corr$groups == current_group),2:NCOL(all_corr)]/unique_comparision
   }
 }else{
-  cat('Correlation analysis cannot be done with only one pair of reads or a single unpaired read or a single refrence with 1 pair of read or a single unpaired read. \n',  file = 'R_all_correlation_errors.txt', append = TRUE)
-  print('Correlation analysis cannot be done with only one pair of reads or a single unpaired read.')
+  cat('Correlation analysis cannot be done in a run that lacks multiple samples. \n',  file = 'R_all_correlation_errors.txt', append = TRUE)
+  print('Correlation analysis cannot be done in a run that lacks multiple samples.')
 }
 
-all_corr[is.na(all_corr)] <- 'No correlation coefficient calculated due to lack of enough samples'
+all_corr[is.na(all_corr)] <- 'Correlation coefficient cannot be calculated cannot be done in a run that lacks multiple samples'
 
 all_corr <- all_corr[order(all_corr$groups),]
 all_corr <- as.data.frame(all_corr)
 
-write.csv(all_corr, 'correlation_analysis/full_correlation_analysis.csv',row.names = FALSE)
+write.csv(all_corr, 'correlation_analysis/correlation_summary.csv',row.names = FALSE)
 
 ########## Plotting All References by Groups Plots ##########
 for (i in 1:length(groups)) {
   data <- subset(all, (grepl(groups[i], all$all_groups)))
   t <- paste(groups[i], 'Correlation for References', sep = ' ')
-  file <- paste('correlation_analysis/correlation_cross_refrence_boxplots/', groups[i], '_boxplot', '_corrbarplot.pdf', sep = '')
+  file <- paste('correlation_analysis/correlation_boxplots_by_group/', groups[i], '_group', '_boxplot.pdf', sep = '')
 
   plot <- ggplot(data = data, aes(x = all_species, y = all_correlation, fill = all_groups))+
     geom_boxplot(data = data, position = 'dodge2', width = 0.7, outlier.size = 0.2, colour = 'gray25', size = 0.2)+
@@ -450,4 +450,4 @@ for (i in 1:length(groups)) {
   ggsave(as.character(file), plot, width = 8, height = 8)
 }
 
-print('Full correlation analysis finished.')
+print('Correlation analysis finished.')

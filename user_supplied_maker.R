@@ -26,17 +26,17 @@ if(identical(as.character(args[1]), '-p') || identical(as.character(args[1]), '-
     user.supplied$Read2 <- NULL
   }
 
-  write.table(user.supplied,'user_provided.txt',row.names = FALSE, quote = FALSE, sep = '\t')
+  write.table(user.supplied,'user_groups.txt',row.names = FALSE, quote = FALSE, sep = '\t')
 
   cat ('Success!
-    user_provided.txt has been created in the current directory using provided reads.
+    user_groups.txt has been created in the current directory using provided reads.
     Replace temporary (it is a placeholder) with your desired groups.
-    After that type repeatprof pre-corr -v in the directory you have the user_provided.txt to view your file please and check if it is still in the right format.')
+    After that type repeatprof pre-corr -v in the directory you have the user_groups.txt to view your file please and check if it is still in the right format.')
 }
 
 #argument is -v
 if(identical(as.character(args[1]), '-v')){
-  user.supplied <- read.table('user_provided.txt', header = TRUE, stringsAsFactors = FALSE)
+  user.supplied <- read.table('user_groups.txt', header = TRUE, stringsAsFactors = FALSE)
 
   col.names <- colnames(user.supplied)
   if(is.element('Read1',col.names) && is.element('Group',col.names)){

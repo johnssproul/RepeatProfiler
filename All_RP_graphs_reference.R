@@ -133,5 +133,5 @@ for(i in 2:NCOL(all.depth.csv)){
 
 allplots <- ggpubr::ggarrange(plotlist = plots, nrow = n, ncol = 1, align = 'hv', common.legend = TRUE) #common.legend = TRUE creates a single legend for all graphs on a page; if you want a separate legend for each graph, set to FALSE
 #file <- paste('./Test_plots/Horizontal_Reference_Combined', ft, sep = '') #testing
-file <- paste('combined_horizontal_colored', ft, sep = '')
+file <- paste('scaled_profiles', ft, sep = '')
 ggpubr::ggexport(allplots, filename = file, width = 25, height = 25)

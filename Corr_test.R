@@ -11,7 +11,7 @@ Normalized <- as.character(args[3]) #normalize stuff
 print(paste('CorrNormalized',Normalized))
 
 #get names of reads and grouping information
-user.supplied <- read.table('user_provided.txt', header = TRUE, stringsAsFactors = FALSE)
+user.supplied <- read.table('user_groups.txt', header = TRUE, stringsAsFactors = FALSE)
 index.conv <- read.table('Index_conv.txt', header = TRUE, stringsAsFactors = FALSE)
 
 ft <- '.pdf'

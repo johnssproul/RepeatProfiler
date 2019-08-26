@@ -56,7 +56,7 @@ echo "" > /dev/null
 
 else
 
-echo "wrong command structure please use -h to view a sample command or refer to the manual"
+echo "Incorrect command structure -- invalid first argument after 'repeatprof'. Use -h to view list of repeatprof commands or refer to the manual."
 exit 1
 
 
@@ -87,7 +87,7 @@ fi
 if (( num_commands < 4 )) #If commands are less than 4 (which is number of the 4 madantory flags for profile)
  then
 
-echo "Not all madantory flags were used. please review a sample usage using  the  -h flag to view help menu"
+echo "Not all madantory arguments for 'profile' command were used. Use -h to view list of mandatory arguments for 'profile' or refer to the manual."
 
 exit 1
 
@@ -107,10 +107,10 @@ if [[ $t  ==  "-o" ]]; then # this if statement says if the flag in the array is
 
 	    if [[ -d $the_path ]]; then
 
-		 echo "the output will be at  $the_path  as you specified"
+		 echo "the output will be directed to  $the_path "
 
 		else
-		   echo "the output directory specified is not correct. Please make sure it has no blanks and it is valid or dont specify and it will output the folder in current directory"
+		   echo "Specified output directory path invalid. Please specify a valid path (check for blanks in directory names), or omit the -o flag and output will be written to current directory."
 
 		   exit 0
 		fi
@@ -136,9 +136,9 @@ verticalplots="false"
 for t in "${array[@]}"  #for each element in the array
 do
 
-if [[ $t  ==  "-verticalplots" ]]; then # this if statement says if the flag in the array is -o  (stands for output folder directory ) then check for the next element in the array
+if [[ $t  ==  "-vertical" ]]; then # this if statement says if the flag in the array is -o  (stands for output folder directory ) then check for the next element in the array
 
-        echo "color scaled vertical plots will be produced for each sample per reference"
+        echo "vertical color gradient profiles will be produced"
 	    verticalplots="true"
 
 
@@ -187,9 +187,9 @@ ls $reads > fofn2.txt
 
 else 
 
-echo "The path to the file you provided as single end unpaired read is wrong or the file is in a unsupported  format  "
+echo "The path to the unpaired reads file(s) is incorrect, or the file(s) is/are in a unsupported format"
 
-echo "make sure it is in  and has fastq or fq or .fastq.gz or .fq.gz  extention "
+echo "Make sure the path is correct (including checking for blanks). Make sure read files have '.fastq' or '.fq' extensions. Compressed (i.e., '.gz') formats also accepted (e.g., 'fastq.gz')."
 
 
 fi 
@@ -216,9 +216,9 @@ reads2_check=`cat fofn2.txt | wc -l `
 if [[ $reads1_check == 0 && $reads2_check == 0 ]];then #if both are empty then there was no reads of correct format to begin with 
 echo ""
 
-echo "The path of a file of  paired  read  provided doesnt contain any paired read that has correct format."| tee -a Errors_README.log
-echo "Make sure your read pairs  are in .fastq or .gz or .fq AND revise the path inputed. Make sure there is no blanks in path"| tee -a Errors_README.log
-echo "Analysis wont be able to continue due to the failure of finding reads"
+echo "The path to the paired reads file(s) is incorrect, or the file(s) is/are in a unsupported format"| tee -a Errors_README.log
+echo "Make sure the path is correct (including checking for blanks). Make sure read files have '.fastq' or '.fq' extensions. Compressed (i.e., '.gz') formats also accepted (e.g., 'fastq.gz')."| tee -a Errors_README.log
+
 exit 1
 
 
@@ -226,7 +226,7 @@ fi
 
 if [ "$reads1_check" != "$reads2_check" ]; then
 
-echo "There is a pair of read missing. Please check the folder where you have your paired reads "| tee -a Errors_README.log
+echo "There is a pair of read missing. Ensure all reads read pairs are present in input directory"| tee -a Errors_README.log
 exit 1
 fi
 #ls ${DIR}/*.fa > fofn3.txt
@@ -240,12 +240,12 @@ MAX=`wc -l < fofn1.txt`
 
 	user_prov=${array[index]}
 	    if [[ -f $user_prov ]]; then
-		rm -f user_provided.txt
+		rm -f user_groups.txt
         lines=`cat $user_prov | wc -l`
 		lines=`echo $[$lines-1]`
 	    if [[ $lines -ne $MAX ]]; then
-           echo "your user-provided doesnt match your reads in the reads path you provided. Please double check your steps"
-		   echo "if you created your user_provided.txt using -u you need to have -u in your profile command same for -p"
+           echo "Read files listed in user_groups.txt don't match the read files in path to reads you provided for this run. Ensure that user_groups is correctly formatted, and the path to reads is correct."
+		   echo "The user_groups.txt file format does not match read format selected for this run (i.e., -p or -u) If user_groups.txt was formatted for unpaired data, -u must be specified for the run. If formatted for paired data, -p must be specified. See help menu or user manual."
 		   exit 1 
          fi		
         
@@ -255,22 +255,22 @@ MAX=`wc -l < fofn1.txt`
 		 
 		 
 
-		elif [[ -f user_provided.txt ]]; then
-        lines=`cat user_provided.txt | wc -l`
+		elif [[ -f user_groups.txt ]]; then
+        lines=`cat user_groups.txt | wc -l`
 		lines=`echo $[$lines-1]`
 		echo "$lines"
 	    if [[ $lines -ne $MAX ]]; then
-           echo "your user-provided doesnt match your reads in the reads path you provided. Please double check your steps"
-		   echo "if you created your user_provided.txt using -u you need to have -u in your profile command same for -p"
+           echo "Read files listed in user_groups.txt don't match the read files in path to reads you provided for this run. Ensure that user_groups is correctly formatted, and the path to reads is correct."
+		   echo "The user_groups.txt file format does not match read format selected for this run (i.e., -p or -u) If user_groups.txt was formatted for unpaired data, -u must be specified for the run. If formatted for paired data, -p must be specified. See help menu or user manual."
 		   exit 1 
          fi		
 	     echo '' > /dev/null
 
 		else
 
-		   echo "no user_provided.txt path is provided and it is not present in the current directory. Please refer to repeatprof -h to understand how to create it"
+		   echo "File 'user_groups.txt' not found. -corr option requires user-defined groups to be specified in user_groups.txt. This file is not present in the current directory, and no alternative path was provided. See repeatprof -h or user manual for help"
 
-		   echo "it must be provided for correlation analysis to continue"
+		   echo "Correlation analysis skipped"
 
 		   exit 0
 
@@ -308,8 +308,8 @@ commands=$@
 
 if [[ -d $3 ]]; then # checking if 3rd parameter (refrence path) for profile is directory or a file
 #if it is a directory then sum up all the .fa files and put them int	o one and send them to fasta splitter  to prepare them as  single fasta sequences for analysis
-	rm -f -r Refrences_used
-	mkdir Refrences_used
+	rm -f -r references_used
+	mkdir references_used
 	path_refs=`cat $3/*.fa > all_refs.fa`
 
 
@@ -324,17 +324,17 @@ exit 1
 
 elif [ $retval -ne 0 ]; then #if an error occured and the exit code isnt 0  then exit. The error message will be printed from map_mileup not here
 
-	echo "something is wrong with refrence file inputed. Please make sure it is in correct fasta format and dont contain \ in the names"
+	echo "Something is wrong with reference file inputed. Please make ensure it is in fasta format and the last line ends in a carriage return"
 exit 1
 
 fi
 
 
-	refs=Refrences_used #this is where bowtie will look for refrence sequence ot align. It is a sub directory
+	refs=references_used #this is where bowtie will look for refrence sequence ot align. It is a sub directory
 
-elif [[ -f $3 ]]; then # if the refrence entered as a file  then just send it to fasta splitter in case it is multi sequence fasta
-	rm -f -r Refrences_used
-	mkdir Refrences_used
+elif [[ -f $3 ]]; then # if the reference entered as a file  then just send it to fasta splitter in case it is multi sequence fasta
+	rm -f -r references_used
+	mkdir references_used
 
 
 
@@ -349,16 +349,16 @@ exit 1
 
 elif [ $retval -ne 0 ]; then #if an error occured and the exit code isnt 0  then exit. The error message will be printed from map_mileup not here
 
-	echo "something is wrong with refrence file inputed. Please make sure it is in correct fasta format and dont contain \ in the names"
+	echo "Something is wrong with reference file inputed. Please make ensure it is in fasta format and the last line ends in a carriage return"
 exit 1
 
 fi
 
-refs=Refrences_used
+refs=references_used
 
 
 else
-    echo "The path to folder of Refrences files  or The path to your Refrecnes file is not valid"
+    echo "The path to folder of References files  or The path to your Refrecnes file is not valid"
     exit 1
 fi
 
@@ -366,10 +366,10 @@ fi
 ##this is just make sure no duplicates is there
 rm -f -r Errors.log  2> /dev/null
 rm *bam *bt2  2> /dev/null
-rm -f -r all_depth_cvs  2> /dev/null
+rm -f -r map_depth_allrefs  2> /dev/null
 ######
 
-mkdir all_depth_cvs #this creates all_depth_cvs where it store  a table of postion of refrence and the coverage depth (the folder will be used later by $Rscripts)
+mkdir map_depth_allrefs #this creates map_depth_allrefs where it store  a table of postion of reference and the coverage depth (the folder will be used later by $Rscripts)
 
 
 Normalized=false #this is equal 1 always unless the user chooses to normalize 
@@ -428,7 +428,7 @@ fi
 
 Normalized=true
 readnumbers=`cat fofnsingle.txt | wc -l`
-echo "The Normalization values calculated:"
+echo "Normalization values calculated:"
 $Rscript $mydir/single_copy_calculator.R $readnumbers
 
 
@@ -443,14 +443,14 @@ done
 ###end of single copy stuff 
 
 
-ls $refs/*.fa > fofnrefs.txt  2> /dev/null #the folder where fasta spliter stores all the .fa file after splitting them. This line just gets a list of these refrences with their paths
+ls $refs/*.fa > fofnrefs.txt  2> /dev/null #the folder where fasta spliter stores all the .fa file after splitting them. This line just gets a list of these references with their paths
 
 fofncheck=`cat fofnrefs.txt | wc -l` 
 
 if [[ $fofncheck == 0 ]];then #if both are empty then there was no reads of correct format to begin with 
 
-echo "it seems like you had only _singlecopy refrences in your fasta file.The program also additional  actual sequences to analyze"
-echo "or rerun without -singlecopy if you want to anlayze any sequence in the fasta file "
+echo "Only _singlecopy reference sequences detected in fasta file containing reference sequences." 
+echo "The program expects repeat references (lacking _singlecopy in the sequence header) to also be present"
 
 exit 1
 fi
@@ -468,12 +468,12 @@ echo "Reference	Sample_index	Read1	Read2	Total_reads	percent_mapped" > The_summa
 while read line  # for each line  in the fofnrefs.txt we will loop through it and  carry the following analysis
 do
 
-ref_char_count=`tail -n +2 $line | tr -cd 'ATGCatgc'  | wc -c` #this gets the refrence sequence length
-name_ref=$(awk -F "/" '{print $NF}' <<< $line) # this awk command is to get the refrence name from the path of refrences stored in fofnrefs.txt we did earlier
-											   # this command sepeartes on / and get the last word which is the refrence name
+ref_char_count=`tail -n +2 $line | tr -cd 'ATGCatgc'  | wc -c` #this gets the reference sequence length
+name_ref=$(awk -F "/" '{print $NF}' <<< $line) # this awk command is to get the reference name from the path of references stored in fofnrefs.txt we did earlier
+											   # this command sepeartes on / and get the last word which is the reference name
 
 
-if [[ $ref_char_count == 0 ]]; then			   # if the  the length of the specfic refrence is 0 then just skip it.
+if [[ $ref_char_count == 0 ]]; then			   # if the  the length of the specfic reference is 0 then just skip it.
 											   # it skips it by just printing the below message and nothing else will be executed because everything done is in the else statemen of this
 echo ""
 echo "your $name_ref is an empty sequence or not in the correct format. It wont be analyzed or indexed. Please revise it " | tee -a Errors_README.log
@@ -488,8 +488,8 @@ The_ref_size=`wc -c < ref_temp.txt` #same as above re_char_count
 
 bash $mydir/Readmegen.sh #this starts generating the readme. which will be populated later with the index to read conversions
 
-    bowtie2-build $line $BASE > /dev/null 2> /dev/null # this build index for the current refrence
-    echo "The name of the reference  sequence whose index was built and currently under analysis :"
+    bowtie2-build $line $BASE > /dev/null 2> /dev/null # this build index for the current reference
+    echo "The reference sequence currently under analysis:"
     echo "$line"
     echo ""
 
@@ -502,12 +502,12 @@ Ref_name=$name_ref #assigning it to another variable
 
 stringe="$Ref_name"
 stringee="_output"
-the_output="$stringe$stringee" #i sum up both variables to create the suboutput folder for that refrence REFname_ouput. The one you see in the big folder
+the_output="$stringe$stringee" #i sum up both variables to create the suboutput folder for that reference REFname_ouput. The one you see in the big folder
 rm -f -r $the_output
 mkdir $the_output
 
 
-echo "$the_output" >>fofn_Theoutputs.txt #this appends the fofn_the outputs with the current name (it gets created by the first append at the first refrence rest is appennding)
+echo "$the_output" >>fofn_Theoutputs.txt #this appends the fofn_the outputs with the current name (it gets created by the first append at the first reference rest is appennding)
 										 # keeping track of the folder names will help in the future when assigining stuff to each folder
 
 
@@ -591,11 +591,11 @@ exit 1
 fi
 
 echo "name_poly" > multi_poly_names.txt #this creates a text file called multi_poly_names.txt this is used to keep track of the reads that we are drwaing the graphs for
-										# LIKE for example Refrencename_001  001 refrence to the read the index we talked about before
+										# LIKE for example Refrencename_001  001 reference to the read the index we talked about before
 rm -f -r multi_poly
 mkdir multi_poly
 rm -f temp_cvs
-mkdir temp_cvs #this store the current postion vs coverage depth of the current refrence (this is used in r script)
+mkdir temp_cvs #this store the current postion vs coverage depth of the current reference (this is used in r script)
 while read pairpile # for each pair pile this means for each pileup output from the map_mpileup
 do
 
@@ -608,14 +608,14 @@ echo $pile_counted_name >> multi_poly_names.txt #now populate the  multi_poly_na
 python $mydir/pileup_basecount_sink.py $pairpile $pile_counted_name $The_ref_size # this pileup script that counts mismatches from the sam pileup.out file and count depth and all aother info
 
 
-cp "$pile_counted_name.csv" all_depth_cvs # cp the selected .csv produced by the python script
-mv "$pile_counted_name.csv" temp_cvs #this moves it to temp_cvs  also. both steps are needed to be done because all_depths_cvs runs at the end for the all refrences statistcs   while temp_cvs just for this refrence combined graphs and scaling
+cp "$pile_counted_name.csv" map_depth_allrefs # cp the selected .csv produced by the python script
+mv "$pile_counted_name.csv" temp_cvs #this moves it to temp_cvs  also. both steps are needed to be done because all_depths_cvs runs at the end for the all references statistcs   while temp_cvs just for this reference combined graphs and scaling
 
 output=$Ref_name
 
 stringpile2="$F"
 stringpile3="_"
-output="$output$stringpile3$stringpile2" #this just combines the output with its number to create the sub folder of the refrence folder you see REF_001 for example where it contains the graphs
+output="$output$stringpile3$stringpile2" #this just combines the output with its number to create the sub folder of the reference folder you see REF_001 for example where it contains the graphs
 
 echo "$output" >> fofn_folders.txt #adds the name to the fofn_folders.txt
 $Rscript $mydir/polymorphism_2.0.R $output $R_packages  # call polymorphism $Rscripts
@@ -625,7 +625,7 @@ $Rscript $mydir/polymorphism_2.0.R $output $R_packages  # call polymorphism $Rsc
 rm -f -r $output
 
 mkdir $output
-mv  *.pdf  pileup_counted.txt  $output
+mv  *.pdf  depth_counts.txt  $output
 #mv $output $the_output  # we are not moving now  we move in next pile up loop
 
 ((numPairpile ++))
@@ -656,7 +656,7 @@ $Rscript $mydir/multi_Poly_maker.R $R_packages
 
 
 #move R scripts
-mv *combined* $the_output
+mv *profiles* $the_output
 rm -f *.phy
 $Rscript $mydir/fraction_bases.R  > Closely_related_reads_analysis.txt
 
@@ -671,25 +671,24 @@ rm -f Closely_related_reads_analysis.txt #we dont need this anymore
 
 
 
-if [[ $@  ==  *"-corr"* ]]; then #if the user enter -corr check for user_provided.txt is in the same directory then run it and see if there is errors and run it
+ if [[ $@  ==  *"-corr"* ]]; then #if the user enter -corr check for user_groups.txt is in the same directory then run it and see if there is errors and run it
+ rm -f  R_correlation_errors.txt
 
-rm -f  R_correlation_errors.txt
+ if [[ !(-f user_groups.txt) ]]; then
 
-if [[ !(-f user_provided.txt) ]]; then
+ echo "user_groups.txt was not found. Matrix of pairwise correlation values will be generated, but no analysis of groups will be conducted." > R_correlation_errors.txt
 
-echo "user_provided.txt wasnt provided, so the graph of correlation between reads for a refrence  wont be produced. Only the matrix." > R_correlation_errors.txt
-
-fi
-
-
-$Rscript $mydir/Corr_test.R $the_output $R_packages $Normalized  2> /dev/null
+ fi
 
 
-if [ -f R_correlation_errors.txt ]; then
+ $Rscript $mydir/Corr_test.R $the_output $R_packages $Normalized  2> /dev/null
 
 
-mv R_correlation_errors.txt $the_output
-fi
+ if [ -f R_correlation_errors.txt ]; then
+
+
+ mv R_correlation_errors.txt $the_output
+ fi
 
 
 
@@ -744,63 +743,91 @@ rm -f -r temp_cvs
 rm -f fofn_folders.txt
 
 fi #this an fi for error handling dont mess with it. this is the end of the refrence
-done < fofnrefs.txt #keep looping until all refrences inputed  undergone the analysis
+done < fofnrefs.txt #keep looping until all references inputed  undergone the analysis
 
 
 
 
-rm -f The_summary_final.csv
-$Rscript $mydir/The_depth_analyser.R  #run the depth analyzer which produces the final summary table
+rm -f Run_summary.csv
+$Rscript $mydir/The_depth_analyser.R $Normalized #run the depth analyzer which produces the final summary table
 if [[ -f Single_summary.csv ]]; then 
-cat The_summary_final.csv Single_summary.csv  > The_summary_final2.csv
-rm -f The_summary_final.csv
-mv The_summary_final2.csv The_summary_final.csv
+cat Run_summary.csv Single_summary.csv  > Run_summary2.csv
+rm -f Run_summary.csv
+mv Run_summary2.csv Run_summary.csv
 fi 
 
 Number=`wc -l < fofn_bam.txt`
 
 
-rm -f -r refrences_wide_color_scaled_graphs
-mkdir refrences_wide_color_scaled_graphs #this creats folder where the graphs which will be scaled using ALL_RP_GRAPHS.R stored
+rm -f -r scaled_profiles_allrefs
+mkdir scaled_profiles_allrefs #this creats folder where the graphs which will be scaled using ALL_RP_GRAPHS.R stored
 
 echo "Thenumber: $Number"
 
 $Rscript $mydir/All_RP_graphs.R $Number $R_packages $Normalized
-mv  refrences_wide_color_scaled_graphs $The_folder
+mv  scaled_profiles_allrefs $The_folder
 
 
 mv  *ReadMe* The_summary.txt  $The_folder #move read me to the final folder
 
 rm -f The_summary.txt ref_temp.txt bowtie.log  *db.2*
 
-mv Refrences_used $The_folder
+mv references_used $The_folder
 
 
-if [[ $@  ==  *"-corr"* ]]; then #if the user enter -corr check for user_provided.txt is in the same directory then run it and see if there is errors and run it
+if [[ $@  ==  *"-corr"* ]]; then #if the user enter -corr check for user_groups.txt is in the same directory then run it and see if there is errors and run it
 
 rm -f  R_all_correlation_errors.txt
 
-if [[ !(-f user_provided.txt) ]]; then
+if [[ !(-f user_groups.txt) ]]; then
 
-echo "user_provided.txt wasnt provided, so the FULL correlation analysis wasnt   conducted " > R_all_correlation_errors.txt
+echo "user_groups.txt was not found -- full correlation analysis not conducted " > R_all_correlation_errors.txt
 
 else
 rm -f -r correlation_analysis
 
 mkdir correlation_analysis
 mkdir correlation_analysis/correlation_data
-mkdir correlation_analysis/correlation_histogram
-mkdir correlation_analysis/correlation_cross_refrence_boxplots
-mkdir correlation_analysis/correlation_refrence_specific_boxplots
+mkdir correlation_analysis/correlation_histograms
+mkdir correlation_analysis/correlation_boxplots_by_group
+mkdir correlation_analysis/correlation_boxplots_by_reference
 
 
-rm -f *_corrbarplot.pdf*
+rm -f *_boxplot.pdf*
 
-rm -f full_correlation_analysis.csv 
+rm -f correlation_summary.csv 
 
 
 $Rscript $mydir/all_corr.R $R_packages $Normalized
+#this text file for correlation
+echo "*****correlation analysis*****"  > correlation_README.txt  
 
+echo "" >> correlation_README.txt
+echo "" >> correlation_README.txt
+echo "4 output folders are outputed in Correlation analysis." >> correlation_README.txt
+echo "">> correlation_README.txt
+echo "First folder: correlation_boxplots_by_group">> correlation_README.txt
+echo "This folder contains boxplots for each group you inputed in your user_groups.txt. The boxplots show how does a group varry among all references used in the run. Each group has its own plot.">> correlation_README.txt
+echo "">> correlation_README.txt
+
+echo "Second folder: correlation_boxplots_by_reference">> correlation_README.txt
+echo " This folder contains boxplots for each refrence you inputed in your user_groups.txt. The box plots show how  all groups vary for a reference inputed. Each refrence has its own plot.">> correlation_README.txt
+echo "">> correlation_README.txt
+echo "Third folder: correlation_data">> correlation_README.txt
+echo " This folder contains correlation matrices for each refrence inputed. The matrices shows all the correlation values among all samples for a reference. Each refrence has its own matrix.">> correlation_README.txt
+echo "">> correlation_README.txt
+echo "Fourth folder:correlation_histograms">> correlation_README.txt
+echo " This folder contains histograms for each refrence inputed. The histograms shows within and between groups correlation values for each refrence. Each reference has a its own historgram">> correlation_README.txt
+
+echo "">> correlation_README.txt
+echo "Last file: correlation_summary.csv">> correlation_README.txt
+echo "  This table contains average values of within and between each group correlation value for each reference. This table is a summary and contain information for all correlation done in the run">> correlation_README.txt
+
+mv correlation_README.txt correlation_analysis/
+
+
+
+#
 
 
 mv  correlation_analysis $The_folder
@@ -822,10 +849,10 @@ fi
 
 
 
-mv all_depth_cvs $The_folder
+mv map_depth_allrefs $The_folder
 mv index_conv.txt $The_folder #for testing
 
-mv The_summary_final.csv Errors_README.log $The_folder 2> /dev/null
+mv Run_summary.csv Errors_README.log $The_folder 2> /dev/null
 rm -f  *Rplots* Single_summary.csv
 
 if [[ -f normalized_table.csv ]]; then
@@ -870,7 +897,7 @@ echo "" > /dev/null
 
 
 else
-echo "wrong usage of pre-corr. please refer to github page on how to use it or type repeatprof -h  to review the structure"
+echo "Incorrect command structure for 'pre-corr'. Refer to repeatprof -h or manual for help"
 
 exit 1
 fi
@@ -897,9 +924,9 @@ ls $reads > fofn2.txt
 
 else 
 
-echo "The path to the file you provided as single end unpaired read is wrong or the file is in a unsupported  format  "
+echo "The path to the unpaired reads file(s) is incorrect, or the file(s) is/are in a unsupported format"
 
-echo "make sure it is in  and has fastq or fq or .fastq.gz or .fq.gz  extention "
+echo "Make sure the path is correct (including checking for blanks). Make sure read files have '.fastq' or '.fq' extensions. Compressed (i.e., '.gz') formats also accepted (e.g., 'fastq.gz')."
 
 
 fi 
@@ -922,9 +949,9 @@ fi
 if [[ $reads1_check == 0 && $reads2_check == 0 ]];then
 echo ""
 
-echo "The path of a file of  paired  read  provided doesnt contain any paired read that has correct format."| tee -a Errors_README.log
+echo "The path to the paired reads file(s) is incorrect, or the file(s) is/are in a unsupported format"| tee -a Errors_README.log
 echo "Make sure your read pairs  are in .fastq or .gz or .fq AND revise the path inputed"| tee -a Errors_README.log
-echo "Analysis wont be able to continue due to the failure of finding reads"
+
 exit 1
 
 
@@ -932,7 +959,7 @@ fi
 
 if [ "$reads1_check" != "$reads2_check" ]; then
 
-echo "There is a pair of read missing. Please check the folder where you have your paired reads "| tee -a Errors_README.log
+echo "There is one or more pair of reads missing. Ensure all reads read pairs are present in input directory"| tee -a Errors_README.log
 exit 1
 fi
 
@@ -946,10 +973,10 @@ fi
 
 if [ "$1" == "corr" ]; then
 
-if [[ ! -f user_provided.txt ]]; then
+if [[ ! -f user_groups.txt ]]; then
 
-echo "user_provided.txt isnt in your current directory. Please make sure it is or you create it using pre-corr"
-echo "refer to github page or repeatprof -h for more help"
+echo "user_groups.txt not found in current directory."
+echo "Refer to repeatprof -h or the user manual for help"
 
 exit 1 
 
@@ -962,7 +989,7 @@ echo "" > /dev/null
 
 else
 
-echo "second parameter should be -u or -p"
+echo "Second parameter should be -u or -p"
 exit 1
 
 
@@ -972,13 +999,13 @@ fi
 
 if [[ ! -d $3 ]]; then 
 
-echo "wrong path to the output folder. Please refer to repeatprof -h to check command structure"
+echo "Invalid path to the output folder. Please refer to repeatprof -h to check command structure"
 
 
 fi
 if [[ ! -d $4 ]]; then 
 
-echo "wrong path to the reads folder. Please refer to repeatprof -h to check command structure"
+echo "Invalid path to the reads folder. Please refer to repeatprof -h to check command structure"
 
 fi 
 
@@ -1008,9 +1035,9 @@ ls $reads > fofn2.txt
 
 else 
 
-echo "The path to the file you provided as single end unpaired read is wrong or the file is in a unsupported  format  "
+echo "The path to the unpaired reads file(s) is incorrect, or the file(s) is/are in a unsupported format"
 
-echo "make sure it is in  and has fastq or fq or .fastq.gz or .fq.gz  extention "
+echo "Make sure the path is correct (including checking for blanks). Make sure read files have '.fastq' or '.fq' extensions. Compressed (i.e., '.gz') formats also accepted (e.g., 'fastq.gz')."
 
 
 fi 
@@ -1039,9 +1066,9 @@ fi
 if [[ $reads1_check == 0 && $reads2_check == 0 ]];then
 echo ""
 
-echo "The path of a file of  paired  read  provided doesnt contain any paired read that has correct format."| tee -a Errors_README.log
+echo "The path to the paired reads file(s) is incorrect, or the file(s) is/are in a unsupported format"| tee -a Errors_README.log
 echo "Make sure your read pairs  are in .fastq or .gz or .fq AND revise the path inputed"| tee -a Errors_README.log
-echo "Analysis wont be able to continue due to the failure of finding reads"
+
 exit 1
 
 
@@ -1049,14 +1076,14 @@ fi
 
 if [ "$reads1_check" != "$reads2_check" ]; then
 
-echo "There is a pair of read missing. Please check the folder where you have your paired reads "| tee -a Errors_README.log
+echo "There is a pair of read missing. Ensure all reads read pairs are present in input directory"| tee -a Errors_README.log
 exit 1
 fi
 
 
 
 
- lines=`cat user_provided.txt | wc -l`
+ lines=`cat user_groups.txt | wc -l`
 lines=`echo $[$lines-1]`
 echo "$lines"
 MAX=`wc -l < fofn1.txt`
@@ -1064,20 +1091,20 @@ MAX=`wc -l < fofn1.txt`
 current=`pwd`
 
 if [[ $lines -ne $MAX ]]; then
-           echo "your user-provided doesnt match your reads in the reads path you provided. Please double check your steps"
-		   echo "if you created your user_provided.txt using -u you need to have -u in your profile command same for -p"
+           echo "Read files listed in user_groups.txt don't match the read files in path to reads you provided for this run. Ensure that user_groups is correctly formatted, and the path to reads is correct."
+		   echo "The user_groups.txt file format does not match read format selected for this run (i.e., -p or -u) If user_groups.txt was formatted for unpaired data, -u must be specified for the run. If formatted for paired data, -p must be specified. See help menu or user manual."
 		   exit 1 
  fi		
 
-if [[ -d ${3}/all_depth_cvs ]]; then
+if [[ -d ${3}/map_depth_allrefs ]]; then
 
 rm -f -r depth_all_cvs
 
-cp  -r ${3}/all_depth_cvs $current
+cp  -r ${3}/map_depth_allrefs $current
 
 else
 
-   echo "the output folder has been altred. all_depth_cvs is missing. corr analysis cant continue"
+   echo "The output folder structure has been altered. map_depth_allrefs is missing. corr analysis halted"
    
 
    exit 1
@@ -1094,7 +1121,7 @@ cp ${3}/index_conv.txt $current
 
 else
 
-   echo "the output folder has been altered. index_conv is missing. corr analysis cant continue"
+   echo "The output folder structure has been altered. map_depth_allrefs is missing. corr analysis halted"
    exit 1
    
    
@@ -1107,9 +1134,9 @@ rm -f -r  correlation_analysis/
 
 mkdir correlation_analysis
 mkdir correlation_analysis/correlation_data
-mkdir correlation_analysis/correlation_histogram
-mkdir correlation_analysis/correlation_cross_refrence_boxplots
-mkdir correlation_analysis/correlation_refrence_specific_boxplots
+mkdir correlation_analysis/correlation_histograms
+mkdir correlation_analysis/correlation_boxplots_by_group
+mkdir correlation_analysis/correlation_boxplots_by_reference
 
 
 
@@ -1138,7 +1165,7 @@ fi
 
 
 if [ "$1" == "clean" ]; then
-rm -f -r *bam *fofn* *.out* *multi_poly_names* correlation_analysis *_output* *_conv* *summary* *bt2* *ref_temp* *bowtie.log* *ReadMe* *_cvs* *_temp* *db.2* *Rplots* all_refs.fa Refrences_used #images-RP #brew stuff
+rm -f -r *bam *fofn* *.out* *multi_poly_names* correlation_analysis *_output* *_conv* *summary* *bt2* *ref_temp* *bowtie.log* *ReadMe* *_cvs* *_temp* *db.2* *Rplots* all_refs.fa references_used #images-RP #brew stuff
 rm -f  -r R_all_correlation_errors.txt normalized_table.csv single_cvs Single_summary.csv
 echo "remians of a broken run were cleaned successfuly "
 fi
@@ -1150,8 +1177,8 @@ echo "repeatprof profile <-p for paired reads or  -u for unpaired> <the refrence
 echo ""
 echo "optional flags:"
 echo "-o <folder_path>		use to specifiy an directory where the final output file  be directed to. Default: current directory"
-echo "-corr				type this flag to make the correlation analysis. user_provided.txt will be assumed to be in same directory"
-echo "-corr	<user_provided.txt path >   type this flag to make the correlation analysis providing User_provided.txt path"
+echo "-corr				type this flag to make the correlation analysis. user_groups.txt will be assumed to be in same directory"
+echo "-corr	<user_groups.txt path >   type this flag to make the correlation analysis providing User_provided.txt path"
 
 echo "-k				use this flag if you want to keep the sorted bam files of the alignments in the final output folder"
 
@@ -1184,7 +1211,7 @@ echo "Unpaired reads:  .fastq .fastq.gz .fq  .fq.gz  .fastq .fastq.gz .fq"
 
 echo ""
 
-echo "refrences need to be in fasta format. They can be multi-sequence or single sequence fasta file."
+echo "references need to be in fasta format. They can be multi-sequence or single sequence fasta file."
 
 echo ""
 
@@ -1198,10 +1225,10 @@ echo ""
 echo "--------------------------------other usages: "
 echo ""
 
-echo "repeatprof pre-corr <-u for unpaired reads  or -p paired reads> <path of the folder containing reads> use this command to help prepare user_provided.txt for correlation graph produced by -corr flag in profile "
+echo "repeatprof pre-corr <-u for unpaired reads  or -p paired reads> <path of the folder containing reads> use this command to help prepare user_groups.txt for correlation graph produced by -corr flag in profile "
 echo ""
 
-echo "repeatprof pre-corr -v  use this command to review your edited user_provided.txt with your desired groups. This ensures that it is still in the correct file format. Need to be in same directory as file"
+echo "repeatprof pre-corr -v  use this command to review your edited user_groups.txt with your desired groups. This ensures that it is still in the correct file format. Need to be in same directory as file"
 echo ""
 
 echo "repeatprof clean		use this command to cleanup a broken/terminated run"

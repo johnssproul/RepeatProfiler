@@ -30,9 +30,9 @@ ls $reads > fofn2.txt
 
 else 
 
-echo "The path to the file you provided as single end unpaired read is wrong or the file is in a unsupported  format  "
+echo "The path to the unpaired reads file(s) is incorrect, or the file(s) is/are in a unsupported format"
 
-echo "make sure it is in  and has fastq or fq or .fastq.gz or .fq.gz  extention "
+echo "Make sure the path is correct (including checking for blanks). Make sure read files have '.fastq' or '.fq' extensions. Compressed (i.e., '.gz') formats also accepted (e.g., 'fastq.gz')."
 
 
 fi 
@@ -55,14 +55,14 @@ reads2_check=`cat fofn2.txt | wc -l `
 if [[ $reads1_check == 0 && $reads2_check == 0 ]];then #if both are empty then there was no reads of correct format to begin with
   echo ""
 
-  echo "The path of a file of  paired  read  provided doesnt contain any paired read that has correct format."| tee -a Errors_README.log
-  echo "Make sure your read pairs  are in .fastq or .gz or .fq AND revise the path inputed. Make sure there is no blanks in path"| tee -a Errors_README.log
-  echo "Analysis wont be able to continue due to the failure of finding reads"
+  echo "The path to the paired reads file(s) is incorrect, or the file(s) is/are in a unsupported format"| tee -a Errors_README.log
+  echo "Make sure the path is correct (including checking for blanks). Make sure read files have '.fastq' or '.fq' extensions. Compressed (i.e., '.gz') formats also accepted (e.g., 'fastq.gz')."| tee -a Errors_README.log
+  
   exit 1
 fi
 
 if [ "$reads1_check" != "$reads2_check" ]; then
-  echo "There is a pair of read missing. Please check the folder where you have your paired reads "| tee -a Errors_README.log
+  echo "There is a pair of read missing. Ensure all reads read pairs are present in input directory"| tee -a Errors_README.log
   exit 1
 fi
 
@@ -148,7 +148,7 @@ do
   fi
 
   if [ $retval -ne 0 ]; then #if bowtie or samtools gave an error this will chatch  and terminate
-    echo "Something is wrong with bowtie2 parameters you inputed. Please revise it"
+    echo "Something is wrong with bowtie2 parameters that were input. Refer to repeatprof -h or the user manual for help"
 
     exit 1
   fi

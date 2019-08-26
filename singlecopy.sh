@@ -7,7 +7,7 @@ mkdir single_cvs
 rm -f -r multi_poly
 mkdir multi_poly
 
-ls Refrences_used/*_singlecopy.fa > fofnsingle.txt 2> /dev/null
+ls references_used/*_singlecopy.fa > fofnsingle.txt 2> /dev/null
 echo ""
 
 fofnsinglecheck=`cat fofnsingle.txt | wc -l`
@@ -24,7 +24,7 @@ echo "Normalization calcaulations is starting "
 BASE="refbase_"
 while read line ; do  # for each line  in the fofnrefs.txt we will loop through it and  carry the following analysis
   ref_char_count=`tail -n +2 $line | tr -cd 'ATGCatgc'  | wc -c` #this gets the refrence sequence length
-  name_ref=$(awk -F "/" '{print $NF}' <<< $line) # this awk command is to get the refrence name from the path of refrences stored in fofnrefs.txt we did earlier
+  name_ref=$(awk -F "/" '{print $NF}' <<< $line) # this awk command is to get the refrence name from the path of references stored in fofnrefs.txt we did earlier
 											   # this command sepeartes on / and get the last word which is the refrence name
 
   if [[ $ref_char_count == 0 ]]; then			   # if the  the length of the specfic refrence is 0 then just skip it.
@@ -40,7 +40,7 @@ while read line ; do  # for each line  in the fofnrefs.txt we will loop through 
     bash $1/Readmegen.sh #this starts generating the readme. which will be populated later with the index to read conversions
 
     bowtie2-build $line $BASE > /dev/null 2> /dev/null # this build index for the current refrence
-    echo "The name of the reference  sequence whose index was built and currently under analysis :"
+    echo "The reference sequence currently under analysis:"
     echo "$line"
     echo ""
 
@@ -79,9 +79,9 @@ echo "before"
   fi
 done < fofnsingle.txt
 
-rm -f  Refrences_used/*_singlecopy.fa
+rm -f  references_used/*_singlecopy.fa
 rm -f fofn_pileup.txt
-rm -f pileup_counted.txt
+rm -f depth_counts.txt
 #rm -f fofn_bam.txt
 rm -f ReadMe.txt
 rm -f index_conv.txt

@@ -8,7 +8,7 @@ import re
 # that contains this data file)
 # InFileName = "testout.txt"
 
-OutFileName = "pileup_counted.txt"
+OutFileName = "depth_counts.txt"
 countedFile = sys.argv[2] + ".csv"
 The_refrence_size = int(sys.argv[3])
 countedFile_multi = "multi_poly/" + sys.argv[2] + ".txt"

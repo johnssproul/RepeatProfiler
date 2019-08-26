@@ -45,7 +45,7 @@ multmerge <- function(mypath){
 }
 
 index.conv <- read.table('Index_conv.txt', header = TRUE, stringsAsFactors = FALSE) #reads textfile containing names of reads
-all.depth.csv <- multmerge('all_depth_cvs')
+all.depth.csv <- multmerge('map_depth_allrefs')
 
 ###normaliaztion
 if(Normalized == 'true'){
@@ -153,7 +153,7 @@ for(i in 2:NCOL(all.depth.csv)){
     plots[[N]] <- horizontalPlot
     allplots <- ggpubr::ggarrange(plotlist = plots, nrow = n, ncol = 1, align = 'hv', common.legend = TRUE) #common.legend = TRUE creates a single legend for all graphs on a page; if you want a separate legend for each graph, set to FALSE
     #the.name = paste('./Test_plots/Horizontal_All_Combined', ft, sep = '') #testing
-    the.name = paste('refrences_wide_color_scaled_graphs/', name.file, ft, sep = '')
+    the.name = paste('scaled_profiles_allrefs/', name.file, ft, sep = '')
     ggpubr::ggexport(allplots, filename = the.name, width = 25, height = 25)
 
     #reset variables

@@ -1,12 +1,19 @@
+print("this is the depth_analyser")
+
+args <- commandArgs(trailingOnly = TRUE)
 multmerge <- function(mypath){
   filenames <- list.files(path = mypath, full.names = TRUE)
   datalist <- lapply(filenames, function(x){read.csv(file = x, header = T)})
   Reduce(function(x,y) {merge(x, y, all = TRUE)}, datalist)
 }
 
-all.depth <- multmerge('all_depth_cvs')
+all.depth <- multmerge('map_depth_allrefs')
 The.summary <- read.table('The_summary.txt', header = TRUE, stringsAsFactors = FALSE)
 The.summary <- The.summary[order(The.summary$Reference),] 
+
+
+Normalized <- as.character(args[1]) #normalize stuff
+
 
 #initialize data frame
 The.summary$Ref.Length <- NA
@@ -15,6 +22,7 @@ The.summary$Average.coverage <- NA
 The.summary$max.coverage <- NA
 
 index.for.summary <- 1
+
 
 #loop to fill in initialized  data
 for(i in 2:ncol(all.depth)){
@@ -42,4 +50,44 @@ if(all(The.summary$Read1 == The.summary$Read2)){
   names(The.summary)[names(The.summary) == 'Read1'] <- 'Read'
 }
 
-write.csv(The.summary, file = 'The_summary_final.csv', row.names = FALSE)
+
+###normaliaztion
+if(Normalized == 'true'){
+  Normalizetable <- read.csv('normalized_table.csv', header = TRUE, stringsAsFactors = FALSE) #reads textfile containing names of reads
+  names.all <- colnames(all.depth)
+  
+  for(x in 2:NCOL(all.depth)){
+    name <- names.all[x]
+    name <- strsplit(name, '_')
+    name <- name[[1]]
+    name <- as.numeric(name[length(name)])
+    
+    normalvalue <- Normalizetable[name,2]
+    all.depth[,x] <- all.depth[,x]/normalvalue
+  }
+}
+#normalized column 
+
+The.summary$normalized_average_coverage<-NA
+index.for.summary <- 1
+
+
+for(i in 2:ncol(all.depth)){
+  v <- as.vector(all.depth[,i])
+  
+
+  #average coverage
+  sum.coverage <- sum(as.numeric(v), na.rm = TRUE)
+  average.coverage <- sum.coverage/as.numeric(The.summary[index.for.summary,which(colnames(The.summary)=="Ref.Length")])
+  The.summary[index.for.summary,which(colnames(The.summary)=="normalized_average_coverage")] <- average.coverage
+  
+  index.for.summary <- index.for.summary+1
+}
+
+
+
+
+
+#
+
+write.csv(The.summary, file = 'Run_summary.csv', row.names = FALSE)

@@ -15,7 +15,7 @@ if [[ ! -z $end  ]]; then
   exit 2
 fi
 
-echo "The refrences inputed:"
+echo "The references inputed:"
 
 
 while read line
@@ -32,9 +32,9 @@ do
 
 	  echo $File_name
 
-    echo ">$File_name_nofa" > Refrences_used/$File_name
+    echo ">$File_name_nofa" > references_used/$File_name
   else
-    echo $line >> Refrences_used/$File_name
+    echo $line >> references_used/$File_name
   fi
 done < $Fasta_file
 
