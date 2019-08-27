@@ -1,4 +1,4 @@
-| [Installation]| [Application] |
+| [Installation](./readme.md)| [Tutorial](./tutorial.md) | [Application](uses.md) |
 # Getting started
 
 ### Required Input data:
