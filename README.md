@@ -42,6 +42,7 @@ Required dependencies are:
  - [R]
     - R packages: ggplot2, ggpubr, scales, reshape2 - 
 you can install required R packages by running this command:  
+
 ```sh
 echo "install.packages(c('ggplot2','ggpubr','scales','reshape2'), repos=\"https://cran.rstudio.com\")" | R --no-save
 ```
