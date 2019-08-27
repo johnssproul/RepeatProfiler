@@ -50,7 +50,7 @@ Explanation:
 
 ###### Optional Flags for Profile:
 | Flag| Usage |
-|:-----------------------------------:|---|
+|-------------------------------------|---|
 | -o <folder_path>                    | direct the final output folder to the specified folder. Default: current directory |
 | -corr                               | run correlation analysis. A user_provided.txt is needed for the correlation graph |
 | -usrprov <user_provided.txt path>   | provide path of user_provided.txt Default: current directory |
@@ -98,5 +98,5 @@ repeatprof clean
    [Installation]: <https://johnssproul.github.io/RepeatProfiler/>
    [Application]: <https://johnssproul.github.io/RepeatProfiler/Uses.html>
    [FASTA format]: <https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet>
-   [Bowtie2 Manual] <http://gensoft.pasteur.fr/docs/bowtie2/2.0.0/>
+   [Bowtie2 Manual]: <http://gensoft.pasteur.fr/docs/bowtie2/2.0.0/>
    
