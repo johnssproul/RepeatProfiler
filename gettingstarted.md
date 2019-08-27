@@ -49,21 +49,22 @@ Explanation:
 
 
 ###### Optional Flags for Profile:
+
 | Flag| Usage |
 |-------------------------------------|---|
 | -o <folder_path>                    | direct the final output folder to the specified folder. Default: current directory |
-| -corr                               | run correlation analysis. A user_provided.txt is needed for the correlation graph |
-| -usrprov <user_provided.txt path>   | provide path of user_provided.txt Default: current directory |
-| -k                                  | keep the sorted bam files of the alignments in the final output folder |
-| --very-sensitive                    | bowtie alignment setting. Default: --very-sensitive-local |
-| --sensitive                         | bowtie alignment setting. Default: --very-sensitive-local |
-| --very-fast                         | bowtie alignment setting. Default: --very-sensitive-local |
-| --fast                              | bowtie alignment setting. Default: --very-sensitive-local |
-| --local                             | bowtie alignment setting. Default: --very-sensitive-local |
-| --very-sensitive-local              | bowtie alignment setting. Default: --very-sensitive-local |
-| --sensitive-local                   | bowtie alignment setting. Default: --very-sensitive-local |
-| --fast-local                        | bowtie alignment setting. Default: --very-sensitive-local |
-| --very-fast-local                   | bowtie alignment setting. Default: --very-sensitive-local |
+| -corr                               | run correlation analysis. A user_provided.txt is needed for the correlation graph  |
+| -usrprov <user_provided.txt path>   | provide path of user_provided.txt Default: current directory                       |
+| -k                                  | keep the sorted bam files of the alignments in the final output folder             |
+| --very-sensitive                    | bowtie alignment setting. Default: --very-sensitive-local                          |
+| --sensitive                         | bowtie alignment setting. Default: --very-sensitive-local                          |
+| --very-fast                         | bowtie alignment setting. Default: --very-sensitive-local                          |
+| --fast                              | bowtie alignment setting. Default: --very-sensitive-local                          |
+| --local                             | bowtie alignment setting. Default: --very-sensitive-local                          |
+| --very-sensitive-local              | bowtie alignment setting. Default: --very-sensitive-local                          |
+| --sensitive-local                   | bowtie alignment setting. Default: --very-sensitive-local                          |
+| --fast-local                        | bowtie alignment setting. Default: --very-sensitive-local                          |
+| --very-fast-local                   | bowtie alignment setting. Default: --very-sensitive-local                          |
 
 ##### Note on Bowtie2 alignment settings: sensitive settings are generally more accurate, but slower, while fast settings are generally less accurate, but faster. See the [Bowtie2 Manual] for more information.
 
