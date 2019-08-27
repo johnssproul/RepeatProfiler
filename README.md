@@ -1,13 +1,10 @@
 ﻿
-# Repeat Profiler (This README is in the early draft stages of construction)
-
-A tool for generating, visualizing, and comparing repetitive DNA profiles from short-read data. This tool automates the generation of repetitive DNA profiles from short-read sequence data and one or more reference sequences. Output enables standardized visualization of profiles and comparative analysis of profiles across and within samples. RepeatProfiler is developed specifically to facilitate study of repetitive DNA dynamics over short evolutionary time scales in groups lacking genomic resources; however, it may be useful in any application where extracting signal from repetitive sequences is needed.
+Repeat Profiler is a tool for generating, visualizing, and comparing repetitive DNA profiles from short-read data. This tool automates the generation of repetitive DNA profiles from short-read sequence data and one or more reference sequences. Output enables standardized visualization of profiles and comparative analysis of profiles across and within samples. RepeatProfiler is developed specifically to facilitate study of repetitive DNA dynamics over short evolutionary time scales in groups lacking genomic resources; however, it may be useful in any application where extracting signal from repetitive sequences is needed.
 
 
 # Features:
-
   - Facilitates data visualization of repeat profiles using short read data
-  - Produces publication quality graphs in R that simplify visual comparison of profiles. 
+  - Produces publication quality graphs in R that simplify visual comparison of profiles.
   - Provides summary statistics related to repeat abundance, etc.
   - Conducts comparative analysis of profiles shape across and within user specified groups
   - Enables comparative study of variation within repeats through phylogenetic analysis
@@ -28,7 +25,7 @@ repeatprof
 ```
 
 ### Alternative Installation
-As an alternative to homebrew you can download [.zip] of the latest program version and install the dependencies separately. 
+As an alternative to homebrew you can download [.zip] of the latest program version and install the dependencies separately.
 Required dependencies are:
  - bowtie2
  - samtools
@@ -41,11 +38,11 @@ echo "install.packages(c('ggplot2','ggpubr','scales','reshape2'), repos=\"https:
 ```
 After dependencies are installed, move to the unzipped directory containing the program in the terminal and run the following command to check that the program is working. The words “REPEAT PROFILER” should print to the screen.  
 
-```sh 
-bash repeatprof 
+```sh
+bash repeatprof
 ```
 
-
+[Tutorial](./Tutorial.md)
 # Getting started:
 
 
@@ -77,9 +74,9 @@ Review the sample input data set provided [here]. Also make sure all your files 
 
 ##### Generating profiles:
 
-a sample profile command with mandatory flags explained 
+a sample profile command with mandatory flags explained
 ```sh
-repeatprof profile <-p for paired reads or -u for unpaired> <the reference sequence path > <path of the folder containing reads> [optional flags] 
+repeatprof profile <-p for paired reads or -u for unpaired> <the reference sequence path > <path of the folder containing reads> [optional flags]
 ```
 
 an example of a functional example command (explanations omitted).
@@ -88,15 +85,15 @@ an example of a functional example command (explanations omitted).
 repeatprof profile -p Refs.fa /RepeatProfilerData/Test1
 ```
 
-Explanation: 
+Explanation:
 - 'repeatprof' calls the program
-- 'profile' the command that directs program to generate profiles (see other command options below) 
-- '-p' indicates the input reads are paired 
-- 'Refs.fa' specifies the FASTA files containing reference sequences (located in the current directory in this example, alternatively a path can be provided) 
+- 'profile' the command that directs program to generate profiles (see other command options below)
+- '-p' indicates the input reads are paired
+- 'Refs.fa' specifies the FASTA files containing reference sequences (located in the current directory in this example, alternatively a path can be provided)
 – '/RepeatProfilerData/Test1' gives the path of the directory containing input read files
 
 
-###### Optional flags: 
+###### Optional flags:
 | optional flag                        | usage                                                                                                                                                           |
 |--------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | -o <folder_path>                     | This will direct the final output folder to the specified folder. Default: Current directory                                                                 |
@@ -115,13 +112,13 @@ Explanation:
 | -k                                   | use this flag if you want to keep the sorted bam files of the alignments in the final output folder                                                             |
 
 
- 
-##### Note: Don't include the <> when typing paths . It is just for illustration here. Also make sure all paths passed into the command have no blank. In addition, Default is  current directory means that if you didn't enter this flag it will just assume you have the input in the current directory 
+
+##### Note: Don't include the <> when typing paths . It is just for illustration here. Also make sure all paths passed into the command have no blank. In addition, Default is  current directory means that if you didn't enter this flag it will just assume you have the input in the current directory
 
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-##### Preparing user_provided.txt for -corr 
-Lets say you want to make a profiles for reads you prepared and want them to include correlation graphs which shows how similar/different   reads mapping depth are, but also some of these reads belong to a group (A) for example and other (B), so first 
+##### Preparing user_provided.txt for -corr
+Lets say you want to make a profiles for reads you prepared and want them to include correlation graphs which shows how similar/different   reads mapping depth are, but also some of these reads belong to a group (A) for example and other (B), so first
 run this command:
 ```sh
 repeatprof pre-corr < -u for unpaired reads  or -p paired reads  > <path reads folder>
@@ -136,11 +133,11 @@ you need to have your edited user_provided.txt in the same directory you are run
 ##### Now you are all set for generating profiles with nice looking correlation groups graph and using the tool  . GOOD JOB !
 &nbsp;
 &nbsp;
-In case you terminated the run, you can use this command to clean up intermediate files created by the tool if you want 
+In case you terminated the run, you can use this command to clean up intermediate files created by the tool if you want
 ```sh
 repeatprof clean   
 ```
-# Understanding the output---In-depth Tutorial 
+# Understanding the output---In-depth Tutorial
 In this section, I will walk you through a sample output/outputs generated by the sample input data [here]. We will cover:
 
 **What is in the output folder section**
@@ -151,10 +148,10 @@ In this section, I will walk you through a sample output/outputs generated by th
 **How to get the most out of the tool**
 
  - How to find good repeat reference sequence if you don’t have any based on your reads
- 
- - How to use the phylip formatted file correctly and get the most out of the trees you generate. 
- 
- - How to get the most out of the tool and your data 
+
+ - How to use the phylip formatted file correctly and get the most out of the trees you generate.
+
+ - How to get the most out of the tool and your data
 
 
 
@@ -164,19 +161,19 @@ In this section, I will walk you through a sample output/outputs generated by th
 
 
 ## What is in the output folder
-After running your data or sample data linked above, you will find this 
+After running your data or sample data linked above, you will find this
 folder in your current directory  or the directory you specified:
 
 ![](https://github.com/johnssproul/RepeatProfiler/raw/master/pics_readme/photo_of_the_folder.PNG)
 
-The time  refers to the  time you started the run. Opening, the folder you will find this 
+The time  refers to the  time you started the run. Opening, the folder you will find this
 
 ![](https://github.com/johnssproul/RepeatProfiler/raw/master/pics_readme/photo2.PNG)
 
-Here you can see your refrence name folder _outputn which contain all the analysis for this refrence We will get to that soon. This is done incase you run the analysis with multi-fasta sequence file. We also keep your refrences in single fasta files in Refrences_used folder. 
+Here you can see your refrence name folder _outputn which contain all the analysis for this refrence We will get to that soon. This is done incase you run the analysis with multi-fasta sequence file. We also keep your refrences in single fasta files in Refrences_used folder.
 
 
-Next thing you will find is ReadMe file.It will look something like this 
+Next thing you will find is ReadMe file.It will look something like this
 ![](https://github.com/johnssproul/RepeatProfiler/raw/master/pics_readme/photo1.PNG)
 
 This read me tell you what indexes that you will see later when we go to the the specific refrences _output file means.  In short, we refer to your reads paired or unpaired in an index. This makes it easier to name the files and manage output. Dont worry we convert it back to your read name when analyzing graphs and summary tables. This is just for the folders.  
@@ -185,16 +182,16 @@ One of the important outputs is the summary_final.csv table. It contains very us
 
 ![](https://github.com/johnssproul/RepeatProfiler/raw/master/pics_readme/photo10.PNG)
 
-As you can tell, each row represt the refrence and the read used, so if you had for example 4 pairs of reads/4 unpaired reads, you will have 4 rows with the same refrence name and each row will contain the corrsoponding attributes shown 
+As you can tell, each row represt the refrence and the read used, so if you had for example 4 pairs of reads/4 unpaired reads, you will have 4 rows with the same refrence name and each row will contain the corrsoponding attributes shown
 
 
-Before going into the refrence_wide_color_scaled_graphs, lets go into a refrence _output folder and explain it then we will come back to this. It makes more sense this way. 
+Before going into the refrence_wide_color_scaled_graphs, lets go into a refrence _output folder and explain it then we will come back to this. It makes more sense this way.
 
 Now the real features of the tool will show. Prepare haha!
 
 Lets say we will go the first folder which is refrence named CL3_TR_1_x_53_0nt
 
-You will find  the folder look like this 
+You will find  the folder look like this
 
 ![](https://github.com/johnssproul/RepeatProfiler/raw/master/pics_readme/photo3.PNG)
 
@@ -209,21 +206,21 @@ Each of these graph represent the coverage of the read/read pair when mapped to 
 
 
 Next pdf in the _output folder is the combined_variation plots.pdf
-These plots has the variation(polymorphisim) in  among all the reads for this specific refrences. They have been put together for your convience to compare. 
+These plots has the variation(polymorphisim) in  among all the reads for this specific refrences. They have been put together for your convience to compare.
 
 
 ![](https://github.com/johnssproul/RepeatProfiler/raw/master/pics_readme/photo7.PNG)
 
 
-For example in this example you can see that sample 001 and 002 which are same species share huge common polymorphric base A  at the some postion this is shown by huge Red bar. 
+For example in this example you can see that sample 001 and 002 which are same species share huge common polymorphric base A  at the some postion this is shown by huge Red bar.
 
-There are a a lot of more info in this plot than to just compare them by eye, so we will later explain the phylip file that we generate later, but before that  lets get back to the individual sample sub folders 
+There are a a lot of more info in this plot than to just compare them by eye, so we will later explain the phylip file that we generate later, but before that  lets get back to the individual sample sub folders
 
 
 Opening one of the sub folders  folders will look like this
 ![](https://github.com/johnssproul/RepeatProfiler/raw/master/pics_readme/photo5.PNG)
 
-it contain  the same plots we looked at earlier but indvidully. Keep in mind they are still scaled among all reads, so its main use is if you are interested in a specific graph you can simply its subfolder an get it. Also there is a solid colored version(not scaled) and a vertical colored scaled which is an alternative way to look at it, but most importantly you have the horizontal color scaled that you saw earlier and a text file that contains the information per every position in the refrence sequence. It contains the depth of every postion/mismatches of A/mismatches of T/mismatches of C//mismatches of G/. 
+it contain  the same plots we looked at earlier but indvidully. Keep in mind they are still scaled among all reads, so its main use is if you are interested in a specific graph you can simply its subfolder an get it. Also there is a solid colored version(not scaled) and a vertical colored scaled which is an alternative way to look at it, but most importantly you have the horizontal color scaled that you saw earlier and a text file that contains the information per every position in the refrence sequence. It contains the depth of every postion/mismatches of A/mismatches of T/mismatches of C//mismatches of G/.
 
 
 
@@ -236,28 +233,25 @@ Now  lets go back and check what is in the Phylip file and what does it mean
 
 Based on the variation plots explained earlier, we were able to capture phylogentic informative sites from these plots. We analysed each plot indivudaly and recored the bases that had high mis match coverage over 10% from the actual coverage. We also accounted for ambigous sites.
 
- This phylip files are most informative for long refrence sequences (1000+) bases. You can run this phylip file in your favorite tree software. We use iq-tree. 
- 
+ This phylip files are most informative for long refrence sequences (1000+) bases. You can run this phylip file in your favorite tree software. We use iq-tree.
+
  The best way to use this is to run many tests and choose correct refrence sequence corrosponding on what you want to test out. We will have a full guide soon on how we got the most of out of this with many tests and examples and support why this way works if used the correct way.
- 
- 
- Back to _output folder, You will find a table called variation analysis. 
- 
- 
+
+
+ Back to _output folder, You will find a table called variation analysis.
+
+
  ![](https://github.com/johnssproul/RepeatProfiler/raw/master/pics_readme/photo9.PNG)
- 
- 
- 
- 
+
+
+
+
  This also captures its information from the graphs. It contain fraction of bases that didnt match for each read/read pair for this refrence. Looking at this table, can tell you which graphs have the most  phylogentic positions, and you can make decsions based on that.
 
 
 
 
 ## How to get the most out of the tool     
-    
-    
-    
 
 
 
@@ -279,7 +273,10 @@ Based on the variation plots explained earlier, we were able to capture phylogen
 
 
 
-[//]: # 
+
+
+
+[//]: #
    [.zip]: <https://github.com/johnssproul/RepeatProfiler/releases/download/0.9/RepeatProfiler-v0.9-source.zip>
    [here]: <https://github.com/johnssproul/RepeatProfiler/releases/download/0.9/sample_input.zip>
    [Homebrew]: <https://brew.sh/>
@@ -305,6 +302,3 @@ Based on the variation plots explained earlier, we were able to capture phylogen
    [PlOd]: <https://github.com/joemccann/dillinger/tree/master/plugins/onedrive/README.md>
    [PlMe]: <https://github.com/joemccann/dillinger/tree/master/plugins/medium/README.md>
    [PlGa]: <https://github.com/RahulHP/dillinger/blob/master/plugins/googleanalytics/README.md>
-
-
-
