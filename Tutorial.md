@@ -206,9 +206,6 @@ Based on the variation plots explained earlier, we were able to capture phylogen
 [//]: #
    [.zip]: <https://github.com/johnssproul/RepeatProfiler/releases/download/0.9/RepeatProfiler-v0.9-source.zip>
    [here]: <https://github.com/johnssproul/RepeatProfiler/releases/download/0.9/sample_input.zip>
-   [Homebrew]: <https://brew.sh/>
-   [linux/WSL]: <https://docs.brew.sh/Homebrew-on-Linux>
-   [macOS]: <https://brew.sh/>
    [dill]: <https://github.com/joemccann/dillinger>
    [git-repo-url]: <https://github.com/joemccann/dillinger.git>
    [john gruber]: <http://daringfireball.net>
