@@ -30,17 +30,17 @@ Review the sample input data set provided [here]. Also make sure all your files 
 
 ### Generating Profiles
 
-General Command:
+###### General Command:
 ```sh
 repeatprof profile <-p for paired reads or -u for unpaired> <the reference sequence path > <path of the folder containing reads> [optional flags]
 ```
 
-Functional Command:
+###### Functional Command:
 ```sh
 repeatprof profile -p Refs.fa /RepeatProfilerData/Test1
 ```
 
-Explanation:
+###### Explanation:
 - 'repeatprof' is the program
 - 'profile' is the command that directs the program to generate profiles
 - '-p' indicates the input reads are paired
@@ -74,14 +74,14 @@ Explanation:
 Preparing user_provided.txt for -corr
 Lets say you want to make a profile for reads you prepared and want to include correlation analysis graphs which show how similar/different read mapping depth are. In order to conduct this analysis reads must be grouped. The manner of grouping is dependent on what you are aiming to get out of this analysis.
 
-Generate user_provided.txt Command:
+###### Generate user_provided.txt Command:
 ```sh
 repeatprof pre-corr < -u for unpaired reads  or -p paired reads  > <path reads folder>
 ```
 
 After running this command a file named user_provided.txt will be generated in your current directory based on your reads. In order to use this file for correlation analysis replace the placeholder 'temporary' with your own desired groups.  
 
-Verify Correct format and View Command:
+###### Verify Correct format and View Command:
 ```sh
 repeatprof pre-corr -v   
 ```
