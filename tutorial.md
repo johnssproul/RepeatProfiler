@@ -1,97 +1,3 @@
-# Getting started:
-
-
-##### Required Input data:
-
-To generate profiles, you need two input types: (1) one or more reference sequence, and (2) short-read sequence data from one or more samples.
-
-1. Reference sequences
-- One or more reference sequence of repeats in FASTA format (LINK example)
-- For tips on obtaining reference sequences for groups that lack repeat reference libraries see “TBD section” below (or LINK to full tutorial)
-
-2. Sequence data
-- Read files should be in FASTQ format.
-- Files should end in the ‘.fastq’, or compressed ‘.fastq.gz’ extension (‘.fq’ instead of ‘.fastq’  is also supported).
-- Input reads may be paired, or unpaired. If paired data are used, the last string before the file extension should be ‘_1’ for Read1 and ‘_2’ for Read2 (alternatively ‘_R1’ and ‘_R2’ may be used). An example of an acceptable name for the file name for the file containing Read1 reads would be: ‘SampleName_1.fastq.gz’. The file containing Read2 data should replace the ‘_1’ with ‘_2’, but be identical otherwise as in: ‘SampleName_2.fastq.gz’
--A full list of supported input final strings and extensions is shown in the table below:
-
-|  Input |format   | format  | format  |format   | format  | format  | format|
-|---|---|---|---|---|---|---|---|
-| Paired Reads   | _R1.fastq | _R1.fastq.gz | _R1.fq | _1.fastq | _1.fastq.gz | _1.fq | _1.fq.gz |   
-|                | _R2.fastq | _R2.fastq.gz | _R2.fq | _2.fastq | _2.fastq.gz | _2.fq | _2.fq.gz |   
-| Unpaired Reads | .fq.gz    | .fastq.gz    | .fq    | .fastq   | .fastq      | .fq   | .fq.gz   |   
-| Reference      | .fa       | .fasta       | .txt   |          |             |       |          |                
-
-
-
-Review the sample input data set provided [here]. Also make sure all your files has Unix LF which means an empty line at the end of the file. This is standard among all linux and macOS text files
-
-
-##### Generating profiles:
-
-a sample profile command with mandatory flags explained
-```sh
-repeatprof profile <-p for paired reads or -u for unpaired> <the reference sequence path > <path of the folder containing reads> [optional flags]
-```
-
-an example of a functional example command (explanations omitted).
-
-```sh
-repeatprof profile -p Refs.fa /RepeatProfilerData/Test1
-```
-
-Explanation:
-- 'repeatprof' calls the program
-- 'profile' the command that directs program to generate profiles (see other command options below)
-- '-p' indicates the input reads are paired
-- 'Refs.fa' specifies the FASTA files containing reference sequences (located in the current directory in this example, alternatively a path can be provided)
-– '/RepeatProfilerData/Test1' gives the path of the directory containing input read files
-
-
-###### Optional flags:
-| optional flag                        | usage                                                                                                                                                           |
-|--------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| -o <folder_path>                     | This will direct the final output folder to the specified folder. Default: Current directory                                                                 |
-| -corr                                | this flag to make the correlation analysis. user_provided.txt is needed for the  correlation graph                                                              |
-| -usrprov <user_provided.txt path> | use this to provide path of user_provided.txt explained above. Default is current directory. look  below on how to prepare the user_provided.txt and what it is |
-| --very-sensitive                     | bowtie alignment setting. Default:--very-sensitive                                                                                                              |
-| --very-fast                          | bowtie alignment setting. Default:--very-sensitive                                                                                                              |
-| --local                              | bowtie alignment setting. Default:--very-sensitive                                                                                                              |
-| --fast                               | bowtie alignment setting. Default:--very-sensitive                                                                                                              |
-| --very-fast-local                    | bowtie alignment setting. Default:--very-sensitive                                                                                                              |
-| --fast-local                         | bowtie alignment setting. Default:--very-sensitive                                                                                                              |
-| --sensitive                          | bowtie alignment setting. Default:--very-sensitive                                                                                                              |
-| --very-sensitive                     | bowtie alignment setting. Default:--very-sensitive                                                                                                              |
-| --very-sensitive-local               | bowtie alignment setting. Default:--very-sensitive                                                                                                              |
-| --sensitive-local                    | bowtie alignment setting. Default:--very-sensitive                                                                                                              |
-| -k                                   | use this flag if you want to keep the sorted bam files of the alignments in the final output folder                                                             |
-
-
-
-##### Note: Don't include the <> when typing paths . It is just for illustration here. Also make sure all paths passed into the command have no blank. In addition, Default is  current directory means that if you didn't enter this flag it will just assume you have the input in the current directory
-
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-##### Preparing user_provided.txt for -corr
-Lets say you want to make a profiles for reads you prepared and want them to include correlation graphs which shows how similar/different   reads mapping depth are, but also some of these reads belong to a group (A) for example and other (B), so first
-run this command:
-```sh
-repeatprof pre-corr < -u for unpaired reads  or -p paired reads  > <path reads folder>
-```
-
-after running this command a  user_provided.txt will be generated based on your reads and all you have to do is to replace the placeholder 'temporary' with your own groups then run this command to verify that it is in the correct format and view the file
-```sh
-repeatprof pre-corr -v   
-```
-you need to have your edited user_provided.txt in the same directory you are running this command in.
-
-##### Now you are all set for generating profiles with nice looking correlation groups graph and using the tool  . GOOD JOB !
-&nbsp;
-&nbsp;
-In case you terminated the run, you can use this command to clean up intermediate files created by the tool if you want
-```sh
-repeatprof clean   
-```
 # Understanding the output---In-depth Tutorial
 In this section, I will walk you through a sample output/outputs generated by the sample input data [here]. We will cover:
 
@@ -107,12 +13,6 @@ In this section, I will walk you through a sample output/outputs generated by th
  - How to use the phylip formatted file correctly and get the most out of the trees you generate.
 
  - How to get the most out of the tool and your data
-
-
-
-
-
-
 
 
 ## What is in the output folder
@@ -204,6 +104,10 @@ Based on the variation plots explained earlier, we were able to capture phylogen
  This also captures its information from the graphs. It contain fraction of bases that didnt match for each read/read pair for this refrence. Looking at this table, can tell you which graphs have the most  phylogentic positions, and you can make decsions based on that.   
 
 [//]: #
+   [Installation]: <https://johnssproul.github.io/RepeatProfiler/>
+   [Application]: <https://johnssproul.github.io/RepeatProfiler/Uses.html>
+   [FASTA format]: <https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet>
+   [Bowtie2 Manual] <http://gensoft.pasteur.fr/docs/bowtie2/2.0.0/>
    [.zip]: <https://github.com/johnssproul/RepeatProfiler/releases/download/0.9/RepeatProfiler-v0.9-source.zip>
    [here]: <https://github.com/johnssproul/RepeatProfiler/releases/download/0.9/sample_input.zip>
    [dill]: <https://github.com/joemccann/dillinger>
