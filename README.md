@@ -1,3 +1,9 @@
+
+[Tutorial](./Tutorial.md)
+
+[How to Get the Most Out of Repeat Profiler](./Uses.md)
+
+
 Repeat Profiler is a tool for generating, visualizing, and comparing repetitive DNA profiles from short-read data. This tool automates the generation of repetitive DNA profiles from short-read sequence data and one or more reference sequences. Output enables standardized visualization of profiles and comparative analysis of profiles across and within samples. RepeatProfiler is developed specifically to facilitate study of repetitive DNA dynamics over short evolutionary time scales in groups lacking genomic resources; however, it may be useful in any application where extracting signal from repetitive sequences is needed.
 
 
@@ -40,6 +46,3 @@ After dependencies are installed, move to the unzipped directory containing the 
 ```sh
 bash repeatprof
 ```
-
-[Tutorial](./Tutorial.md)
-[How to Get the Most Out of Repeat Profiler](./Uses.md)
