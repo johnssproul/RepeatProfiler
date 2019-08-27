@@ -93,3 +93,10 @@ In case you terminated the run, you can use this command to clean up intermediat
 ```sh
 repeatprof clean   
 ```
+
+[//]: #
+   [Installation]: <https://johnssproul.github.io/RepeatProfiler/>
+   [Application]: <https://johnssproul.github.io/RepeatProfiler/Uses.html>
+   [FASTA format]: <https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet>
+   [Bowtie2 Manual] <http://gensoft.pasteur.fr/docs/bowtie2/2.0.0/>
+   
