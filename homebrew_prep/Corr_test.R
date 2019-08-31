@@ -2,7 +2,7 @@ args = commandArgs(trailingOnly = TRUE)
 
 cat('Plotting correlation... \n')
 
-.libPaths(as.character(args[2])) brew stuff
+.libPaths(as.character(args[2])) #brew stuff
 
 library(ggplot2)
 
@@ -11,10 +11,10 @@ Normalized <- as.character(args[3]) #normalize stuff
 print(paste('CorrNormalized',Normalized))
 
 #get names of reads and grouping information
-user.supplied <- read.table('user_provided.txt', header = TRUE, stringsAsFactors = FALSE)
+user.supplied <- read.table('user_groups.txt', header = TRUE, stringsAsFactors = FALSE)
 index.conv <- read.table('Index_conv.txt', header = TRUE, stringsAsFactors = FALSE)
 
-ft <- '.png'
+ft <- '.pdf'
 #code if file type specified
 # if(is.null(args[3]) || is.na(args[3])) {
 #   ft <- '.png'

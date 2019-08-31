@@ -3,12 +3,13 @@ args <- commandArgs(trailingOnly = TRUE)
 #args[1] <- 'erecta_CL1_TR_1_x_181_0nt.fa_011' #testing
 
 cat('Saving variation plot... \n')
+
 .libPaths(as.character(args[2])) #brew stuff
 
 library(ggplot2)
 
 
-ft <- '.png'
+ft <- '.pdf'
 
 #code if file type specified
 # if(is.null(args[3]) || is.na(args[3])) {
@@ -42,8 +43,8 @@ if(read1.first != read2.first){
 }
 
 #creates dataframe of counts for bases
-#base.counts <- read.table('./erecta_CL1_TR_1_x_181_0nt.fa_output/erecta_CL1_TR_1_x_181_0nt.fa_011/pileup_counted.txt', header = TRUE) #testing
-base.counts <- read.table('pileup_counted.txt', header = TRUE)
+#base.counts <- read.table('./erecta_CL1_TR_1_x_181_0nt.fa_output/erecta_CL1_TR_1_x_181_0nt.fa_011/depth_counts.txt', header = TRUE) #testing
+base.counts <- read.table('depth_counts.txt', header = TRUE)
 head(base.counts[1])
 
 #creates new dataframe based on base.counts, but not including depth column
@@ -76,7 +77,7 @@ if(max(base.counts$Depth) < 1) {
 
 #polymorphPlot #testing
 
-#plot.name <- paste('./Test_plots/Variation_plot', ft, sep = '') #testing
-plot.name <- paste('Variation_plot', ft, sep = '')
+#plot.name <- paste('./Test_plots/variant_profile', ft, sep = '') #testing
+plot.name <- paste('variant_profile', ft, sep = '')
 ggsave(as.character(plot.name), polymorphPlot, units = 'mm', width = 175, height = 50)
 cat('file saved to ',  plot.name, '\n')
