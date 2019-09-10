@@ -1,7 +1,7 @@
 ﻿
 # Repeat Profiler (This README is in the early draft stages of construction)
 
-A tool for generating, visualizing, and comparing repetitive DNA profiles from short-read data. This tool automates the generation of repetitive DNA profiles from short-read sequence data and one or more reference sequences. Output enables standardized visualization of profiles and comparative analysis of profiles across and within samples. RepeatProfiler is developed specifically to facilitate study of repetitive DNA dynamics over short evolutionary time scales in groups lacking genomic resources; however, it may be useful in any application where extracting signal from repetitive sequences is needed.
+A tool for generating, visualizing, and comparative analysis of repetitive DNA profiles from short-read data. This tool automates the generation of repetitive DNA profiles from short-read sequence data and one or more reference sequences. Output enables standardized visualization of profiles, and comparative analysis of profile shape within and among user-defined groups, and prepares input files for phylogenetic analysis signal arising from variants within repeat profiles. RepeatProfiler is developed specifically to facilitate study of repetitive DNA dynamics over short evolutionary time scales in groups lacking genomic resources; however, it may be useful in any application where extracting signal from repetitive sequences is needed.
 
 
 # Features:
@@ -14,6 +14,8 @@ A tool for generating, visualizing, and comparing repetitive DNA profiles from s
 
 
 ### Installation
+
+#### Homebrew
 The easiest way to setup RepeatProfiler with all of its dependencies is through the package manager [Homebrew]. If you don’t have homebrew, it is available for installation on [linux/WSL] and on [macOS].
 
 After homebrew is installed, run this command:
@@ -26,8 +28,20 @@ To test if the installation was successful, try calling the program at the comma
 ```sh
 repeatprof
 ```
+#### Docker
+If Docker software is installed, pull the Docker image contanining RepeatProfiler run the command:
+```
+docker pull durberg7/repeatprof
+```
 
-### Alternative Installation
+To test if the installation was successful, try calling the program at the command line using:
+
+```sh
+docker exec <container ID> ./repeatprof
+```
+For a list useful commands for running RepeatProfiler see the RepeatProfiler website.
+
+#### Manual Installation
 As an alternative to homebrew you can download [.zip] of the latest program version and install the dependencies separately. 
 Required dependencies are:
  - bowtie2
@@ -46,10 +60,10 @@ bash repeatprof
 ```
 
 
-# Getting started:
+# Getting started
 
 
-##### Required Input data:
+##### Required Input
 
 To generate profiles, you need two input types: (1) one or more reference sequence, and (2) short-read sequence data from one or more samples.
 
