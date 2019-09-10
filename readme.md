@@ -29,6 +29,10 @@ To test if the installation was successful, try calling the program at the comma
 repeatprof
 ```
 
+### Docker
+```
+docker pull durberg7/repeatprof:0.92
+```
 
 ### Manual
 If you don’t have homebrew, it is available for installation on [linux/WSL] and on [macOS].
