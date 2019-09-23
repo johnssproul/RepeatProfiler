@@ -1,0 +1,10 @@
+Read1	Read2	Group
+Sample1_1.fq.gz	Sample1_2.fq.gz	1
+Sample2_1.fq.gz	Sample2_2.fq.gz	1
+ampliatum_DNA5130_LIB0344_R1_val_1.fq.gz	ampliatum_DNA5130_LIB0344_R2_val_2.fq.gz	1
+breve_DNA3799_LIB0251_R1_val_1.fq.gz	breve_DNA3799_LIB0251_R2_val_2.fq.gz	2
+breve_DNA4194_LIB0253_R1_val_1.fq.gz	breve_DNA4194_LIB0253_R2_val_2.fq.gz	2
+breve_DNA4697_LIB0329_R1_val_1.fq.gz	breve_DNA4697_LIB0329_R2_val_2.fq.gz	2
+lividulum_CraterLake3Way_DNA5032_LIB0243_R1_val_1.fq.gz	lividulum_CraterLake3Way_DNA5032_LIB0243_R2_val_2.fq.gz	3
+lividulum_DNA3486_LIB0323_val_1.fq.gz	lividulum_DNA3486_LIB0323_val_2.fq.gz	3
+lividulum_DNA3804_LIB0317_val_1.fq.gz	lividulum_DNA3804_LIB0317_val_2.fq.gz	3
