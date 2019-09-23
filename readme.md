@@ -1,5 +1,4 @@
-
-| [Getting Started](./gettingstarted.md) | [Tutorial](./tutorial.md) | [Applications](./uses.md) |
+| [Getting Started](gettingstarted.md) | [Tutorial](tutorial.md) | [Application](uses.md) |
 
 
 A tool for generating, visualizing, and comparative analysis of repetitive DNA profiles from short-read data. This tool automates the generation of repetitive DNA profiles from short-read sequence data and one or more reference sequences. Output enables standardized visualization of profiles, and comparative analysis of profile shape within and among user-defined groups, and prepares input files for phylogenetic analysis signal arising from variants within repeat profiles. RepeatProfiler is developed specifically to facilitate study of repetitive DNA dynamics over short evolutionary time scales in groups lacking genomic resources; however, it may be useful in any application where extracting signal from repetitive sequences is needed.
