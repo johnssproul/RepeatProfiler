@@ -28,8 +28,10 @@ To test if the installation was successful, try calling the program at the comma
 ```sh
 repeatprof
 ```
+
 #### Docker
 If Docker software is installed, pull the Docker image contanining RepeatProfiler run the command:
+
 ```
 docker pull durberg7/repeatprof
 ```
@@ -39,7 +41,8 @@ To test if the installation was successful, try calling the program at the comma
 ```sh
 docker exec <container ID> ./repeatprof
 ```
-For a list useful commands for running RepeatProfiler see the RepeatProfiler website.
+
+For more information about how to use RepeatProfiler with Docker see the [repeatprof repository] on Docker hub.
 
 #### Manual Installation
 As an alternative to homebrew you can download [.zip] of the latest program version and install the dependencies separately. 
@@ -58,7 +61,6 @@ After dependencies are installed, move to the unzipped directory containing the 
 ```sh 
 bash repeatprof 
 ```
-
 
 # Getting started
 
@@ -295,6 +297,7 @@ Based on the variation plots explained earlier, we were able to capture phylogen
 
 [//]: # 
    [.zip]: <https://github.com/johnssproul/RepeatProfiler/releases/download/0.9/RepeatProfiler-v0.9-source.zip>
+   [repeatprof repository]: <https://hub.docker.com/r/durberg7/repeatprof>
    [here]: <https://github.com/johnssproul/RepeatProfiler/releases/download/0.9/sample_input.zip>
    [Homebrew]: <https://brew.sh/>
    [linux/WSL]: <https://docs.brew.sh/Homebrew-on-Linux>
