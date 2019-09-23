@@ -92,7 +92,7 @@ repeatprof pre-corr -v
 ```
 
 ###### Example of user_groups..txt
-![](https://github.com/johnssproul/RepeatProfiler/tree/gh-pages/pics/user_groups.png)
+![](https://github.com/johnssproul/RepeatProfiler/blob/gh-pages/pics/user_groups.png)
 
 ##### The user_groups.txt must be in the same directory you are running repeatprof in.
 
