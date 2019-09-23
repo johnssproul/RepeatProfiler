@@ -73,7 +73,7 @@ The words “REPEAT PROFILER” should print to the screen.
   [linux/WSL]: <https://docs.brew.sh/Homebrew-on-Linux>
   [macOS]: <https://brew.sh/>
   [repeatprof repository]: <https://hub.docker.com/r/durberg7/repeatprof>
-  [.zip]: <https://github.com/johnssproul/RepeatProfiler>
+  [.zip]: <https://github.com/johnssproul/RepeatProfiler/releases>
   [bowtie2]: <https://github.com/BenLangmead/bowtie2>
   [samtools]: <http://www.htslib.org/doc/samtools.html>
   [python2]: <https://www.python.org/downloads/>
