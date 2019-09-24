@@ -1,4 +1,4 @@
-|| [Installation](readme.md) ||  [Tutorial](tutorial.md) ||  [Application](uses.md) || 
+|| [Installation](readme.md) || [Tutorial](tutorial.md) || [Output](output.md) || [Application](uses.md) || 
 
 # Getting started
 
