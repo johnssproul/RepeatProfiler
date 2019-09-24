@@ -1,4 +1,4 @@
-|| [Getting Started](gettingstarted.md) || [Tutorial](tutorial.md) || [Output](output.md) || [Application](uses.md) || 
+|| [Installation](readme.md) || [Getting Started](gettingstarted.md) || [Output](output.md) || [Application](uses.md) || 
 
 # Tutorial
 
