@@ -7,7 +7,7 @@ This section will help you better understand the ouput files by using output gen
    - References Used
    - [Readme](#Readme)
    - [Summary](#Summary)
- - [Read (Pair) Folders](#Read-(Pair)-Folders)
+ - [Read (Pair) Folders](#Reads Folders)
    - Indexed Folders
    - [Combined Horizontal PDF](#Combined-Horizontal-PDF)
    - [Combined Variation PDF](#Combined-Variation-PDF)
@@ -36,7 +36,7 @@ The_summary_final.csv table contains useful information about the refrence lengt
 
 ![](./pics/summary.png)
 
-##### Read (Pair) Folders
+##### Reads Folders
 Within each reference folder, there are individual folders for each read or pair of reads used in the run. Lets say we will go the first folder which is named CL3_TR_1_x_53_0nt. The file structure looks like this:
 
 ![](./pics/file_structure2.png)
