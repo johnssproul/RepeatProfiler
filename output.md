@@ -7,7 +7,7 @@ This section will help you better understand the ouput files by using output gen
    - References Used
    - [Readme](#Readme)
    - [Summary](#Summary)
- - [Read (Pair) Folders](#Read-(Pairs)-Folders)
+ - [Read (Pair) Folders](#Read-(Pair)-Folders)
    - Indexed Folders
    - [Combined Horizontal PDF](#Combined-Horizontal-PDF)
    - [Combined Variation PDF](#Combined-Variation-PDF)
