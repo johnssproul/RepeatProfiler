@@ -43,7 +43,7 @@ Within each reference folder, there are individual folders for each read or pair
 
 It is in these folders that you will find the real features of the tool. Prepare haha!
 
-Each subfolder belongs to the read or read pair this refrence sequence was run against. (The indices mentioned earlier.)<a name="index"></a> These folders contain the individual profiles produced by RepeatProfiler for the specific read (pair) to reference mapping. To learn more about these profiles, see the [profiles](profiles.md) page.
+Each subfolder belongs to the read or read pair this refrence sequence was run against. (The indices mentioned earlier.)<a name="index"></a> These folders contain the individual profiles produced by RepeatProfiler for the specific read (pair) to reference mapping. To learn more about these profiles, see the [tutorial](tutorial.md) page.
 
 ##### Combined Horizontal PDF<a name="horizontal"></a>
 The combined_horizontal_colored.pdf file contains all the profiles for this reference in a single file. This makes side-by-side comparisons easier and gives a nice overview of what to expect in the subfolders. Here is a portion of the file produced by this run:
