@@ -67,9 +67,9 @@ repeatprof profile -p Refs.fa /RepeatProfilerData/Test1
 | --fast-local                        | bowtie alignment setting. Default: --very-sensitive-local                          |
 | --very-fast-local                   | bowtie alignment setting. Default: --very-sensitive-local                          |
 
-##### Note on Bowtie2 alignment settings: sensitive settings are generally more accurate, but slower, while fast settings are generally less accurate, but faster. See the [Bowtie2 Manual] for more information.
+##### NOTE on Bowtie2 alignment settings: sensitive settings are generally more accurate, but slower, while fast settings are generally less accurate, but faster. See the [Bowtie2 Manual] for more information.
 
-##### Note on Flag Arguments: Don't include the <> when typing paths. Also, paths passed into this command cannot have blank spaces.
+##### NOTE on Flag Arguments: Don't include the <> when typing paths. Also, paths passed into this command cannot have blank spaces.
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
@@ -94,11 +94,11 @@ repeatprof pre-corr -v
 ###### Example of user_groups..txt
 ![](https://github.com/johnssproul/RepeatProfiler/blob/gh-pages/pics/user_groups.png)
 
-##### The user_groups.txt must be in the same directory you are running repeatprof in.
+##### NOTE: The user_groups.txt must be in the same directory you are running repeatprof in.
 
 Now you are all set for generating profiles with nice looking correlation groups graph and using the tool. GOOD JOB!
 
-In case you terminated the run, you can use this command to clean up intermediate files created by the tool.
+If a run was terminated early or did not complete as expected, use this command to clean up intermediate files created by the tool:
 ```sh
 repeatprof clean   
 ```
