@@ -1,4 +1,4 @@
-|| [Installation] || [Tutorial] || [Application] ||
+|| [Installation](readme.md) ||  [Tutorial](tutorial.md) ||  [Application](uses.md) || 
 
 # Getting started
 
@@ -8,7 +8,7 @@ To generate profiles, you need two input types: (1) one or more reference sequen
 
 1. Reference sequences
   - One or more reference sequence of repeats in [FASTA format]
-  - For tips on obtaining reference sequences for groups that lack repeat reference libraries see the full [tutorial]
+  - For tips on obtaining reference sequences for groups that lack repeat reference libraries see the full [tutorial](tutorial.md)
 
 2. Sequence data
   - Read files should be in FASTQ format
@@ -92,7 +92,7 @@ repeatprof pre-corr -v
 ```
 
 ###### Example of user_groups..txt
-![](https://github.com/johnssproul/RepeatProfiler/blob/gh-pages/pics/user_groups.png)
+![](./pics/user_groups.png)
 
 ##### NOTE: The user_groups.txt must be in the same directory you are running repeatprof in.
 
@@ -104,10 +104,6 @@ repeatprof clean
 ```
 
 [//]: #
-   [Installation]: <readme.md>
-   [Tutorial]: <tutorial.md>
-   [tutorial]: <tutorial.md>
-   [Application]: <uses.md>
    [here]: <https://github.com/johnssproul/RepeatProfiler/releases/download/0.9/sample_input.zip>
    [FASTA format]: <https://en.wikipedia.org/wiki/FASTA_format>
    [Bowtie2 Manual]: <http://gensoft.pasteur.fr/docs/bowtie2/2.0.0/>
