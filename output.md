@@ -26,7 +26,7 @@ Opening the folder you will find this file structure:
 
 Here, you will see individual folders for each of the references used in the run. Each reference folder contains all the analysis for that refrence. This is done in case you run the analysis with a multi-fasta sequence file. Your refrences are also kept in a single fasta file in Refrences_used<a name="used"></a> folder.
 
-##### Readme<a name="readme"></a>
+##### Readme <a name="readme"></a>
 The ReadMe file contains a summary of the reads used, where they were located, and what index was assigned to each. 
 
 ![](./pics/readme.png)
