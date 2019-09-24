@@ -64,11 +64,7 @@ There is much more information in this plot than to just compare them by eye. Th
 
 ![](./pics/phylip.png)
 
-Based on the variation plots explained earlier, we were able to capture phylogenetic informative sites from these plots. We analysed each plot indivudaly and recored the bases that had mismatch coverage over 10% from the actual coverage. We also accounted for ambigous sites.
-
-The phylip files are most informative for long refrence sequences (1000+ bases) and can be used in your favorite tree software. We used iq-tree.
-
-The best way to use this file is to run many tests and choose correct refrence sequences corrosponding to what you want to test out. See [applications](uses.md) for more information on how to use RepeatProfiler in conjunction with phylogenetic analysis. 
+For more information on the Phylip file, see the [tutorial](tutorial.md) page.
 
 ##### Variation Analysis<a name="analysis"></a>
 The variation_analysis.csv captures information fomr the plots. It contains the fraction of bases that didn't match for each read (pair) for this refrence. Looking at this table, you can discover which plots have the most phylogentic positions and make decsions based on that.  
