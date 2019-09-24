@@ -104,10 +104,10 @@ repeatprof clean
 ```
 
 [//]: #
-   [Installation]: <https://github.com/johnssproul/RepeatProfiler/tree/gh-pages/readme.md>
-   [Tutorial]: <https://github.com/johnssproul/RepeatProfiler/tree/gh-pages/tutorial.md>
-   [tutorial]: <https://github.com/johnssproul/RepeatProfiler/tree/gh-pages/tutorial.md>
-   [Application]: <https://github.com/johnssproul/RepeatProfiler/tree/gh-pages/uses.md>
+   [Installation]: <readme.md>
+   [Tutorial]: <tutorial.md>
+   [tutorial]: <tutorial.md>
+   [Application]: <uses.md>
    [here]: <https://github.com/johnssproul/RepeatProfiler/releases/download/0.9/sample_input.zip>
    [FASTA format]: <https://en.wikipedia.org/wiki/FASTA_format>
    [Bowtie2 Manual]: <http://gensoft.pasteur.fr/docs/bowtie2/2.0.0/>
