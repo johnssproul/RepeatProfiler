@@ -6,37 +6,48 @@ In the subfolders for specific read-reference mappings are the individual profil
 
 ### Basic Profiles
 
-##### Horizontal Gradient Profile
+##### Horizontal Scaled Profile
 This is the same profile shown in the combined pdf located in the references folder. The scale is based on all reads for the specific reference with the lowest depth being blue and the highest depth, red. The main purpose of this file is to provide cleaner information if you are interested in a specific read-reference mapping.
 
-![](./pics/horizontal.png)
+![](./pics/scaled_profile.png)
 
-##### Solid Profile
-The solid profile is a single colored version of the horizontal gradient profile. It is provided to allow for easier editting of the profiles for papers and posters and such.
+##### Simple Vector Profile
+The simple vector profile is a single colored version of the horizontal gradient profile. It is provided to allow for easier editting of the profiles for papers and posters and such.
 
-![](./pics/solid.png)
+![](./pics/simple_vector_profile.png)
 
-##### Pileup Counted
+##### Depth Counts
 This file contains the information per position in the reference sequence. It contains the depth of every position and mismatches of A, T, C, and G.
 
-![](./pics/pileup.png)
+![](./pics/depth.png)
 
-##### Vertical Gradient Profile (Optional)
-This profile is the same as the horizontal gradient and solid profile, just with a different style of color gradient. This color gradient goes from bottom to top rather than right to left. Because this profile takes much more time to produce algorihtmically and it is the same as two of the other outputs, we decided to leave its production to your discretion.
+##### Vertical Scaled Profile (Optional)
+This profile is the same as the horizontal scaled and simple vector profile, just with a different style of color gradient. This color gradient goes from bottom to top rather than right to left. 
 
 ![](./pics/vertical.png)
+
+Because this profile takes much more time to produce algorihtmically and it is the same as two of the other outputs, we decided to leave its production to your discretion. To generate the vertical scaled profile, use the command:
+
+```
+```
 
 
 ### Correlation Plots
 
-##### Correlation - Groups by Reference
+##### Boxplot - by Groups
+The correlation boxplots by groups show boxplots of correlation values for each group (and its outgroups) specified in the user_groups.txt.
 
 ![](./pics/groupcorr.png)
 
-##### Correlation - References by Groups
-
+##### Boxplot - by References
+The correlation boxplots by references show all the boxplots of correlation values for a given reference by ingroup and outgroup.
 
 ![](./pics/refcorr.png)
+
+##### Histogram
+The correlation histogram plots the correlation for each pair of within and between pairing.
+
+![](./pics/histogram.png)
 
 
 ### Phylogenetic Analysis
@@ -44,7 +55,7 @@ This profile is the same as the horizontal gradient and solid profile, just with
 ##### Variation Plot
 This is the same plot shown in the combined pdf located in the references folder. The main purpose of this file is to provide cleaner information if you are interested in a specific read-reference mapping.
 
-![](./pics/variation.png)
+![](./pics/variant_profile.png)
 
 ##### Phylip
 There is much more information in this plot than to just compare them by eye. These plots were use to produce the phylip file (found in the reference folder). 

@@ -91,10 +91,10 @@ After running this command a file named user_groups.txt will be generated in you
 repeatprof pre-corr -v   
 ```
 
-###### Example of user_groups..txt
+###### Example of user_groups.txt
 ![](./pics/user_groups.png)
 
-##### NOTE: The user_groups.txt must be in the same directory you are running repeatprof in.
+##### NOTE: The user_groups.txt must be in the same directory you are running repeatprof in. Also, each row should be tab separated.
 
 Now you are all set for generating profiles with nice looking correlation groups graph and using the tool. GOOD JOB!
 

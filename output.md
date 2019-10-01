@@ -13,6 +13,9 @@ This section will help you better understand the ouput files by using output gen
    - [Combined Variation PDF](#variation)
    - [Phylip](#phylip)
    - [Variation Analysis](#analysis)
+- [Other Folders](#other)
+   - [Map Depth (All Refs)](#depth)
+   - [Scaled Profiles (All Refs)](#profiles)
 
 ### Output Folder Contents
 After running your data, you will find a folder in your current directory or the directory. This folder should be named starting with a time stamp and ending with '-RepeatProfiler'.
@@ -37,37 +40,49 @@ The_summary_final.csv table contains useful information about the refrence lengt
 ![](./pics/summary.png)
 
 ##### Read (Pair) Folders<a name="reads"></a>
-Within each reference folder, there are individual folders for each read or pair of reads used in the run. Lets say we will go the first folder which is named CL3_TR_1_x_53_0nt. The file structure looks like this:
+Within each reference folder, there are individual folders for each read or pair of reads used in the run. These folders are labeled with the reference name and the index number<a name="index"></a>. The file structure looks like this:
 
 ![](./pics/file_structure2.png)
 
 It is in these folders that you will find the real features of the tool. Prepare haha!
 
-Each subfolder belongs to the read or read pair this refrence sequence was run against. (The indices mentioned earlier.)<a name="index"></a> These folders contain the individual profiles produced by RepeatProfiler for the specific read (pair) to reference mapping. To learn more about these profiles, see the [tutorial](tutorial.md) page.
+Each subfolder belongs to the read or read pair this refrence sequence was run against.        These folders contain the individual profiles produced by RepeatProfiler for the specific read (pair) to reference mapping. To learn more about these profiles, see the [tutorial](tutorial.md) page.
 
-##### Combined Horizontal PDF<a name="horizontal"></a>
-The combined_horizontal_colored.pdf file contains all the profiles for this reference in a single file. This makes side-by-side comparisons easier and gives a nice overview of what to expect in the subfolders. Here is a portion of the file produced by this run:
+##### Scaled Profiles PDF<a name="horizontal"></a>
+The scaled_profiles.pdf file contains all the profiles for this reference in a single file. This makes side-by-side comparisons easier and gives a nice overview of what to expect in the subfolders. Here is a portion of the file produced by this run:
 
 ![](./pics/combined_profile.png)
 
 Each of these profiles represent the coverage of the read (pair) when mapped to the specfic refrence (folder name). All the individual profiles are all based on the same scale so differences in color gradients are meaningful. By quickly looking at the profiles it is easy to tell which parts of the refrence sequence have the highest (red) and lowest(blue) coverage. This can tell you a lot about this read and refrence sequence including how and where this sequence is enriched in that species' reads compared to the other species' reads. Color scaling accross different reads will help you in a great way to vizualize differences among very large groups of data.
 
-##### Combined Variation PDF<a name="variation"></a>
-The combined_variation plots.pdf file contains all the variation profiles for this reference in a single file. Again, this file was produced in order to enhance analytical ability at a glance.
+##### Variant Profiles PDF<a name="variation"></a>
+The variant_profiles.pdf file contains all the variation profiles for this reference in a single file. Again, this file was produced in order to enhance analytical ability at a glance.
 
 ![](./pics/combined_variation.png)
 
 For example, here you can see that sample 001 and 002 which are from the same species share many common polymorphric base A at the same postion (the read bar).
 
 ##### Phylip<a name="phylip"></a>
-There is much more information in this plot than to just compare them by eye. These plots were use to produce the phylip file (found in the reference folder). 
+There is much more information in this plot than to just compare them by eye. These plots were use to produce the phylip file (found in the reference folder). This file is named as reference_name.phy. 
 
 ![](./pics/phylip.png)
 
 For more information on the Phylip file, see the [tutorial](tutorial.md) page.
 
 ##### Variation Analysis<a name="analysis"></a>
-The variation_analysis.csv captures information fomr the plots. It contains the fraction of bases that didn't match for each read (pair) for this refrence. Looking at this table, you can discover which plots have the most phylogentic positions and make decsions based on that.  
+The variation_analysis.tsv captures information fomr the plots. It contains the fraction of bases that didn't match for each read (pair) for this refrence. Looking at this table, you can discover which plots have the most phylogentic positions and make decsions based on that.  
 
- ![](./pics/variation_analysis.png) 
+![](./pics/variation_analysis.png) 
  
+### Other Folders
+There are some other miscellaneous folders produced. Here is an explanation of each.
+ 
+##### Map Depth (All Reps)<a name="depth"></a>
+This folder contains the csv file which show the depth at each position.
+ 
+![](./pics/mapdepth.png)
+ 
+##### Scaled Profiles (All Refs)<a name="profiles"></a>
+This folder contains the scaled profile pdfs for all references.
+
+![](.pics/profiles.png)
