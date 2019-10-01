@@ -85,4 +85,4 @@ This folder contains the csv file which show the depth at each position.
 ##### Scaled Profiles (All Refs)<a name="profiles"></a>
 This folder contains the scaled profile pdfs for all references.
 
-![](.pics/profiles.png)
+![](./pics/profiles.png)
