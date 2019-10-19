@@ -56,7 +56,7 @@ while read line ; do  # for each line  in the fofnrefs.txt we will loop through 
     numPairpile=1 #this will keep count of the index reads
 
 echo "before"
-    bash $1/map_mpileup.sh $line $2 $3 $4 $5
+    bash $1/singlecopy_map_mpileup.sh $line $2 $3 $4 $5
 
     retval=$?
 

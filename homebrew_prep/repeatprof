@@ -7,7 +7,7 @@ num_commands=`echo $commands | wc -w ` #gets the number  of commands
 
 if ((num_commands == 0 )) # if no commands entered, show this
  then
-echo "RepeatProfiler v 0.93 -prerelease- x good x improvements x"
+echo "RepeatProfiler v 0.94 -prerelease- x fast x as x the hedgehog x"
 echo "please use -h flag to view help menu for how to use this tool"
 
 
@@ -36,7 +36,7 @@ echo "generating symlinks"
 
 mydir=`echo "$(brew --cellar repeatprof)/0.92/libexec"` #brew stuff
 
-#R_packages="placeholder"
+#R_packages="placeholder" #comment when running it for brew
 R_packages=`echo "$(brew --cellar repeatprof)/0.92/R_packages"` #brew stuff
 
 #images=`echo "$(brew --cellar repeatprof)/0.92/images-RP"`  #brew stuff
@@ -208,6 +208,8 @@ fi
 
 #we check if the lines of the fofn for pair 1 is equal to lines fofn of pair 2 if not then give an error because that mean user has missing data if paired  
 
+
+echo "reads checking"
 reads1_check=`cat fofn1.txt | wc -l` 
 reads2_check=`cat fofn2.txt | wc -l `
 
@@ -461,62 +463,16 @@ echo "Reference	Sample_index	Read1	Read2	Total_reads	percent_mapped" > The_summa
 
 
 
+cat $refs/*.fa > all_References.fa #the folder where fasta spliter stores all the .fa file after splitting them. This line just gets a list of these references with their paths
+
+
+bowtie2-build all_References.fa $BASE 
+
+
+###############################################################################################inserting the mapmpileup 
 
 
 
-
-while read line  # for each line  in the fofnrefs.txt we will loop through it and  carry the following analysis
-do
-
-ref_char_count=`tail -n +2 $line | tr -cd 'ATGCatgc'  | wc -c` #this gets the reference sequence length
-name_ref=$(awk -F "/" '{print $NF}' <<< $line) # this awk command is to get the reference name from the path of references stored in fofnrefs.txt we did earlier
-											   # this command sepeartes on / and get the last word which is the reference name
-
-
-if [[ $ref_char_count == 0 ]]; then			   # if the  the length of the specfic reference is 0 then just skip it.
-											   # it skips it by just printing the below message and nothing else will be executed because everything done is in the else statemen of this
-echo ""
-echo "your $name_ref is an empty sequence or not in the correct format. It wont be analyzed or indexed. Please revise it " | tee -a Errors_README.log
-echo ""
-
-
-else
-
-echo "$(tail -n +2 $line)" > ref_temp.txt #this does something similar to above
-
-The_ref_size=`wc -c < ref_temp.txt` #same as above re_char_count
-
-bash $mydir/Readmegen.sh #this starts generating the readme. which will be populated later with the index to read conversions
-
-    bowtie2-build $line $BASE > /dev/null 2> /dev/null # this build index for the current reference
-    echo "The reference sequence currently under analysis:"
-    echo "$line"
-    echo ""
-
-
-
-#bash index_refs.sh
-name_ref=$(awk -F "/" '{print $NF}' <<< $line) #same as above just to make sure
-
-Ref_name=$name_ref #assigning it to another variable
-
-stringe="$Ref_name"
-stringee="_output"
-the_output="$stringe$stringee" #i sum up both variables to create the suboutput folder for that reference REFname_ouput. The one you see in the big folder
-rm -f -r $the_output
-mkdir $the_output
-
-
-echo "$the_output" >>fofn_Theoutputs.txt #this appends the fofn_the outputs with the current name (it gets created by the first append at the first reference rest is appennding)
-										 # keeping track of the folder names will help in the future when assigining stuff to each folder
-
-
-
-
-
-
-
-numPairpile=1 #this will keep count of the index reads
 
 
 p=8 #this is the deafult threads
@@ -581,14 +537,165 @@ echo "Bowtie2 alignment settings: $a"
 
 ####
 
+echo $4
+line="All_references"
 bash $mydir/map_mpileup.sh $line $4 $2 $p $a  #here we call map_mpileup.sh which runs bowtie aligning and uses the indexes we built and also run samtools pileup
+
+
+
+
+
 retval=$? #check if any error occured by getting the exit code
+
+
+
 
 if [ $retval -ne 0 ]; then #if an error occured and the exit code isnt 0  then exit. The error message will be printed from map_mileup not here
 
 exit 1
 
 fi
+
+#################################################################################################################
+
+echo "yes"
+
+
+
+
+
+
+
+
+while read line  # for each line  in the fofnrefs.txt we will loop through it and  carry the following analysis
+do
+
+ref_char_count=`tail -n +2 $line | tr -cd 'ATGCatgc'  | wc -c` #this gets the reference sequence length
+name_ref=$(awk -F "/" '{print $NF}' <<< $line) # this awk command is to get the reference name from the path of references stored in fofnrefs.txt we did earlier
+											   # this command sepeartes on / and get the last word which is the reference name
+
+
+if [[ $ref_char_count == 0 ]]; then			   # if the  the length of the specfic reference is 0 then just skip it.
+											   # it skips it by just printing the below message and nothing else will be executed because everything done is in the else statemen of this
+echo ""
+echo "your $name_ref is an empty sequence or not in the correct format. It wont be analyzed or indexed. Please revise it " | tee -a Errors_README.log
+echo ""
+
+
+else
+
+echo "$(tail -n +2 $line)" > ref_temp.txt #this does something similar to above
+
+The_ref_size=`wc -c < ref_temp.txt` #same as above re_char_count
+
+
+
+bash $mydir/Readmegen.sh #this starts generating the readme. which will be populated later with the index to read conversions
+
+  #  bowtie2-build $line $BASE > /dev/null 2> /dev/null # this build index for the current reference
+    echo "The reference sequence currently under analysis:"
+    echo "$line"
+    echo ""
+
+
+
+#bash index_refs.sh
+name_ref=$(awk -F "/" '{print $NF}' <<< $line) #same as above just to make sure
+
+Ref_name=$name_ref #assigning it to another variable
+
+stringe="$Ref_name"
+stringee="_output"
+the_output="$stringe$stringee" #i sum up both variables to create the suboutput folder for that reference REFname_ouput. The one you see in the big folder
+rm -f -r $the_output
+mkdir $the_output
+
+
+echo "$the_output" >>fofn_Theoutputs.txt #this appends the fofn_the outputs with the current name (it gets created by the first append at the first reference rest is appennding)
+										 # keeping track of the folder names will help in the future when assigining stuff to each folder
+
+
+
+
+
+
+
+numPairpile=1 #this will keep count of the index reads
+
+
+#this where mapmpile up used to be 
+
+
+
+
+#create the sorted bam files from master bam 
+refname_toextract="${name_ref%.*}"
+
+echo "refnameto : $refname_toextract "
+M=1
+while read mastername
+do 
+F=`printf "%03d\n" $M` #this puts the number in format 001 for example
+
+samtools index $mastername
+
+samtools view  $mastername $refname_toextract -o ${F}_sorted.bam 
+
+READ1=`sed -n "$M p"  fofn1.txt`
+READ2=`sed -n "$M p"  fofn2.txt`
+Read1name=$(awk -F "/" '{print $NF}' <<< $READ1) #seprates the read name on / and gets the last thing sperated
+Read2name=$(awk -F "/" '{print $NF}' <<< $READ2)
+allreads=`sed -n "$M p"  reads_lengths.txt`
+mappedreads=`samtools view -F 0x4 ${F}_sorted.bam | cut -f 1 | sort | uniq | wc -l`
+
+aligned=`echo "scale=4 ; $mappedreads / $allreads" | bc`
+
+echo "mappedreads: $mappedreads"
+echo "aligned : $aligned"
+
+echo "${refname_toextract}	S${F}	$Read1name	$Read2name	$allreads	$aligned" >> The_summary.txt
+
+
+	((M ++))
+
+done < master_bams.txt 
+
+
+
+#
+
+N=1 #counter needs to be reset for new loop
+MAX=`wc -l < fofn1.txt`
+#Loops through all .bam files and does depth command.
+while ((N<=MAX))
+	#if ((count<=max))
+do
+	F=`printf "%03d\n" $N`
+
+	echo "calculating read depth at each position"
+
+	samtools mpileup -f $line -q 0 -Q 0 -d 0 -A -o ${F}_pileup.out -O ${F}_sorted.bam
+
+	((N ++))
+done #< RefList2.txt
+
+ls *.out > fofn_pileup.txt
+ls *.bam > fofn_bam.txt
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 echo "name_poly" > multi_poly_names.txt #this creates a text file called multi_poly_names.txt this is used to keep track of the reads that we are drwaing the graphs for
 										# LIKE for example Refrencename_001  001 reference to the read the index we talked about before
@@ -705,27 +812,8 @@ rm -f Closely_related_reads_analysis.txt #we dont need this anymore
 #mv multi_poly $the_output    uncomment when testing
 #mv multi_poly_names.txt $the_output
 
-#thats check for -k which says where to keep bam file or not
-
-commands=$@
-array=(${commands})
-index=0
-
-for k in "${array[@]}"
-do
-
-if [[ $k  ==  "-k" ]]; then
 
 
-		mv *.bam *.out $the_output
-
-
-
-
-fi
-		((index ++))
-
-done
 
 
 
@@ -863,11 +951,41 @@ fi
 
 
 
-rm -f  *fofn* *.out *.bam all_refs.fa
+rm -f  *fofn* *.out  all_refs.fa *.bam
 #rm -f -r images-RP  #brew stuff
 rm -f -r multi_poly multi_poly_names.txt Index_conv.txt #comment when testing
 
+
+#thats check for -k which says where to keep bam file or not
+
+commands=$@
+array=(${commands})
+index=0
+
+for k in "${array[@]}"
+do
+
+if [[ $k  ==  "-k" ]]; then
+echo "transfering"
+
+		mv master_bam $The_folder
+
+
+
+
+fi
+		((index ++))
+
+done
+
+rm -f -r master_bam
+
+
+
+
 #design of the cow was borrowed from the famous cowsay package
+
+
 
 echo "________________________________"
 echo "< WOW what a great pipeline !!!! >"

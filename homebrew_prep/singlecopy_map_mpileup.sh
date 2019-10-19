@@ -5,7 +5,7 @@ REF=$1 #the refrence name is passed from the repeatprof script
 BASE="refbase_" #this is for the indexed refrence files that was built by bowtie2-build command in the repeatprof
 
 reads=$2 #the reads path is passed from repeatprof
-		
+
 DIR=`pwd` #this is just the current dictionary
 
 #MAXRef=`wc -l < RefList.txt` #this will need to be fixed if we make the script loop through multiple reference sequences. it will ideally count how many there are and use the number to control loop iteration.
@@ -156,35 +156,31 @@ do
   #does read mapping in bowtie, uses samtools to covert output to .bam, and sort .bam file.
   allreads=`head -n 1 bowtie.log | grep -Eo '[+-]?[0-9]+([.][0-9]+)?'`
   aligned=`tail -n 1 bowtie.log | grep -Eo '[+-]?[0-9]+([.][0-9]+)?'`
-  
-  #echo "${REF_name}	S${F}	$Read1name	$Read2name	$allreads	$aligned" >> The_summary.txt
-  echo "$allreads" >> reads_lengths.txt 
+  echo "${REF_name}	S${F}	$Read1name	$Read2name	$allreads	$aligned" >> The_summary.txt
   echo ""
 
 	((N ++)) #increases the value of $N by one
 done #< RefList2.txt
 
+ls ${DIR}/*.bam > fofn_bam.txt
 
 MAX2=`wc -l < fofn1.txt` #this probably doesn't need to be there.
 
+N=1 #counter needs to be reset for new loop
 
+#Loops through all .bam files and does depth command.
+while ((N<=MAX))
+	#if ((count<=max))
+do
+	F=`printf "%03d\n" $N`
 
+	echo "calculating read depth at each position"
 
+	samtools mpileup -f $REF -q 0 -Q 0 -d 0 -A -o ${F}_pileup.out -O ${F}_sorted.bam
 
+	((N ++))
+done #< RefList2.txt
 
-
-
-rm  -f -r master_bam
-
-mkdir master_bam
-mv *.bam  master_bam
-
-ls master_bam/*.bam > master_bams.txt
-
-
-
-
-
-
+ls ${DIR}/*.out > fofn_pileup.txt
 
 exit 0

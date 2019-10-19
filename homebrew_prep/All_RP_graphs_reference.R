@@ -2,7 +2,7 @@ args <- commandArgs(trailingOnly = TRUE)
 
 cat('Saving scaled per reference plots (horizontal gradient)... \n')
 
-print(as.character(args[1])) #brew stuff
+#print(as.character(args[1])) #brew stuff
 .libPaths(as.character(args[1])) #brew stuff
 
 library(ggplot2)

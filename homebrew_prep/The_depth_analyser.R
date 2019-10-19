@@ -22,7 +22,7 @@ The.summary$Average.coverage <- NA
 The.summary$max.coverage <- NA
 
 index.for.summary <- 1
-
+The.summary$percent_mapped<-The.summary$percent_mapped*100
 
 #loop to fill in initialized  data
 for(i in 2:ncol(all.depth)){

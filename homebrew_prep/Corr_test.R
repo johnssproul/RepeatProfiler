@@ -2,7 +2,7 @@ args = commandArgs(trailingOnly = TRUE)
 
 cat('Plotting correlation... \n')
 
-.libPaths(as.character(args[2])) #brew stuff
+.libPaths(as.character(args[2])) brew stuff
 
 library(ggplot2)
 
