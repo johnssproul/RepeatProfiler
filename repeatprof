@@ -7,7 +7,7 @@ num_commands=`echo $commands | wc -w ` #gets the number  of commands
 
 if ((num_commands == 0 )) # if no commands entered, show this
  then
-echo "RepeatProfiler v 0.93 -prerelease- x good x improvements x"
+echo "RepeatProfiler v 0.94 -prerelease- x fast x as x the hedgehog x"
 echo "please use -h flag to view help menu for how to use this tool"
 
 
