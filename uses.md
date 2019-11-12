@@ -1,4 +1,4 @@
-|| [1.Installation](readme.md) || [2.Getting Started](gettingstarted.md) || [3.Tutorial](tutorial.md) || [4.Output](output.md) || [**5.Applications**](uses.md)
+|| [1.Installation](readme.md) ||  [2.Getting Started](gettingstarted.md) || [3.Output](output.md) || [***4.Application***](uses.md) || 
 
 # Getting the Most out of Repeat Profiler 
 
