@@ -131,6 +131,7 @@ The variation_analysis.tsv captures information from the plots. It contains the 
 ##### Boxplot - by Groups<a name="bygroups"></a>
 This boxplot shows boxplots of correlation values for each group (and its outgroups) specified in the user_groups.txt.
 
+<img src="./pics/groupcorr.png" alt="bygroups" width="200"/>
 ![](./pics/groupcorr.png =100x50)
 
 ##### Boxplot - by References<a name="byref"></a>
