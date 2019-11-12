@@ -1,4 +1,4 @@
-|| [Installation](readme.md) ||  [Getting Started](gettingstarted.md) || [***Output***](output.md) || [Application](uses.md) || 
+|| [1.Installation](readme.md) ||  [2.Getting Started](gettingstarted.md) || [***3.Output***](output.md) || [4.Application](uses.md) || 
 
 NEED TO UPDATE PICTURES WITH FINAL VERSION
 
