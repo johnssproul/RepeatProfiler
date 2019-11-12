@@ -129,17 +129,17 @@ The variation_analysis.tsv captures information from the plots. It contains the 
 ### Correlation Analysis<a name="corr"></a>
 
 ##### Boxplot - by Groups<a name="bygroups"></a>
-The correlation boxplot by groups shows boxplots of correlation values for each group (and its outgroups) specified in the user_groups.txt.
+This boxplot shows boxplots of correlation values for each group (and its outgroups) specified in the user_groups.txt.
 
 ![](./pics/groupcorr.png)
 
 ##### Boxplot - by References<a name="byref"></a>
-The correlation boxplot by references shows boxplots of correlation values for a given reference by ingroup and outgroup.
+This boxplot shows boxplots of correlation values for a given reference by ingroup and outgroup.
 
 ![](./pics/refcorr.png)
 
 ##### Histogram<a name="histogram"></a>
-The correlation histogram plots the correlation for each pair of within and between pairing.
+The histogram plots the correlation between each read of a reference and the other reads in the run. The between and within groups are specified by you in the user_groups.txt.
 
 ![](./pics/histogram.png)
 
