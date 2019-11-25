@@ -129,6 +129,7 @@ Explanation:
 | --very-sensitive-local               | bowtie alignment setting. Default:--very-sensitive                                                                                                              |
 | --sensitive-local                    | bowtie alignment setting. Default:--very-sensitive                                                                                                              |
 | -k                                   | use this flag if you want to keep the sorted bam files of the alignments in the final output folder                                                             |
+| -vertical                                   | use this flag if you want to the pipeline to plot a graphs with vertical color gradiant profiles (default is horizontal color gradiant)                                                             |
 
 
  
