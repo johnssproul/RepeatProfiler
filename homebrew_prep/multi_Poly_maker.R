@@ -36,7 +36,7 @@ ft <- '.pdf'
 #wm <- ggpubr::background_image(img) #for watermark
 cap <- labs(caption = 'This graph has no coverage.') #sets caption for low coverage plots
 
-index.conv <- read.table('Index_conv.txt', header = TRUE, stringsAsFactors=FALSE) #reads textfile containing names of reads
+index.conv <- read.table('index_conv.txt', header = TRUE, stringsAsFactors=FALSE) #reads textfile containing names of reads
 
 #reads textfile containing names indexed samples
 #multi.poly.names <- read.table('./erecta_CL9_TR_1_x_6687_0nt.fa_output/multi_poly_names.txt', header = TRUE, stringsAsFactors = FALSE) #testing

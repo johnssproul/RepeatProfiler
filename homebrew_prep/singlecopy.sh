@@ -14,7 +14,7 @@ fofnsinglecheck=`cat fofnsingle.txt | wc -l`
 
 if [[ $fofnsinglecheck == 0 ]];then #if both are empty then there was no reads of correct format to begin with
   echo "PROBLEM !"
-  echo "No singlecopy genes sequences detected in the Refrence sequence file you provided. Make sure your single copy  refrence names in the Fasta file  end with _singlecopy "
+  echo "No singlecopy genes sequences detected in the Refrence sequence file you provided. Make sure your single copy  reference names in the Fasta file  end with _singlecopy "
   echo "more info can be found on the github page refer to repeatprof -h "
   exit 1
 fi
@@ -23,11 +23,11 @@ echo "Normalization calcaulations is starting "
 
 BASE="refbase_"
 while read line ; do  # for each line  in the fofnrefs.txt we will loop through it and  carry the following analysis
-  ref_char_count=`tail -n +2 $line | tr -cd 'ATGCatgc'  | wc -c` #this gets the refrence sequence length
-  name_ref=$(awk -F "/" '{print $NF}' <<< $line) # this awk command is to get the refrence name from the path of references stored in fofnrefs.txt we did earlier
-											   # this command sepeartes on / and get the last word which is the refrence name
+  ref_char_count=`tail -n +2 $line | tr -cd 'ATGCatgc'  | wc -c` #this gets the reference sequence length
+  name_ref=$(awk -F "/" '{print $NF}' <<< $line) # this awk command is to get the reference name from the path of references stored in fofnrefs.txt we did earlier
+											   # this command sepeartes on / and get the last word which is the reference name
 
-  if [[ $ref_char_count == 0 ]]; then			   # if the  the length of the specfic refrence is 0 then just skip it.
+  if [[ $ref_char_count == 0 ]]; then			   # if the  the length of the specfic reference is 0 then just skip it.
 											   # it skips it by just printing the below message and nothing else will be executed because everything done is in the else statemen of this
     echo ""
     echo "your $name_ref is an empty sequence or not in the correct format. It wont be analyzed or indexed. Please revise it " | tee -a Errors_README.log
@@ -39,7 +39,7 @@ while read line ; do  # for each line  in the fofnrefs.txt we will loop through 
 
     bash $1/Readmegen.sh #this starts generating the readme. which will be populated later with the index to read conversions
 
-    bowtie2-build $line $BASE > /dev/null 2> /dev/null # this build index for the current refrence
+    bowtie2-build $line $BASE > /dev/null 2> /dev/null # this build index for the current reference
     echo "The reference sequence currently under analysis:"
     echo "$line"
     echo ""
@@ -51,7 +51,7 @@ while read line ; do  # for each line  in the fofnrefs.txt we will loop through 
 
     stringe="$Ref_name"
     stringee="_output"
-    the_output="$stringe$stringee" #i sum up both variables to create the suboutput folder for that refrence REFname_ouput. The one you see in the big folder
+    the_output="$stringe$stringee" #i sum up both variables to create the suboutput folder for that reference REFname_ouput. The one you see in the big folder
 
     numPairpile=1 #this will keep count of the index reads
 

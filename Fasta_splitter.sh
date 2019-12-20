@@ -15,7 +15,7 @@ if [[ ! -z $end  ]]; then
   exit 2
 fi
 
-echo "The references inputed:"
+echo "The references input:"
 
 
 while read line

@@ -1,8 +1,8 @@
 #!/bin/bash
 
-REF=$1 #the refrence name is passed from the repeatprof script
+REF=$1 #the reference name is passed from the repeatprof script
 
-BASE="refbase_" #this is for the indexed refrence files that was built by bowtie2-build command in the repeatprof
+BASE="refbase_" #this is for the indexed reference files that was built by bowtie2-build command in the repeatprof
 
 reads=$2 #the reads path is passed from repeatprof
 
@@ -76,7 +76,7 @@ N=1 #initiates a counter
 echo "mapping reads"
 #loops through all read pairs and makes a variable of file names for each pair to feed to bowtie, calls bowtie to map reads, then converts output to .bam and sorts .bam with samtools
 
-echo "Read1	Read2	index" > Index_conv.txt   #builds index_conv which is used in Rscripts
+echo "Read1	Read2	index" > index_conv.txt   #builds index_conv which is used in Rscripts
 
 while ((N<=MAX))
 do
@@ -87,7 +87,7 @@ do
 	Read1name=$(awk -F "/" '{print $NF}' <<< $READ1) #seprates the read name on / and gets the last thing sperated
 	Read2name=$(awk -F "/" '{print $NF}' <<< $READ2)
 	echo "index= $F" >> ReadMe.txt
-	echo "$Read1name	$Read2name	$F" >> Index_conv.txt
+	echo "$Read1name	$Read2name	$F" >> index_conv.txt
 
   if [ $3 = "-p" ]; then
   	echo "Read1= $Read1name		Path: $READ1" >> ReadMe.txt

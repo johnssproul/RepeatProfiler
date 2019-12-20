@@ -40,7 +40,7 @@ multmerge <- function(mypath){
 
 #img <- png::readPNG('./images-RP/watermark.png') #get watermark image
 
-index.conv <- read.table('Index_conv.txt', header = TRUE, stringsAsFactors = FALSE) #reads textfile containing names of reads
+index.conv <- read.table('index_conv.txt', header = TRUE, stringsAsFactors = FALSE) #reads textfile containing names of reads
 all.depth.csv <- multmerge('temp_cvs')
 # all.depth.csv<-cbind(Position=all.depth.csv[,1],all.depth.csv[,2:NCOL(all.depth.csv)]/Normalized) #normalization
 

@@ -4,7 +4,7 @@ cat('Saving scaled over all references plots (horizontal gradient)... \n')
 
 print('This is under construction normalize.')
 
-#print(as.character(args[2])) #brew stuff
+print(as.character(args[2])) #brew stuff
 .libPaths(as.character(args[2])) #brew stuff
 
 library(ggplot2)
@@ -44,7 +44,7 @@ multmerge <- function(mypath){
   Reduce(function(x, y) {merge(x, y, all = TRUE)}, datalist)
 }
 
-index.conv <- read.table('Index_conv.txt', header = TRUE, stringsAsFactors = FALSE) #reads textfile containing names of reads
+index.conv <- read.table('index_conv.txt', header = TRUE, stringsAsFactors = FALSE) #reads textfile containing names of reads
 all.depth.csv <- multmerge('map_depth_allrefs')
 
 ###normaliaztion

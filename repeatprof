@@ -8,7 +8,7 @@ num_commands=`echo $commands | wc -w ` #gets the number  of commands
 if ((num_commands == 0 )) # if no commands entered, show this
  then
 echo "RepeatProfiler v 0.94 -prerelease- x fast x as x the hedgehog x"
-echo "please use -h flag to view help menu for how to use this tool"
+echo "use -h flag for help using this tool"
 
 
 echo "____ ____ ___  ____ ____ ___    ___  ____ ____ ____ _ _    ____ ____"
@@ -110,7 +110,7 @@ if [[ $t  ==  "-o" ]]; then # this if statement says if the flag in the array is
 		 echo "the output will be directed to  $the_path "
 
 		else
-		   echo "Specified output directory path invalid. Please specify a valid path (check for blanks in directory names), or omit the -o flag and output will be written to current directory."
+		   echo "Specified output directory path invalid. Specify a valid path (check for blanks in directory names), or omit the -o flag and output will be written to current directory."
 
 		   exit 0
 		fi
@@ -209,7 +209,7 @@ fi
 #we check if the lines of the fofn for pair 1 is equal to lines fofn of pair 2 if not then give an error because that mean user has missing data if paired  
 
 
-echo "reads checking"
+echo "checking reads"
 reads1_check=`cat fofn1.txt | wc -l` 
 reads2_check=`cat fofn2.txt | wc -l `
 
@@ -228,7 +228,7 @@ fi
 
 if [ "$reads1_check" != "$reads2_check" ]; then
 
-echo "There is a pair of read missing. Ensure all reads read pairs are present in input directory"| tee -a Errors_README.log
+echo "There is a pair of reads missing. Ensure all reads read pairs are present in input directory"| tee -a Errors_README.log
 exit 1
 fi
 #ls ${DIR}/*.fa > fofn3.txt
@@ -326,7 +326,7 @@ exit 1
 
 elif [ $retval -ne 0 ]; then #if an error occured and the exit code isnt 0  then exit. The error message will be printed from map_mileup not here
 
-	echo "Something is wrong with reference file inputed. Please make ensure it is in fasta format and the last line ends in a carriage return"
+	echo "Something is wrong with the file containing reference sequences -- check that it is in fasta format and the last line ends in a carriage return"
 exit 1
 
 fi
@@ -351,7 +351,7 @@ exit 1
 
 elif [ $retval -ne 0 ]; then #if an error occured and the exit code isnt 0  then exit. The error message will be printed from map_mileup not here
 
-	echo "Something is wrong with reference file inputed. Please make ensure it is in fasta format and the last line ends in a carriage return"
+	echo "Something is wrong with the file containing reference sequences -- check that it is in fasta format and the last line ends in a carriage return"
 exit 1
 
 fi
@@ -360,7 +360,7 @@ refs=references_used
 
 
 else
-    echo "The path to folder of References files  or The path to your Refrecnes file is not valid"
+    echo "The path to file containing the reference sequence(s)is not valid"
     exit 1
 fi
 
@@ -578,7 +578,7 @@ name_ref=$(awk -F "/" '{print $NF}' <<< $line) # this awk command is to get the 
 if [[ $ref_char_count == 0 ]]; then			   # if the  the length of the specfic reference is 0 then just skip it.
 											   # it skips it by just printing the below message and nothing else will be executed because everything done is in the else statemen of this
 echo ""
-echo "your $name_ref is an empty sequence or not in the correct format. It wont be analyzed or indexed. Please revise it " | tee -a Errors_README.log
+echo "your $name_ref is an empty sequence or not in the correct format. It will be ignored in this run. " | tee -a Errors_README.log
 echo ""
 
 
@@ -895,21 +895,21 @@ echo "" >> correlation_README.txt
 echo "4 output folders are outputed in Correlation analysis." >> correlation_README.txt
 echo "">> correlation_README.txt
 echo "First folder: correlation_boxplots_by_group">> correlation_README.txt
-echo "This folder contains boxplots for each group you inputed in your user_groups.txt. The boxplots show how does a group varry among all references used in the run. Each group has its own plot.">> correlation_README.txt
+echo "This folder contains boxplots for each group you inputed in your user_groups.txt. The boxplots show how does a group vary among all references used in the run. Each group has its own plot.">> correlation_README.txt
 echo "">> correlation_README.txt
 
 echo "Second folder: correlation_boxplots_by_reference">> correlation_README.txt
-echo " This folder contains boxplots for each refrence you inputed in your user_groups.txt. The box plots show how  all groups vary for a reference inputed. Each refrence has its own plot.">> correlation_README.txt
+echo " This folder contains boxplots that compare profile shape within and between user-defined groups, organized by reference.">> correlation_README.txt
 echo "">> correlation_README.txt
 echo "Third folder: correlation_data">> correlation_README.txt
-echo " This folder contains correlation matrices for each refrence inputed. The matrices shows all the correlation values among all samples for a reference. Each refrence has its own matrix.">> correlation_README.txt
+echo " This folder contains correlation matrices for each reference. The matrices shows all the correlation values among all samples for a reference. Each refrence has its own matrix.">> correlation_README.txt
 echo "">> correlation_README.txt
 echo "Fourth folder:correlation_histograms">> correlation_README.txt
-echo " This folder contains histograms for each refrence inputed. The histograms shows within and between groups correlation values for each refrence. Each reference has a its own historgram">> correlation_README.txt
+echo " This folder contains histograms of within, and between group correlation values for each reference.">> correlation_README.txt
 
 echo "">> correlation_README.txt
 echo "Last file: correlation_summary.csv">> correlation_README.txt
-echo "  This table contains average values of within and between each group correlation value for each reference. This table is a summary and contain information for all correlation done in the run">> correlation_README.txt
+echo "  This table contains average values of within and between each group correlation value for each reference. It summarizes information for all correlation done in the run">> correlation_README.txt
 
 mv correlation_README.txt correlation_analysis/
 
@@ -953,7 +953,7 @@ fi
 
 rm -f  *fofn* *.out  all_refs.fa *.bam
 #rm -f -r images-RP  #brew stuff
-rm -f -r multi_poly multi_poly_names.txt Index_conv.txt #comment when testing
+rm -f -r multi_poly multi_poly_names.txt index_conv.txt #comment when testing
 
 
 #thats check for -k which says where to keep bam file or not
@@ -1117,7 +1117,7 @@ fi
 
 if [[ ! -d $3 ]]; then 
 
-echo "Invalid path to the output folder. Please refer to repeatprof -h to check command structure"
+echo "Invalid path to the output folder.refer to repeatprof -h to check command structure"
 
 
 fi
@@ -1185,7 +1185,7 @@ if [[ $reads1_check == 0 && $reads2_check == 0 ]];then
 echo ""
 
 echo "The path to the paired reads file(s) is incorrect, or the file(s) is/are in a unsupported format"| tee -a Errors_README.log
-echo "Make sure your read pairs  are in .fastq or .gz or .fq AND revise the path inputed"| tee -a Errors_README.log
+echo "Make sure your read pairs  are in .fastq or .gz or .fq, check that the path to the reads is correct"| tee -a Errors_README.log
 
 exit 1
 
@@ -1194,7 +1194,7 @@ fi
 
 if [ "$reads1_check" != "$reads2_check" ]; then
 
-echo "There is a pair of read missing. Ensure all reads read pairs are present in input directory"| tee -a Errors_README.log
+echo "There is a pair of reads missing. Ensure all reads read pairs are present in input directory"| tee -a Errors_README.log
 exit 1
 fi
 
@@ -1291,7 +1291,7 @@ if [ "$1" == "-h" ]; then
 echo ""
 
 echo "Usage:"
-echo "repeatprof profile <-p for paired reads or  -u for unpaired> <the refrence sequence path > <path of the folder containing reads> [opitonal flags]"
+echo "repeatprof profile <-p for paired reads or  -u for unpaired> <the reference sequence path > <path of the folder containing reads> [opitonal flags]"
 echo ""
 echo "optional flags:"
 echo "-o <folder_path>		use to specifiy an directory where the final output file  be directed to. Default: current directory"
@@ -1349,14 +1349,14 @@ echo ""
 echo "repeatprof pre-corr -v  use this command to review your edited user_groups.txt with your desired groups. This ensures that it is still in the correct file format. Need to be in same directory as file"
 echo ""
 
-echo "repeatprof clean		use this command to cleanup a broken/terminated run"
+echo "repeatprof clean    use this command to cleanup a broken/terminated run"
 
 echo ""
 
 
 
 
-echo "check our github page https://github.com/johnssproul/RepeatProfiler for more  detailed info  on how to run the tool/sample inputs/ output explanation/tutorial "
+echo "check our github page https://github.com/johnssproul/RepeatProfiler for more detailed info on how to run the tool/sample inputs/ output explanation/tutorial "
 
 
 fi

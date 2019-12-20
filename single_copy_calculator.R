@@ -26,6 +26,13 @@ for(i in 2:ncol(all.depth)){
   The.summary[index.for.summary,7] <- ref.length
 
   #average coverage
+  if(length(v) > 200){
+  v<-v[1:(length(v)-75)]
+  v<-v[75:length(v)]
+    
+    
+  }
+  
   sum.coverage <- sum(as.numeric(v), na.rm = TRUE)
   average.coverage <- sum.coverage/as.numeric(The.summary[index.for.summary,7])
   The.summary[index.for.summary,8] <- average.coverage

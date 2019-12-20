@@ -28,6 +28,7 @@ The.summary$percent_mapped<-The.summary$percent_mapped*100
 for(i in 2:ncol(all.depth)){
   v <- as.vector(all.depth[,i])
 
+  
   #reference length
   ref.length <- sum(!is.na(v))
   The.summary[index.for.summary,7] <- ref.length
@@ -55,6 +56,8 @@ if(all(The.summary$Read1 == The.summary$Read2)){
 if(Normalized == 'true'){
   Normalizetable <- read.csv('normalized_table.csv', header = TRUE, stringsAsFactors = FALSE) #reads textfile containing names of reads
   names.all <- colnames(all.depth)
+ 
+   
   
   for(x in 2:NCOL(all.depth)){
     name <- names.all[x]
@@ -63,7 +66,13 @@ if(Normalized == 'true'){
     name <- as.numeric(name[length(name)])
     
     normalvalue <- Normalizetable[name,2]
-    all.depth[,x] <- all.depth[,x]/normalvalue
+    v<-all.depth[,x]
+    if(length(v) >200){
+      v[(length(v)-74):length(v)]<- NA
+      v[1:75]<- NA
+      
+    }
+    all.depth[,x] <- v/normalvalue
   }
 }
 #normalized column 

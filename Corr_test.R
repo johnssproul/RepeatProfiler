@@ -12,7 +12,7 @@ print(paste('CorrNormalized',Normalized))
 
 #get names of reads and grouping information
 user.supplied <- read.table('user_groups.txt', header = TRUE, stringsAsFactors = FALSE)
-index.conv <- read.table('Index_conv.txt', header = TRUE, stringsAsFactors = FALSE)
+index.conv <- read.table('index_conv.txt', header = TRUE, stringsAsFactors = FALSE)
 
 ft <- '.pdf'
 #code if file type specified

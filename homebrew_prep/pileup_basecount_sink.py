@@ -10,7 +10,7 @@ import re
 
 OutFileName = "depth_counts.txt"
 countedFile = sys.argv[2] + ".csv"
-The_refrence_size = int(sys.argv[3])
+The_reference_size = int(sys.argv[3])
 countedFile_multi = "multi_poly/" + sys.argv[2] + ".txt"
 # Open input file for reading, 'r' is "read mode"
 # InFile = open(InFileName, 'r')
@@ -70,7 +70,7 @@ with open(OutFileName, "w") as OutFile:
         OutputString = "%s  %d  %d  %d  %d  %d  %s" % (Position, NumF, NumA, NumT, NumG, NumC, Dict[Position][1])
         OutFile.write(OutputString + "\n")
     #print('so long')
-    while Fixing != The_refrence_size:
+    while Fixing != The_reference_size:
         #print("in whileloop")
         OutputString = "%s  %d  %d  %d  %d  %d  %s" % (str(Fixing), 0, 0, 0, 0, 0, "0")
         OutFile.write(OutputString + "\n")
@@ -130,7 +130,7 @@ with open(countedFile, "w") as OutFile:
         OutputString = "%s,%s" % (Position, Dict[Position][1])
         OutFile.write(OutputString + "\n")
 
-    while Fixing != The_refrence_size:
+    while Fixing != The_reference_size:
         # print("in whileloop")
         OutputString = str(Fixing) + ",0"
         OutFile.write(OutputString + "\n")
@@ -191,7 +191,7 @@ with open(countedFile_multi, "w") as OutFile:
         OutputString = "%s  %d  %d  %d  %d  %d  %s" % (Position, NumF, NumA, NumT, NumG, NumC, Dict[Position][1])
         OutFile.write(OutputString + "\n")
     #print('so long')
-    while Fixing != The_refrence_size:
+    while Fixing != The_reference_size:
         #print("in whileloop")
         OutputString = "%s  %d  %d  %d  %d  %d  %s" % (str(Fixing), 0, 0, 0, 0, 0, "0")
         OutFile.write(OutputString + "\n")

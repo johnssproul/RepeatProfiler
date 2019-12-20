@@ -92,7 +92,7 @@ if(NCOL(map_depth_allrefs) > 2){
           group_col <- user_supplied[name_col,'Group']
           ###
 
-          #find the name of the refrence
+          #find the name of the reference
           name_full <- all_names[r]
           name_full <- strsplit(name_full, '_')
           name_full <- name_full[[1]]
@@ -175,7 +175,7 @@ if(NCOL(map_depth_allrefs) > 2){
                 group_col <- user_supplied[name_col,'Group']
                 ###
 
-                #in this block the code will find the name of the refrence
+                #in this block the code will find the name of the reference
                 name_full <- all_names[r]
                 name_full <- strsplit(name_full, '_')
                 name_full <- name_full[[1]]

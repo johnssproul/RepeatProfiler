@@ -1,6 +1,6 @@
 #!/usr/bin/env Rscript
 args <- commandArgs(trailingOnly = TRUE)
-#args[1] <- 'erecta_CL1_TR_1_x_181_0nt.fa_011' #testing
+args[1] <- 'erecta_CL1_TR_1_x_181_0nt.fa_011' #testing
 
 cat('Saving variation plot... \n')
 
@@ -25,7 +25,7 @@ ft <- '.pdf'
 #wm <- ggpubr::background_image(img) #for watermark
 cap <- labs(caption = 'This graph has no coverage.') #sets caption for low coverage plots
 
-index.conv <- read.table('Index_conv.txt', header = TRUE, stringsAsFactors = FALSE) #reads text file containing names of reads
+index.conv <- read.table('index_conv.txt', header = TRUE, stringsAsFactors = FALSE) #reads text file containing names of reads
 
 #gets names of reads and stores as objects to be used for title
 name <- args[1]

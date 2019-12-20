@@ -13,7 +13,7 @@ fraction_table$Peaks_C <- ""
 
 perecentagecutoff <- 0.1
 
-index_conv <- read.table("Index_conv.txt", header = TRUE, stringsAsFactors = FALSE)
+index_conv <- read.table("index_conv.txt", header = TRUE, stringsAsFactors = FALSE)
 
 find_peaks <- function (x, m = 3){
   shape <- diff(sign(diff(x, na.pad = FALSE)))
@@ -208,7 +208,7 @@ if(maxi != 0){
     }
   }
 }else{
-  cat("there is no closely related reads for this refrence or there is only 1 read/read pair","\n")
+  cat("there is no closely related reads for this reference or there is only 1 read/read pair","\n")
 }
 
 if(fraction_table$Read1 == fraction_table$Read2){

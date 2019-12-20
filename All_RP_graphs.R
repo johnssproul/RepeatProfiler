@@ -44,7 +44,7 @@ multmerge <- function(mypath){
   Reduce(function(x, y) {merge(x, y, all = TRUE)}, datalist)
 }
 
-index.conv <- read.table('Index_conv.txt', header = TRUE, stringsAsFactors = FALSE) #reads textfile containing names of reads
+index.conv <- read.table('index_conv.txt', header = TRUE, stringsAsFactors = FALSE) #reads textfile containing names of reads
 all.depth.csv <- multmerge('map_depth_allrefs')
 
 ###normaliaztion
