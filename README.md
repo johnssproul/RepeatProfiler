@@ -109,6 +109,7 @@ Explanation:
 - 'profile' the command that directs program to generate profiles (see other command options below) 
 - '-p' indicates the input reads are paired 
 - 'Refs.fa' specifies the FASTA files containing reference sequences (located in the current directory in this example, alternatively a path can be provided)
+
 – '/RepeatProfilerData/Test1' gives the path of the directory containing input read files
 
 
