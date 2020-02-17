@@ -1,6 +1,6 @@
 #!/usr/bin/env Rscript
 args <- commandArgs(trailingOnly = TRUE)
-args[1] <- 'erecta_CL1_TR_1_x_181_0nt.fa_011' #testing
+#args[1] <- 'erecta_CL1_TR_1_x_181_0nt.fa_011' #testing
 
 cat('Saving variation plot... \n')
 

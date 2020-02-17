@@ -1,6 +1,6 @@
 #!/usr/bin/env Rscript
 args <- commandArgs(trailingOnly = TRUE)
-args[1] <- 'dmel_rDNA_ETS_Other_rDNA.fa_001' #testing
+#args[1] <- 'dmel_rDNA_ETS_Other_rDNA.fa_001' #testing
 
 cat('Rscript RP_4.0.R started: ', args[1], '\n')
 

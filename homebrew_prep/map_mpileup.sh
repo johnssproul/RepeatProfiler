@@ -170,7 +170,7 @@ else
 fi
 
   
-  aligned=`tail -n 1 bowtie.log | grep -Eo '[+-]?[0-9]+([.][0-9]+)?'`
+ # aligned=`tail -n 1 bowtie.log | grep -Eo '[+-]?[0-9]+([.][0-9]+)?'`
   
   #echo "${REF_name}	S${F}	$Read1name	$Read2name	$allreads	$aligned" >> The_summary.txt
   echo "$allreads" >> reads_lengths.txt 

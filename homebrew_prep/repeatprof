@@ -7,7 +7,7 @@ num_commands=`echo $commands | wc -w ` #gets the number  of commands
 
 if ((num_commands == 0 )) # if no commands entered, show this
  then
-echo "RepeatProfiler v 0.95 -prerelease- x Code  x Improvements x"
+echo "RepeatProfiler v 0.95 -prerelease- x fast x as x the hedgehog x"
 echo "use -h flag for help using this tool"
 
 
@@ -36,7 +36,7 @@ echo "generating symlinks"
 
 mydir=`echo "$(brew --cellar repeatprof)/0.95/libexec"` #brew stuff
 
-R_packages="placeholder"
+#R_packages="placeholder"
 R_packages=`echo "$(brew --cellar repeatprof)/0.95/R_packages"` #brew stuff
 
 #images=`echo "$(brew --cellar repeatprof)/0.95/images-RP"`  #brew stuff
@@ -198,7 +198,7 @@ fi
 else 
   ls ${reads}/*.fastq ${reads}/*.gz ${reads}/*.fq     > fofn1.txt 2>/dev/null
 
-  ls ${reads}/*.fastq ${reads}/*.gz ${reads}/*.fq    > fofn2.txt 2>/dev/null
+  ls ${reads}/*.fastq ${reads}/*.gz ${reads}/*.fq    > fofn2.txt 2>/dev/null          #explain here
 
 
 fi 
@@ -308,7 +308,7 @@ commands=$@
 
 
 
-if [[ -d $3 ]]; then # checking if 3rd parameter (reference path) for profile is directory or a file
+if [[ -d $3 ]]; then # checking if 3rd parameter (refrence path) for profile is directory or a file
 #if it is a directory then sum up all the .fa files and put them int	o one and send them to fasta splitter  to prepare them as  single fasta sequences for analysis
 	rm -f -r references_used
 	mkdir references_used
@@ -332,7 +332,7 @@ exit 1
 fi
 
 
-	refs=references_used #this is where bowtie will look for reference sequence ot align. It is a sub directory
+	refs=references_used #this is where bowtie will look for refrence sequence ot align. It is a sub directory
 
 elif [[ -f $3 ]]; then # if the reference entered as a file  then just send it to fasta splitter in case it is multi sequence fasta
 	rm -f -r references_used
@@ -628,7 +628,7 @@ numPairpile=1 #this will keep count of the index reads
 
 
 
-#create the sorted bam files from master bam 
+#extract sorted bam for each reference from master bam 
 refname_toextract="${name_ref%.*}"
 
 echo "refnameto : $refname_toextract "
@@ -662,7 +662,7 @@ done < master_bams.txt
 
 
 
-#
+#this block uses mpileup to to summarize variant and depth information from bam files
 
 N=1 #counter needs to be reset for new loop
 MAX=`wc -l < fofn1.txt`
@@ -672,7 +672,7 @@ while ((N<=MAX))
 do
 	F=`printf "%03d\n" $N`
 
-	echo "calculating read depth at each position"
+	echo "calculating read depth at each position" #put a comment
 
 	samtools mpileup -f $line -q 0 -Q 0 -d 0 -A -o ${F}_pileup.out -O ${F}_sorted.bam
 
@@ -712,7 +712,7 @@ pile_counted_name="${Ref_name}_${F}" #this is the pileup counted name
 
 echo $pile_counted_name >> multi_poly_names.txt #now populate the  multi_poly_names
 
-python $mydir/pileup_basecount_sink.py $pairpile $pile_counted_name $The_ref_size # this pileup script that counts mismatches from the sam pileup.out file and count depth and all aother info
+python $mydir/pileup_basecount_sink.py $pairpile $pile_counted_name $The_ref_size # this script simplifies the output from the mpileup commmand above and makes a table of  file and count depth read depth and variant information for each sample
 
 
 cp "$pile_counted_name.csv" map_depth_allrefs # cp the selected .csv produced by the python script
@@ -724,6 +724,7 @@ stringpile2="$F"
 stringpile3="_"
 output="$output$stringpile3$stringpile2" #this just combines the output with its number to create the sub folder of the reference folder you see REF_001 for example where it contains the graphs
 
+###makes variant plots for each sample using output from the python script above that summarizes variant and depth information
 echo "$output" >> fofn_folders.txt #adds the name to the fofn_folders.txt
 $Rscript $mydir/polymorphism_2.0.R $output $R_packages  # call polymorphism $Rscripts
 
@@ -733,13 +734,13 @@ rm -f -r $output
 
 mkdir $output
 mv  *.pdf  depth_counts.txt  $output
-#mv $output $the_output  # we are not moving now  we move in next pile up loop
+#mv $output $the_output  # we are not moving now we move in next pile up loop
 
 ((numPairpile ++))
 
-done < fofn_pileup.txt #after finishing all the maping and creating the csv files now we can start plotting graphs by scaling among all data
+done < fofn_pileup.txt #after finishing all the mapping and creating the csv files now we can start plotting graphs by scaling among all data
 
-
+#loops through all samples and makes indiviual color ramp graphs and saves them in a folder
 while read folder_names #for each line in folder name where we stored the folder name like REF_001
 do
 
@@ -755,16 +756,18 @@ $Rscript $mydir/RP_4.0.R $folder_names $R_packages $Normalized $verticalplots #r
 mv $folder_names $the_output
 done < fofn_folders.txt
 
-
+###This makes the combined colorful plots with plots from all samples for a given reference 
 $Rscript $mydir/All_RP_graphs_reference.R $R_packages $Normalized
 
-
+###This makes the combined variant plots with plots from all samples for a given reference 
 $Rscript $mydir/multi_Poly_maker.R $R_packages
 
 
-#move R scripts
+#move R scripts to their relevant output folder
 mv *profiles* $the_output
 rm -f *.phy
+
+###calls script that converts variant information for each profile into an alignment of molecular morphological characters for phylogenetic analysis
 $Rscript $mydir/fraction_bases.R  > Closely_related_reads_analysis.txt
 
 mv *.phy $the_output
@@ -787,7 +790,7 @@ rm -f Closely_related_reads_analysis.txt #we dont need this anymore
 
  fi
 
-
+###if above error handling is good, do correlation analysis by calling external script
  $Rscript $mydir/Corr_test.R $the_output $R_packages $Normalized  2> /dev/null
 
 
@@ -830,9 +833,8 @@ rm -f *bt2
 rm -f -r temp_cvs
 rm -f fofn_folders.txt
 
-fi #this an fi for error handling dont mess with it. this is the end of the reference
+fi #this an fi for error handling dont mess with it. this is the end of the refrence
 done < fofnrefs.txt #keep looping until all references inputed  undergone the analysis
-
 
 
 
@@ -902,7 +904,7 @@ echo "Second folder: correlation_boxplots_by_reference">> correlation_README.txt
 echo " This folder contains boxplots that compare profile shape within and between user-defined groups, organized by reference.">> correlation_README.txt
 echo "">> correlation_README.txt
 echo "Third folder: correlation_data">> correlation_README.txt
-echo " This folder contains correlation matrices for each reference. The matrices shows all the correlation values among all samples for a reference. Each reference has its own matrix.">> correlation_README.txt
+echo " This folder contains correlation matrices for each reference. The matrices shows all the correlation values among all samples for a reference. Each refrence has its own matrix.">> correlation_README.txt
 echo "">> correlation_README.txt
 echo "Fourth folder:correlation_histograms">> correlation_README.txt
 echo " This folder contains histograms of within, and between group correlation values for each reference.">> correlation_README.txt
@@ -1123,7 +1125,7 @@ echo "Invalid path to the output folder.refer to repeatprof -h to check command 
 fi
 if [[ ! -d $4 ]]; then 
 
-echo "Invalid path to the reads folder. Refer to repeatprof -h to check command structure"
+echo "Invalid path to the reads folder. Please refer to repeatprof -h to check command structure"
 
 fi 
 

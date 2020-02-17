@@ -27,7 +27,7 @@ The.summary$percent_mapped<-The.summary$percent_mapped*100
 #loop to fill in initialized  data
 for(i in 2:ncol(all.depth)){
   v <- as.vector(all.depth[,i])
-  
+
   
   #reference length
   ref.length <- sum(!is.na(v))

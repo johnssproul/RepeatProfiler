@@ -1,5 +1,7 @@
 #!/bin/bash
 
+##### This script is called by the 'repeatprof' script. It processes input references, does error handling, and organizes them for downstream analysis.
+
 Fasta_file=$1
 
 Start=`head -c1 $Fasta_file`
