@@ -16,6 +16,12 @@ The.summary <- The.summary[order(The.summary$Reference),]
 Normalized <- as.character(args[1]) #normalize stuff
 
 
+getmode <- function(v) {
+  v<-na.omit(v)
+  uniqv <- unique(v)
+  uniqv[which.max(tabulate(match(v, uniqv)))]
+}
+
 #initialize data frame
 The.summary$Ref.Length <- NA
 The.summary$Average.coverage <- NA
@@ -38,10 +44,21 @@ for(i in 2:ncol(all.depth)){
   average.coverage <- sum.coverage/as.numeric(The.summary[index.for.summary,7])
   The.summary[index.for.summary,8] <- average.coverage
 
+  
   #max coverage
   maximum <- max(v, na.rm = TRUE)
   The.summary[index.for.summary,9] <- maximum
-
+  
+  #median_coverage
+  mediana <- median(v, na.rm = TRUE)
+  The.summary[index.for.summary,10] <- mediana
+  #mode
+  moda <- getmode(v)
+  The.summary[index.for.summary,11] <- moda
+  colnames(The.summary)[11]<-"mode"
+  colnames(The.summary)[10]<-"median"
+  
+  
   index.for.summary <- index.for.summary+1
 }
 

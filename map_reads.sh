@@ -16,7 +16,10 @@ reads=$2 #the reads path is passed from repeatprof
 		
 DIR=`pwd` #this is just the current dictionary
 
+rm  -f -r master_bam
 
+mkdir master_bam
+echo "Read_Index	Readlength" > read_lengths.txt
 
 ##### Looks for input reads, does error handling prior to read mapping
 
@@ -122,7 +125,7 @@ do
   fi
 
   if [ $3 = "-p" ]; then #if data is paired then run this
-    (bowtie2 -p $4 -x $BASE -1 $READ1 -2 $READ2 $5    | samtools view -bS -h -F 4 /dev/stdin |  samtools sort -o  ${F}_sorted.bam  /dev/stdin) 2> bowtie.log
+    (bowtie2 -p $4 -x $BASE -1 $READ1 -2 $READ2 $5    | samtools view -bS -h -F 4 /dev/stdin |  samtools sort -o  ${F}_sorted.bam  /dev/stdin) 2> master_bam/${F}_bowtie.log
     retval=$? #catches exit code to check for error
 	if [ $6 == "TRUE" ]
 	then 
@@ -137,15 +140,22 @@ do
 
     rm -f ${F}_sorted.bam
     # Finally mark and remove duplicates
-	
+	samtools markdup positionsort.bam ${F}_sorted.bam
+	samtools flagstat ${F}_sorted.bam > master_bam/${F}_dupicate_removal_info.txt
     samtools markdup -r positionsort.bam ${F}_sorted.bam
 
     rm -f  positionsort.bam fixmate.bam namesort.bam
 fi
+
+Read_length=`samtools view ${F}_sorted.bam | awk '{print length($10)}' |   sort -n -r | head -n1`
+
+echo "${F}	${Read_length}" >> read_lengths.txt
+
+
   fi
 
   if [ $3 = "-u" ]; then #if data is unpaired then run that
-    (bowtie2 -p $4 -x $BASE -U $READ1 $5   | samtools view -bS -h -F 4 /dev/stdin | samtools sort -o ${F}_sorted.bam /dev/stdin) 2> bowtie.log
+    (bowtie2 -p $4 -x $BASE -U $READ1 $5   | samtools view -bS -h -F 4 /dev/stdin | samtools sort -o ${F}_sorted.bam /dev/stdin) 2> master_bam/${F}_bowtie.log
     retval=$? #catches exit code to check for error
 	if [ $6 == "TRUE" ]
 	then 
@@ -161,7 +171,10 @@ fi
     rm -f ${F}_sorted.bam
     # Finally mark duplicates
 	
-    samtools markdup -r positionsort.bam ${F}_sorted.bam
+	samtools markdup positionsort.bam > master_bam/${F}_dupicate_removal_info.txt
+	samtools markdup positionsort ${F}_sorted.bam
+    samtools flagstat ${F}_sorted.bam > master_bam/${F}_dupicate_removal_info.txt
+	samtools markdup -r positionsort.bam ${F}_sorted.bam
 
 
     rm -f  positionsort.bam fixmate.bam namesort.bam
@@ -204,9 +217,6 @@ done #< RefList2.txt
 
 
 ##### cleans up ouptut
-rm  -f -r master_bam
-
-mkdir master_bam
 mv *.bam  master_bam
 
 ls master_bam/*.bam > master_bams.txt

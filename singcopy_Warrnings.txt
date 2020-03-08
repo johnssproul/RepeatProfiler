@@ -1,0 +1,2 @@
+Dmel_Top1_FBgn0004924_901_singlecopy wasnt used in normalization because it shorter than twice the read length 150 
+Dmel_Top1_FBgn0004924_901_singlecopy wasnt used in normalization because it shorter than twice the read length 150 

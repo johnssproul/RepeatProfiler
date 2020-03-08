@@ -125,7 +125,6 @@ done
 array=(${commands})
 index=0
 reads=$4
-echo "start"
 
 for p in "${array[@]}"
 do
@@ -158,7 +157,7 @@ else
 
 echo "The path to the unpaired reads file(s) is incorrect, or the file(s) is/are in a unsupported format"
 echo "Make sure the path is correct (including checking for blanks). Make sure read files have '.fastq' or '.fq' extensions. Compressed (i.e., '.gz') formats also accepted (e.g., 'fastq.gz')."
-
+exit 1
 fi 
 
 else 
@@ -172,6 +171,7 @@ fi
 #checks if the lines of the fofn for pair 1 is equal to lines fofn of pair 2 if not then give an error because that mean user has missing data if paired  
 echo "checking reads"
 reads1_check=`cat fofn1.txt | wc -l` 
+echo $reads1_check
 reads2_check=`cat fofn2.txt | wc -l `
 
 
@@ -251,7 +251,7 @@ mkdir $The_folder # this creates the main output folder
 BASE="refbase_" #this is just for the naming of the refrence index made by bowtie2-build, so it can be detected later when aligning using bowtie2
 commands=$@
 
-
+cd $The_folder
 
 
 ##### detects input reference file(s), prepares them for the run using fasta_splitter script, error handling 
@@ -285,6 +285,9 @@ elif [[ -f $3 ]]; then # if the reference entered as a file  then just send it t
 	mkdir references_used
 
 bash $mydir/fasta_splitter.sh $3 #split comment
+
+
+
 
 retval=$? #check if any error occured by getting the exit code
 
@@ -440,9 +443,15 @@ bowtie2-build all_References.fa $BASE
 bash $mydir/map_reads.sh $line $4 $2 $p $a $rmdup
 
 
+retval=$? 
+
+if [ $retval -ne 0 ]; then #if an error occured and the exit code isnt 0  then exit. The error message will be printed from singlecopy.sh not here
+exit 1
+
+fi
+
 echo "mapped reads"
 
-#work in progress here. Dont approach !
 
 
 
