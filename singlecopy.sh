@@ -12,8 +12,10 @@ rm -f -r single_cvs
 mkdir single_cvs
 rm -f -r multi_poly
 mkdir multi_poly
-
+refs_full_path=all_References.fa 
 ls references_used/*_singlecopy.fa > fofnsingle.txt 2> /dev/null
+grep "_singlecopy" all_References.fa | sed 's/^.//'  > fofnsingle.txt
+
 echo ""
 
 fofnsinglecheck=`cat fofnsingle.txt | wc -l`
@@ -35,8 +37,14 @@ echo "Starting normalization calculations"
 
 BASE="refbase_"
 while read line ; do  # for each line in the fofnrefs.txt we will loop through it and carry the following analysis
-  ref_char_count=`tail -n +2 $line | tr -cd 'ATGCatgc'  | wc -c` #this gets the reference sequence length
-  name_ref=$(awk -F "/" '{print $NF}' <<< $line) # this awk command is to get the reference name from the path of references stored in fofnrefs.txt we did earlier
+  
+  line=$(echo $line | tr -cd "[:print:]\n")
+
+  awk '/^>/ { if(NR>1) print "";  printf("%s\n",$0); next; } { printf("%s",$0);}  END {printf("\n");}'  $refs_full_path | grep -A 1 $line > temp.fa
+  temp=`awk '/^>/ { if(NR>1) print "";  printf("%s\n",$0); next; } { printf("%s",$0);}  END {printf("\n");}'  $refs_full_path | grep -A 1 $line | tail -n1`
+
+  ref_char_count=`echo $temp | wc -c` #this gets the reference sequence length
+  name_ref=`tr ' 	\\<.,:#"/\|?*' '_' <<<"$line"` # this awk command is to get the reference name from the path of references stored in fofnrefs.txt we did earlier
 											   # this command separates on / and get the last word which is the reference name
 
   if [[ $ref_char_count == 0 ]]; then			   # if the  the length of the specfic reference is 0 then just skip it.
@@ -46,22 +54,21 @@ while read line ; do  # for each line in the fofnrefs.txt we will loop through i
     echo ""
   
   else
-    echo "$(tail -n +2 $line)" > ref_temp.txt #this does something similar to above
 
-    The_ref_size=`wc -c < ref_temp.txt` #same as above re_char_count
+    The_ref_size=$ref_char_count #same as above re_char_count
 
 	### this starts generating the readme. which will be populated later with the index to read conversions
     bash $1/readme_gen.sh 
     
     ### builds index for the current reference
-    bowtie2-build $line $BASE > /dev/null 2> /dev/null 
+   # bowtie2-build $line $BASE > /dev/null 2> /dev/null 
     
     echo "The reference sequence currently under analysis:"
     echo "$line"
     echo ""
 
     #bash index_refs.sh
-    name_ref=$(awk -F "/" '{print $NF}' <<< $line) #same as above just to make sure
+   # name_ref=$(awk -F "/" '{print $NF}' <<< $line) #same as above just to make sure
 
     Ref_name=$name_ref #assigning it to another variable
 
@@ -81,7 +88,7 @@ F=`printf "%03d\n" $M` #this puts the number in format 001 for example
 
 samtools index $mastername
 
-samtools view  $mastername $refname_toextract -o ${F}_sorted.bam  #we extract our aligned reference from the master bam for this read index 
+samtools view  $mastername $line -o ${F}_sorted.bam  #we extract our aligned reference from the master bam for this read index 
 
 
 #doing calculations used in the run_summary table
@@ -96,7 +103,6 @@ aligned=`echo "scale=4 ; $mappedreads / $allreads" | bc`
 
 echo "mappedreads: $mappedreads"
 echo "aligned : $aligned"
-
 echo "${refname_toextract}	S${F}	$Read1name	$Read2name	$allreads	$aligned" >> The_summary.txt
 
 
@@ -114,7 +120,8 @@ do
 	echo "calculating read depth at each position" #put a comment
 
 ## runs samtools mpileup
-	samtools mpileup -f $line -q 0 -Q 13 -d 0 -A -o ${F}_pileup.out -O ${F}_sorted.bam 
+	samtools faidx temp.fa
+	samtools mpileup -f temp.fa -q 0 -Q 13 -d 0 -A -o ${F}_pileup.out -O ${F}_sorted.bam 
 
 	((N ++))
 done #< RefList2.txt

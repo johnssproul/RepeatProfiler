@@ -251,19 +251,36 @@ mkdir $The_folder # this creates the main output folder
 BASE="refbase_" #this is just for the naming of the refrence index made by bowtie2-build, so it can be detected later when aligning using bowtie2
 commands=$@
 
-cd $The_folder
 
+#refs_full_path=`readlink -f $3`
+
+before_pwd=`pwd`
+
+cd $The_folder
+if [[ -f $3 ]]; then 
+
+refs_full_path=$3
+
+else
+
+refs_full_path=`echo "${before_pwd}/$3"`
+
+fi 
+
+
+
+mkdir $The_folder
 
 ##### detects input reference file(s), prepares them for the run using fasta_splitter script, error handling 
 
-if [[ -d $3 ]]; then # checking if 3rd parameter (refrence path) for profile is directory or a file
+if [[ -d $refs_full_path ]]; then # checking if 3rd parameter (refrence path) for profile is directory or a file
 #if it is a directory then sum up all the .fa files and put them int o one and send them to fasta splitter to prepare them as single fasta sequences for analysis
 	rm -f -r references_used
 	mkdir references_used
-	path_refs=`cat $3/*.fa > all_refs.fa`
+	path_refs=`cat $refs_full_path/*.fa > all_refs.fa`
 
 
-bash $mydir/fasta_splitter.sh $3
+bash $mydir/fasta_splitter.sh $refs_full_path
 
 
 retval=$? #check if any error occured by getting the exit code
@@ -280,13 +297,11 @@ fi
 
 	refs=references_used #this is where bowtie will look for refrence sequence ot align. It is a sub directory
 
-elif [[ -f $3 ]]; then # if the reference entered as a file  then just send it to fasta splitter in case it is multi sequence fasta
+elif [[ -f $refs_full_path ]]; then # if the reference entered as a file  then just send it to fasta splitter in case it is multi sequence fasta
 	rm -f -r references_used
 	mkdir references_used
 
-bash $mydir/fasta_splitter.sh $3 #split comment
-
-
+bash $mydir/fasta_splitter.sh $refs_full_path #split comment
 
 
 retval=$? #check if any error occured by getting the exit code
@@ -331,11 +346,13 @@ rm -f *out  2> /dev/null
 ##### This block is for normalization analysis (e.g., -singlecopy flag), detects mapping settings, runs external script, error handling
 
 
-cat $refs/*.fa > all_References.fa #the folder where fasta spliter stores all the .fa file after splitting them. This line just gets a list of these references with their paths
+#cat $refs/*.fa > all_References.fa #the folder where fasta spliter stores all the .fa file after splitting them. This line just gets a list of these references with their paths
 
 
 
 # Work in progress
+
+
 
 
 p=8 #this is the deafult threads
@@ -398,8 +415,6 @@ exit 1
 fi
 
 echo "yes"
-
-
 
 
 
@@ -501,7 +516,7 @@ echo ""
 
 
 #Runs external script for normalization analysis 
-bash $mydir/singlecopy.sh $mydir $4 $2 "2" $a $rmdup
+bash $mydir/singlecopy.sh $mydir $4 $2 "2" $a $rmdup $refs_full_path
 
 
 
@@ -521,19 +536,26 @@ readnumbers=`cat fofnsingle.txt | wc -l`
 echo "Normalization values calculated:"
 rm -f -r plots_single_copy
 mkdir plots_single_copy
+
+
 $Rscript $mydir/single_copy_calculator.R $readnumbers
 
 $Rscript $mydir/mk_profiles_single.R plots_single_copy $R_packages $Normalized
 
 mv single_cvs plots_single_copy
-mv plots_single_copy $The_folder
 
+mv plots_single_copy $The_folder
+pwd
+echo ""
 
 echo "Normalization calcaulations ended "
+echo ""
 
 ##### 
 
 fi
+grep  ">" all_References.fa | grep -v "_singlecopy" | sed 's/^.//'  > fofnrefs.txt
+
 done 
 #exit 1 # STOP HERE
 ##### end of normalization (-singlecopy) block 
@@ -542,7 +564,7 @@ done
 
 ##### more error handling of input references and preparation for read mapping
 
-ls $refs/*.fa > fofnrefs.txt  2> /dev/null #the folder where fasta spliter stores all the .fa file after splitting them. This line just gets a list of these references with their paths
+#ls $refs/*.fa > fofnrefs.txt  2> /dev/null #the folder where fasta spliter stores all the .fa file after splitting them. This line just gets a list of these references with their paths
 
 fofncheck=`cat fofnrefs.txt | wc -l` 
 
@@ -568,13 +590,29 @@ echo "Reference	Sample_index	Read1	Read2	Total_reads	percent_mapped" > The_summa
 
 ##### detects settings for read mapping, maps reads by calling script that runs bowtie2, loops through all references, begins organizing output
 
-
-
 while read line  # for each line  in the fofnrefs.txt we will loop through it and carry the following analysis
 do
 
-ref_char_count=`tail -n +2 $line | tr -cd 'ATGCatgc'  | wc -c` #this gets the reference sequence length
-name_ref=$(awk -F "/" '{print $NF}' <<< $line) # this awk command is to get the reference name from the path of references stored in fofnrefs.txt we did earlier
+
+#echo $line | cat -v 
+#exit 1
+line=$(echo $line | tr -cd "[:print:]\n")
+
+echo $line
+
+echo $line
+echo $refs_full_path
+
+awk '/^>/ { if(NR>1) print "";  printf("%s\n",$0); next; } { printf("%s",$0);}  END {printf("\n");}'  all_References.fa | grep -A 1 $line > temp.fa
+temp=`awk '/^>/ { if(NR>1) print "";  printf("%s\n",$0); next; } { printf("%s",$0);}  END {printf("\n");}'  all_References.fa | grep -A 1 $line | tail -n1`
+#echo $temp
+
+ref_char_count=`echo $temp | wc -c` #this gets the reference sequence length
+
+echo $ref_char_count
+
+name_ref=`tr ' 	\\<.,:#"/\|?*' '_' <<<"$line"` # this awk command is to get the reference name from the path of references stored in fofnrefs.txt we did earlier
+echo $name_ref
 											   # this command separates on / and get the last word which is the reference name
 
 if [[ $ref_char_count == 0 ]]; then			   # if the  the length of the specfic reference is 0 then just skip it.
@@ -584,8 +622,7 @@ echo "your $name_ref is an empty sequence or not in the correct format. It will 
 echo ""
 
 else
-echo "$(tail -n +2 $line)" > ref_temp.txt #this does something similar to above
-The_ref_size=`wc -c < ref_temp.txt` #same as above re_char_count
+The_ref_size=$ref_char_count #same as above re_char_count
 
 
 
@@ -597,7 +634,7 @@ bash $mydir/readme_gen.sh #this starts generating the readme. which will be popu
     echo ""
 
 #bash index_refs.sh
-name_ref=$(awk -F "/" '{print $NF}' <<< $line) #same as above just to make sure
+name_ref=`tr ' 	\\<.,:#"/\|?*' '_' <<<"$line"`  #same as above just to make sure
 
 Ref_name=$name_ref #assigning it to another variable
 
@@ -620,12 +657,10 @@ numPairpile=1 #this will keep count of the index reads
 
 
 
-
 ##### extracts sorted bam for each reference from master bam 
 
-refname_toextract="${name_ref%.*}"
+refname_toextract="$line"
 
-echo "refnameto : $refname_toextract "
 M=1
 while read mastername
 do 
@@ -633,9 +668,11 @@ F=`printf "%03d\n" $M` #this puts the number in format 001 for example
 
 samtools index $mastername
 
-samtools view  $mastername $refname_toextract -o ${F}_sorted.bam  #we extract our aligned reference from the master bam for this read index 
+echo "$refname_toextract" | cat -v
 
+echo $line
 
+samtools view  $mastername $line -o ${F}_sorted.bam  #we extract our aligned reference from the master bam for this read index 
 #doing calculations used in the run_summary table
 READ1=`sed -n "$M p"  fofn1.txt`
 READ2=`sed -n "$M p"  fofn2.txt`
@@ -673,16 +710,19 @@ do
 	echo "calculating read depth at each position" #put a comment
 
 ## runs samtools mpileup
-	samtools mpileup -f $line -q 0 -Q 13 -d 0 -A -o ${F}_pileup.out -O ${F}_sorted.bam 
+	samtools faidx temp.fa
+	samtools mpileup -f temp.fa -q 0 -Q 13 -d 0 -A -o ${F}_pileup.out -O ${F}_sorted.bam 
 
 	((N ++))
 done #< RefList2.txt
-
+echo "save me"
+#exit 1
 #exit 1
 
 ls *.out > fofn_pileup.txt
 ls *.bam > fofn_bam.txt
 
+#name_ref
 
 echo "name_poly" > multi_poly_names.txt #this creates a text file called multi_poly_names.txt this is used to keep track of the reads that we are drwaing the graphs for
 										# LIKE for example Refrencename_001  001 reference to the read the index we talked about before
@@ -701,8 +741,9 @@ echo $pile_counted_name >> multi_poly_names.txt #now populate the  multi_poly_na
 
 
 ## calls python script to summarize mpileup info
-python $mydir/pileup_basecount.py $pairpile $pile_counted_name $The_ref_size # this script simplifies the output from the mpileup commmand above and makes a table of  file and count depth read depth and variant information for each sample
 
+echo $The_ref_size
+python $mydir/pileup_basecount.py $pairpile $pile_counted_name $The_ref_size # this script simplifies the output from the mpileup commmand above and makes a table of  file and count depth read depth and variant information for each sample
 
 cp "$pile_counted_name.csv" map_depth_allrefs # cp the selected .csv produced by the python script
 mv "$pile_counted_name.csv" temp_cvs #this moves it to temp_cvs  also. both steps are needed to be done because all_depths_cvs runs at the end for the all references statistcs   while temp_cvs just for this reference combined graphs and scaling
@@ -729,17 +770,17 @@ output="$output$stringpile3$stringpile2" #this just combines the output with its
 echo "$output" >> fofn_folders.txt #adds the name to the fofn_folders.txt
 
 ## calls R script that makes depth profiles that summarize variants
-$Rscript $mydir/var_plots.R $output $R_packages 
 
+
+$Rscript $mydir/var_plots.R $output $R_packages 
 rm -f -r $output
 mkdir $output
+
 mv  *.pdf  depth_counts.txt  $output
 #mv $output $the_output  # we are not moving now we move in next pile up loop
 
 ((numPairpile ++))
-
 done < fofn_pileup.txt #after finishing all the mapping and creating the csv files now we can start plotting graphs by scaling among all data
-
 #loops through all samples and makes indiviual color ramp graphs and saves them in a folder
 while read folder_names #for each line in folder name where we stored the folder name like REF_001
 do
@@ -753,7 +794,7 @@ $Rscript $mydir/mk_profiles.R $folder_names $R_packages $Normalized $verticalplo
 mv $folder_names $the_output
 done < fofn_folders.txt
 
-
+rm -f *.pdf
 ##This makes the combined colorful plots with plots from all samples for a given reference 
 $Rscript $mydir/mk_profiles_ref.R $R_packages $Normalized
 
@@ -761,13 +802,13 @@ $Rscript $mydir/mk_profiles_ref.R $R_packages $Normalized
 ##This makes the combined variant plots with plots from all samples for a given reference 
 $Rscript $mydir/multi_var_plots.R $R_packages
 
-
+rm -f Rplots.pdf
 #move R scripts to their relevant output folder
 mv *scaled_profiles* $the_output
+mv *.pdf $the_output
 rm -f *.phy
 
 ##### end plotting of variant and color depth profiles
-
 
 
 
@@ -826,10 +867,13 @@ rm -f -r temp_cvs
 rm -f fofn_folders.txt
 
  #this an fi for error handling dont mess with it. this is the end of the reference
+
 done < fofnrefs.txt #keep looping until all references inputed undergone the analysis
+
 
 rm -f Run_summary.csv
 $Rscript $mydir/depth_analyser.R $Normalized #run the depth analyzer which produces the final summary table
+
 if [[ -f Single_summary.csv ]]; then 
 cat Run_summary.csv Single_summary.csv  > Run_summary2.csv
 rm -f Run_summary.csv
@@ -924,7 +968,7 @@ fi
 mv map_depth_allrefs $The_folder
 mv index_conv.txt $The_folder #for testing
 
-mv Run_summary.csv Errors_README.log $The_folder 2> /dev/null
+mv Run_summary.csv Errors_README.log References_summary_base_coverage.csv $The_folder 2> /dev/null
 rm -f  *Rplots* Single_summary.csv
 
 if [[ -f normalized_table.csv ]]; then

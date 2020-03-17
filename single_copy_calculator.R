@@ -10,7 +10,6 @@ all.depth <- multmerge('single_cvs')
 The.summary <- read.table('The_summary.txt', header = TRUE, stringsAsFactors = FALSE)
 
 read_lengths<-read.table("read_lengths.txt",header = TRUE)
-
 #initialize data frame
 The.summary$Ref.Length <- NA
 The.summary$Average.coverage <- NA
@@ -40,6 +39,7 @@ for(i in 2:ncol(all.depth)){
    print(bases_remove)
    v<-na.omit(v)
    print(length(v))
+   
    if(length(v) > 2*bases_remove){
    v<-v[1:(length(v)-bases_remove)]
    v<-v[bases_remove:length(v)]

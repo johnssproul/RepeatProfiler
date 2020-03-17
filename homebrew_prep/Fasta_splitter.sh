@@ -1,9 +1,22 @@
 #!/bin/bash
 
+##### This script is called by the 'repeatprof' script. It processes input references, does error handling, and organizes them for downstream analysis.
+
 Fasta_file=$1
 
 Start=`head -c1 $Fasta_file`
 end=`tail -c1 $Fasta_file`
+
+awk '/^>/ { if(NR>1) print "";  printf("%s\n",$0); next; } { printf("%s",$0);}  END {printf("\n");}'  $Fasta_file > all_References.fa
+
+
+tr ' 	\\<.,:#"/\|?*' '_'  < all_References.fa >test.fa
+
+ 
+cat test.fa  > all_References.fa
+
+
+
 
 if [[ $Start != '>' ]]; then
   echo "file dont appear to be in fasta format. it doesnt start with >"
@@ -18,24 +31,11 @@ fi
 echo "The references input:"
 
 
-while read line
-do
-  if [[ ${line:0:1} == '>' ]]
-  then
-  	File_name=`tr ' 	\\<.,:#"/\|?*' '_' <<<"$line"`
-  	File_name_nofa=`tr ' 	\\<.,:#"/\|?*' '_' <<<"$line"`
-    #	File_name=$line
+#awk 'sub(/^>/, "")' $Fasta_file > fofnrefs.txt
 
-  	File_extention=".fa"
 
-  	File_name="${File_name:1}$File_extention"
+grep ">" all_References.fa | sed 's/>//'  > fofnrefs.txt
 
-	  echo $File_name | tee -a references_names_toextract.txt 
 
-    echo "$File_name_nofa" > references_used/$File_name
-  else
-    echo $line >> references_used/$File_name
-  fi
-done < $Fasta_file
 
 exit 0
