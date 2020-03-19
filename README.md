@@ -80,16 +80,6 @@ To generate profiles, you need two input types: (1) one or more reference sequen
 
 
 
-#### SAMPLE DATA 
-
-Download the sample input data set provided [here]. Also make sure all your files has Unix LF which means an empty line at the end of the file. (This is standard among all linux and macOS text files.)
-
-1- go into the folder downloaded after unzipping 
-```sh
-repeatprof profile -p reference.fa  <enter full path of current directory (this is where the reads present) >
-
-```
-2- check if no errors generated and program ran somethely this means you have it correctly set up
 
 ##### Generating profiles:
 
@@ -103,6 +93,18 @@ an example of a functional example command (explanations omitted).
 ```sh
 repeatprof profile -p Refs.fa /RepeatProfilerData/Test1
 ```
+#### SAMPLE DATA 
+
+Download the sample input data set provided [here]. Also make sure all your files has Unix LF which means an empty line at the end of the file. (This is standard among all linux and macOS text files.)
+
+1- go into the folder downloaded after unzipping 
+```sh
+repeatprof profile -p reference.fa  <enter full path of current directory (this is where the reads present) >
+
+```
+2- check if no errors generated and program ran somethely this means you have it correctly set up
+
+
 
 Explanation: 
 - 'repeatprof'  calls the program
