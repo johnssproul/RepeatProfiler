@@ -99,12 +99,12 @@ Explanation:
 - 'profile'  the command that directs program to generate profiles (see other command options below) 
 - '-p'  indicates the input reads are paired 
 - 'Refs.fa'  specifies the FASTA files containing reference sequences (located in the current directory in this example, alternatively a path can be provided)
-- '/RepeatProfilerData/Test1'  specifies the path of the directory containing input read files specifies the FASTA files
+- '/RepeatProfilerData/Test1'  specifies the path of the directory containing input read files
 
 
 ###### Optional flags: 
 | optional flag                        | usage                                                                                                                                                           |
-|--------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|
+|------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|
 | -o <folder_path>                     | Directs output folder to the specified folder. Default is the current directory                                                                 |
 | -corr                                | Runs a correlation analysis of profile shape among user-defined groups. If this flag is used ensure the user_groups.txt is present in the working directory (but see next). See below for instructions on preparing the user_groups.txt file.                                                              |
 | -usrgrp <file_path>    | use this to provide path of user_groups.txt explained above. Default is current directory.                               |
