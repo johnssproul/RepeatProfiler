@@ -101,10 +101,19 @@ Explanation:
 - 'Refs.fa'  specifies the FASTA files containing reference sequences (located in the current directory in this example, alternatively a path can be provided)
 - '/RepeatProfilerData/Test1'  specifies the path of the directory containing input read files
 
+###### Commands: 
+| Command                        | usage                                                                                                                                                           |
+|------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|
+| profile                     | Primary analysis command. This command should be followed by read type (i.e., '-p' or -u' for paired-end or single-end respecitively), the name of the fasta file containing reference sequences (or the path if that file is not in the current directory), the path to the input reads, and any optional flags.                                                                |
+|pre-corr                                | Auto-generates the base user_groups.txt file required for correlation analysis (see -corr optional flag below).                                                              |
+| clean    | In the event of a failed run, this command will clean the remnants of the run from the current directory.                             |
+
+
 
 ###### Optional flags: 
 | optional flag                        | usage                                                                                                                                                           |
 |------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|
+| -h                     | Displays help menu.
 | -o <folder_path>                     | Directs output folder to the specified folder. Default is the current directory                                                                 |
 | -corr                                | Runs a correlation analysis of profile shape among user-defined groups. If this flag is used ensure the user_groups.txt is present in the working directory (but see next). See below for instructions on preparing the user_groups.txt file.                                                              |
 | -usrgrp <file_path>    | use this to provide path of user_groups.txt explained above. Default is current directory.                               |
@@ -120,45 +129,30 @@ Explanation:
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 ##### Preparing user_groups.txt for -corr 
-If you are making profiles for multiple samples and want to compare profile shape across samples using the correlation analysis feature (i.e., the -corr flag). The -corr flag requires that you provide an input text file (user_groups.txt) that assigns your samples to groups you want to compare. The program can auto generate the base user_groups.txt file using this command:
+If you are making profiles for multiple samples and want to compare profile shape across samples using the correlation analysis feature (i.e., the -corr flag). This command is designed for cases when multiple samples per category are present (e.g., multiple individuals per species) such that -within group correlation values can be compared to -between group values. The -corr flag requires that you provide an input text file (user_groups.txt) that assigns your samples to groups. The user can generate this file manually, or use the program to auto-generate the base user_groups.txt file using this command:
 ```sh
 repeatprof pre-corr < -u for unpaired reads  or -p paired reads  > <path reads folder>
 ```
 
-After running this command the user_groups.txt will be generated based on your reads and all you have to do is to replace the placeholder 'TEMPORARY' with your own group numbers such that each sample belonging to a given group has the same number in the 'group' collumn. You can run this command to view the file and verify that it is in the correct format.
+After running this command the user_groups.txt will be generated based on your input reads and you can simply replace the placeholder 'TEMPORARY' with your own group numbers such that each sample belonging to a given group has the same number in the 'group' column. You can run this command to view the file and verify that it is in the correct format.
 ```sh
 repeatprof pre-corr -v   
 ```
-You need to have your edited user_groups.txt in the same directory in which you are running the above command.
+(Note: you need to have your edited user_groups.txt in the same directory in which you are running the above command.)
 
-##### Now you are all set for generating profiles that include correlation output.
 &nbsp;
 &nbsp;
 In case you terminated the run, you can use this command to clean up intermediate files created by the tool if you want 
 ```sh
 repeatprof clean   
 ```
-# Understanding the output---In-depth Tutorial 
+# Understanding the output 
 In this section, we walk through a sample output/outputs generated by the sample input data [here]. We will cover:
 
 **What is in the output folder section**
 - what each file means
  - How are the graphs generated and scaled
  - How is the phylip file generated
-
-**How to get the most out of the tool**
-
- - How to find good repeat reference sequence if you don’t have any based on your reads
- 
- - How to use the phylip formatted file correctly and get the most out of the trees you generate. 
- 
- - How to get the most out of the tool and your data 
-
-
-
-
-
-
 
 
 ## What is in the output folder
@@ -167,11 +161,11 @@ folder in your current directory  or the directory you specified:
 
 ![](https://github.com/johnssproul/RepeatProfiler/raw/master/pics_readme/photo_of_the_folder.PNG)
 
-The time  refers to the  time you started the run. Opening, the folder you will find this 
+The time refers to the  time you started the run. Opening, the folder you will find this 
 
 ![](https://github.com/johnssproul/RepeatProfiler/raw/master/pics_readme/photo2.PNG)
 
-Here you can see your refrence name folder _outputn which contain all the analysis for this refrence We will get to that soon. This is done incase you run the analysis with multi-fasta sequence file. We also keep your refrences in single fasta files in Refrences_used folder. 
+Here you can see your reference name folder _outputn which contain all the analysis for this refrence We will get to that soon. This is done incase you run the analysis with multi-fasta sequence file. We also keep your refrences in single fasta files in Refrences_used folder. 
 
 
 Next thing you will find is ReadMe file.It will look something like this 
@@ -252,7 +246,7 @@ Based on the variation plots explained earlier, we were able to capture phylogen
 
 
 
-## How to get the most out of the tool     
+   
     
     
     
