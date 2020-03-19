@@ -78,8 +78,18 @@ To generate profiles, you need two input types: (1) one or more reference sequen
 - Files should end in the ‘.fastq’, or compressed ‘.fastq.gz’ extension (‘.fq’ instead of ‘.fastq’ is also supported).
 - Input reads may be paired, or unpaired. If paired data are used, the last string before the file extension should be ‘_1’ for Read1 and ‘_2’ for Read2 (alternatively ‘_R1’ and ‘_R2’ may be used). An example of an acceptable name for the file name for the file containing Read1 reads would be: ‘SampleName_1.fastq.gz’. The file containing Read2 data should replace the ‘_1’ with ‘_2’, but be identical otherwise as in: ‘SampleName_2.fastq.gz’
 
-Review the sample input data set provided [here]. Also make sure all your files has Unix LF which means an empty line at the end of the file. (This is standard among all linux and macOS text files.)
 
+
+#### SAMPLE DATA 
+
+Download the sample input data set provided [here]. Also make sure all your files has Unix LF which means an empty line at the end of the file. (This is standard among all linux and macOS text files.)
+
+1- go into the folder downloaded after unzipping 
+```sh
+repeatprof profile -p reference.fa  <enter full path of current directory (this is where the reads present) >
+
+```
+2- check if no errors generated and program ran somethely this means you have it correctly set up
 
 ##### Generating profiles:
 
@@ -273,7 +283,7 @@ Based on the variation plots explained earlier, we were able to capture phylogen
 [//]: # 
    [.zip]: <https://github.com/johnssproul/RepeatProfiler/releases/download/0.9/RepeatProfiler-v0.9-source.zip>
    [repeatprof repository]: <https://hub.docker.com/r/durberg7/repeatprof>
-   [here]: <https://github.com/johnssproul/RepeatProfiler/releases/download/0.9/sample_input.zip>
+   [here]: <https://github.com/johnssproul/RepeatProfiler/releases/download/0.96/sample_data.zip>
    [Homebrew]: <https://brew.sh/>
    [linux/WSL]: <https://docs.brew.sh/Homebrew-on-Linux>
    [macOS]: <https://brew.sh/>
