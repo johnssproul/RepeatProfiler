@@ -106,11 +106,10 @@ Explanation:
 | optional flag                        | usage                                                                                                                                                           |
 |--------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | -o <folder_path>                     | Directs output folder to the specified folder. Default is the current directory                                                                 |
-| -corr                                | Run a correlation analysis of profile shape among user-defined groups. If this flag is used ensure the user_groups.txt is present in the working directory (but see next). See below for instructions on preparing the user_groups.txt file.                                                              |
-| -usrgrp <user_groups.txt path> | use this to provide path of user_provided.txt explained above. Default is current directory.                               |
+| -corr                                | Runs a correlation analysis of profile shape among user-defined groups. If this flag is used ensure the user_groups.txt is present in the working directory (but see next). See below for instructions on preparing the user_groups.txt file.                                                              |
+| -usrgrp <user_groups.txt path>    | use this to provide path of user_provided.txt explained above. Default is current directory.                               |
 | -k                                   | use this flag if you want to keep bam files in the final output folder                                                             |
-| -vertical                                   | use this flag if you want to the pipeline to plot a graphs with vertical color gradient profiles (default is horizontal color gradient)                                                           
-|
+| -vertical                            | use this flag if you want to the pipeline to plot a graphs with vertical color gradient profiles (default is horizontal color gradient)                                 |                          
 | --very-sensitive                     | bowtie alignment setting. Default:--very-sensitive                                                                                                              |
 | --very-fast                          | bowtie alignment setting. Default:--very-sensitive                                                                                                              |
 | --local                              | bowtie alignment setting. Default:--very-sensitive                                                                                                              |
