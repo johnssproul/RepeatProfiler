@@ -1,12 +1,12 @@
 ﻿
-# RepeatProfiler (This README is still under construction)
+# RepeatProfiler
 
-A tool for generating, visualizing, and comparative analysis of repetitive DNA profiles from short-read data. This tool automates the generation of repetitive DNA profiles from short-read sequence data and one or more reference sequences. Output enables standardized visualization of profiles, and comparative analysis of profile shape within and among user-defined groups, and prepares input files for phylogenetic analysis signal arising from variants within repeat profiles. RepeatProfiler is developed specifically to facilitate study of repetitive DNA dynamics over short evolutionary time scales in groups lacking genomic resources; however, it may be useful in any application where extracting signal from repetitive sequences is needed.
+A tool for studying repetitive DNA dynamics using low-coverage, short-read data. RepeatProfiler automates generation and visualization of repeat profiles from low-coverage sequence data and allows statistical comparison of profile attributes. The pipeline maps reads to consensus sequences of one or more repeat of interest, generates visually enhanced read depth/copy number profiles for each repeat, and facilitates comparison across profiles within and among samples. Output enables standardized visualization of profiles, and comparative analysis of profile shape within and among user-defined groups, and prepares input files for phylogenetic analysis signal arising from variants within repeat profiles. RepeatProfiler is developed specifically to facilitate study of repetitive DNA dynamics over short evolutionary time scales in groups with limited genomic resources; however, it may be useful in any application where extracting signal from repetitive sequences is useful.
 
 
 # Features
 
-  - Facilitates data visualization of repeat profiles using short read data
+  - Facilitates data visualization of repeat profiles using short-read data
   - Produces publication quality graphs in R that simplify visual comparison of profiles. 
   - Provides summary statistics related to repeat abundance, etc.
   - Conducts comparative analysis of profiles shape across and within user specified groups
@@ -70,7 +70,7 @@ bash repeatprof
 To generate profiles, you need two input types: (1) one or more reference sequence, and (2) short-read sequence data from one or more samples.
 
 1. Reference sequences
-- One or more reference sequence of repeats in FASTA format (LINK example)
+- Consensus sequence of one or more repeats in FASTA format
 - For tips on obtaining reference sequences for groups that lack repeat reference libraries see “TBD section” below (or LINK to full tutorial)
 
 2. Sequence data
