@@ -70,25 +70,15 @@ bash repeatprof
 To generate profiles, you need two input types: (1) one or more reference sequence, and (2) short-read sequence data from one or more samples.
 
 1. Reference sequences
-- Consensus sequence of one or more repeats in FASTA format ('.fa', '.fasta', and 
-.txt' extensions supported.)
+- Consensus sequence of one or more repeats in FASTA format. File extensions '.fa', '.fasta', and 
+'.txt' are supported.
 
 2. Sequence data
 - Read files should be in FASTQ format.
 - Files should end in the ‘.fastq’, or compressed ‘.fastq.gz’ extension (‘.fq’ instead of ‘.fastq’ is also supported).
 - Input reads may be paired, or unpaired. If paired data are used, the last string before the file extension should be ‘_1’ for Read1 and ‘_2’ for Read2 (alternatively ‘_R1’ and ‘_R2’ may be used). An example of an acceptable name for the file name for the file containing Read1 reads would be: ‘SampleName_1.fastq.gz’. The file containing Read2 data should replace the ‘_1’ with ‘_2’, but be identical otherwise as in: ‘SampleName_2.fastq.gz’
--A full list of supported input final strings and extensions is shown in the table below:
 
-|  Input |format   | format  | format  |format   | format  | format  | format|
-|---|---|---|---|---|---|---|---|
-| Paired Reads   | _R1.fastq | _R1.fastq.gz | _R1.fq | _1.fastq | _1.fastq.gz | _1.fq | _1.fq.gz |   
-|                | _R2.fastq | _R2.fastq.gz | _R2.fq | _2.fastq | _2.fastq.gz | _2.fq | _2.fq.gz |   
-| Unpaired Reads | .fq.gz    | .fastq.gz    | .fq    | .fastq   | .fastq      | .fq   | .fq.gz   |   
-| Reference      | .fa       | .fasta       | .txt   |          |             |       |          |                
-
-
-
-Review the sample input data set provided [here]. Also make sure all your files has Unix LF which means an empty line at the end of the file. This is standard among all linux and macOS text files
+Review the sample input data set provided [here]. Also make sure all your files has Unix LF which means an empty line at the end of the file. (This is standard among all linux and macOS text files.)
 
 
 ##### Generating profiles:
@@ -115,9 +105,12 @@ Explanation:
 ###### Optional flags: 
 | optional flag                        | usage                                                                                                                                                           |
 |--------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| -o <folder_path>                     | This will direct the final output folder to the specified folder. Default: Current directory                                                                 |
-| -corr                                | this flag to make the correlation analysis. user_provided.txt is needed for the  correlation graph                                                              |
-| -usrprov <user_provided.txt path> | use this to provide path of user_provided.txt explained above. Default is current directory. look  below on how to prepare the user_provided.txt and what it is |
+| -o <folder_path>                     | Directs output folder to the specified folder. Default is the current directory                                                                 |
+| -corr                                | Run a correlation analysis of profile shape among user-defined groups. If this flag is used ensure the user_groups.txt is present in the working directory (but see next). See below for instructions on preparing the user_groups.txt file.                                                              |
+| -usrgrp <user_groups.txt path> | use this to provide path of user_provided.txt explained above. Default is current directory.                               |
+| -k                                   | use this flag if you want to keep bam files in the final output folder                                                             |
+| -vertical                                   | use this flag if you want to the pipeline to plot a graphs with vertical color gradient profiles (default is horizontal color gradient)                                                           
+|
 | --very-sensitive                     | bowtie alignment setting. Default:--very-sensitive                                                                                                              |
 | --very-fast                          | bowtie alignment setting. Default:--very-sensitive                                                                                                              |
 | --local                              | bowtie alignment setting. Default:--very-sensitive                                                                                                              |
@@ -137,7 +130,7 @@ Explanation:
 
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-##### Preparing user_provided.txt for -corr 
+##### Preparing user_groups.txt for -corr 
 If you are making profiles for multiple samples and want to compare profile shape across samples using the correlation analysis feature (i.e., the -corr flag). The -corr flag requires that you provide an input text file (user_groups.txt) that assigns your samples to groups you want to compare. The program can auto generate the base user_groups.txt file using this command:
 ```sh
 repeatprof pre-corr < -u for unpaired reads  or -p paired reads  > <path reads folder>
