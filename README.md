@@ -85,7 +85,7 @@ To generate profiles, you need two input types: (1) one or more reference sequen
 
 a sample profile command with mandatory flags explained 
 ```sh
-repeatprof profile <-p for paired reads or -u for unpaired> <the reference sequence path > <path of the folder containing reads> [optional flags] 
+repeatprof profile <'-p' for paired-end reads or '-u' for single-end> <path to reference sequence> <path of the folder containing reads> [optional flags] 
 ```
 
 an example of a functional example command (explanations omitted).
