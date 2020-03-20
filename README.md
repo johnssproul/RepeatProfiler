@@ -103,7 +103,7 @@ Explanation:
 
 #### SAMPLE DATA 
 
-Download the sample input data set provided [here]. Also make sure all your files has Unix LF which means an empty line at the end of the file. (This is standard among all linux and macOS text files.)
+Download the sample input data set provided [here]. 
 
 1- Unzip and navigate into the downloaded folder an enter the command: 
 ```sh
@@ -256,7 +256,9 @@ Based on the variation plots explained earlier, we were able to capture phylogen
  This also captures its information from the graphs. It contain fraction of bases that didnt match for each read/read pair for this refrence. Looking at this table, can tell you which graphs have the most  phylogentic positions, and you can make decsions based on that.
 
 
+#Troubleshooting
 
+If you get a formatting error related to reference sequences, check that the file is in FASTA format, and that it has Unix LF (an empty line at the end of the file -- this is standard among all linux and macOS text files.)
 
    
     
