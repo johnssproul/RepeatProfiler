@@ -1223,7 +1223,7 @@ fi
 if [ "$1" == "-h" ]; then
 echo ""
 echo "Usage:"
-echo "repeatprof profile <-p for paired reads or  -u for unpaired> <the reference sequence path > <path of the folder containing reads> [opitonal flags]"
+echo "repeatprof profile <-p for paired reads or -u for unpaired> <the reference sequence path> <path of the folder containing reads> [opitonal flags]"
 echo ""
 echo "optional flags:"
 echo "-o <folder_path>		use to specifiy an directory where the final output file  be directed to. Default: current directory"
