@@ -70,13 +70,13 @@ bash repeatprof
 To generate profiles, you need two input types: (1) one or more reference sequence, and (2) short-read sequence data from one or more samples.
 
 1. Reference sequences
-- Consensus sequence of one or more repeats in FASTA format. File extensions '.fa', '.fasta', and 
+ - Consensus sequence of one or more repeats in FASTA format. File extensions '.fa', '.fasta', and 
 '.txt' are supported.
 
 2. Sequence data
-- Read files should be in FASTQ format.
-- Files should end in the ‘.fastq’, or compressed ‘.fastq.gz’ extension (‘.fq’ instead of ‘.fastq’ is also supported).
-- Input reads may be paired, or unpaired. If paired data are used, the last string before the file extension should be ‘_1’ for Read1 and ‘_2’ for Read2 (alternatively ‘_R1’ and ‘_R2’ may be used). An example of an acceptable name for the file name for the file containing Read1 reads would be: ‘SampleName_1.fastq.gz’. The file containing Read2 data should replace the ‘_1’ with ‘_2’, but be identical otherwise as in: ‘SampleName_2.fastq.gz’
+ - Read files should be in FASTQ format.
+ - Files should end in the ‘.fastq’, or compressed ‘.fastq.gz’ extension (‘.fq’ instead of ‘.fastq’ is also supported).
+ - Input reads may be paired, or unpaired. If paired data are used, the last string before the file extension should be ‘_1’ for Read1 and ‘_2’ for Read2 (alternatively ‘_R1’ and ‘_R2’ may be used). An example of an acceptable name for the file name for the file containing Read1 reads would be: ‘SampleName_1.fastq.gz’. The file containing Read2 data should replace the ‘_1’ with ‘_2’, but be identical otherwise as in: ‘SampleName_2.fastq.gz’
 
 
 
