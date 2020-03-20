@@ -1,0 +1,5 @@
+Read1	Group
+5M_isoG_1.fq.gz	1
+5M_isoG_2.fq.gz	2
+5M_mauG_R1.fq.gz	a
+5M_mauG_R2.fq	a
