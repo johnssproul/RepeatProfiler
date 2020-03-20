@@ -93,18 +93,6 @@ an example of a functional example command (explanations omitted).
 ```sh
 repeatprof profile -p Refs.fa /RepeatProfilerData/Test1
 ```
-#### SAMPLE DATA 
-
-Download the sample input data set provided [here]. Also make sure all your files has Unix LF which means an empty line at the end of the file. (This is standard among all linux and macOS text files.)
-
-1- go into the folder downloaded after unzipping 
-```sh
-repeatprof profile -p reference.fa  <enter full path of current directory (this is where the reads present) >
-
-```
-2- check if no errors generated and program ran somethely this means you have it correctly set up
-
-
 
 Explanation: 
 - 'repeatprof'  calls the program
@@ -112,6 +100,19 @@ Explanation:
 - '-p'  indicates the input reads are paired 
 - 'Refs.fa'  specifies the FASTA files containing reference sequences (located in the current directory in this example, alternatively a path can be provided)
 - '/RepeatProfilerData/Test1'  specifies the path of the directory containing input read files
+
+#### SAMPLE DATA 
+
+Download the sample input data set provided [here]. Also make sure all your files has Unix LF which means an empty line at the end of the file. (This is standard among all linux and macOS text files.)
+
+1- Unzip and navigate into the downloaded folder an enter the command: 
+```sh
+repeatprof profile -p reference.fa  <enter full path of current directory>
+
+```
+2- check if no errors generated and program ran smoothly this means you have it correctly set up
+
+
 
 ###### Commands: 
 | Command                        | usage                                                                                                                                                           |
@@ -145,7 +146,7 @@ Explanation:
 #### Correlation analysis
 If you are making profiles for multiple samples and want to compare profile shape across samples using the correlation analysis feature (i.e., the -corr flag). This command is designed for cases when multiple samples per category are present (e.g., multiple individuals per species) such that -within group correlation values can be compared to -between group values. The -corr flag requires that you provide an input text file (user_groups.txt) that assigns your samples to groups. The user can generate this file manually, or use the program to auto-generate the base user_groups.txt file using this command:
 ```sh
-repeatprof pre-corr < -u for unpaired reads  or -p paired reads  > <path reads folder>
+repeatprof pre-corr <'-u' for unpaired reads or '-p' for paired reads> <path reads folder>
 ```
 
 After running this command the user_groups.txt will be generated based on your input reads and you can simply replace the placeholder 'TEMPORARY' with your own group numbers such that each sample belonging to a given group has the same number in the 'group' column. You can run this command to view the file and verify that it is in the correct format.
