@@ -275,7 +275,7 @@ This folder contains boxplots for each group you inputed in your user_groups.txt
 *Last file*: correlation_summary.csv
   This table contains average values of within and between each group correlation value for each reference. It summarizes information for all correlation done in the run
 
- ![](https://github.com/johnssproul/RepeatProfiler/raw/master/pics_readme/photo2A.PNG)
+![](https://github.com/johnssproul/RepeatProfiler/raw/master/pics_readme/photo2A.png)
 
 
 
