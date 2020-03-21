@@ -1,0 +1,2 @@
+master_bam/001_sorted.bam
+master_bam/002_sorted.bam

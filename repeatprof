@@ -448,6 +448,7 @@ echo "yes"
 
 
 
+bash $mydir/readme_gen.sh #this starts generating the readme. which will be populated later with the index to read conversions
 
 
 
@@ -626,7 +627,6 @@ The_ref_size=$ref_char_count #same as above re_char_count
 
 
 
-bash $mydir/readme_gen.sh #this starts generating the readme. which will be populated later with the index to read conversions
 
   #  bowtie2-build $line $BASE > /dev/null 2> /dev/null # this build index for the current reference
     echo "The reference sequence currently under analysis:"
