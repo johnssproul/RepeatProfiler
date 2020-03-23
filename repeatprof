@@ -256,6 +256,12 @@ commands=$@
 
 before_pwd=`pwd`
 
+if [[ -f $user_prov ]]; then
+	cp  $user_prov $The_folder
+
+fi
+
+
 cd $The_folder
 if [[ -f $3 ]]; then 
 
@@ -1017,6 +1023,7 @@ echo "           (__)\       )\/\  "
 echo "               ||----w |    "
 echo "               ||     ||    "
 if [[ -d $the_path ]]; then
+cd ..
 mv $The_folder $the_path
 fi
 
