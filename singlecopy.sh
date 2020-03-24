@@ -158,7 +158,6 @@ done < fofnsingle.txt
 rm -f  references_used/*_singlecopy.fa
 rm -f depth_counts.txt
 #rm -f fofn_bam.txt
-rm -f ReadMe.txt
 rm -f -r multi_poly
 
 ##### end script

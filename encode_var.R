@@ -213,7 +213,7 @@ fraction_table_towrite$Peaks_T <- NULL
 fraction_table_towrite$Peaks_G <- NULL
 fraction_table_towrite$Peaks_C <- NULL
 
-write.table(fraction_table_towrite, "variation_analysis.tsv", row.names = FALSE)
+#write.table(fraction_table_towrite, "variation_analysis.tsv", row.names = FALSE)
 
 ########## PHYLOGENTIC STUFF ##########
 

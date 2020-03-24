@@ -273,7 +273,7 @@ refs_full_path=`echo "${before_pwd}/$3"`
 
 fi 
 
-
+The_folder=${The_folder}_output
 
 mkdir $The_folder
 
@@ -281,8 +281,6 @@ mkdir $The_folder
 
 if [[ -d $refs_full_path ]]; then # checking if 3rd parameter (refrence path) for profile is directory or a file
 #if it is a directory then sum up all the .fa files and put them int o one and send them to fasta splitter to prepare them as single fasta sequences for analysis
-	rm -f -r references_used
-	mkdir references_used
 	path_refs=`cat $refs_full_path/*.fa > all_refs.fa`
 
 
@@ -305,9 +303,8 @@ fi
 
 elif [[ -f $refs_full_path ]]; then # if the reference entered as a file  then just send it to fasta splitter in case it is multi sequence fasta
 	rm -f -r references_used
-	mkdir references_used
 
-bash $mydir/fasta_splitter.sh $refs_full_path #split comment
+	bash $mydir/fasta_splitter.sh $refs_full_path #split comment
 
 
 retval=$? #check if any error occured by getting the exit code
@@ -861,10 +858,11 @@ rm -f Closely_related_reads_analysis.txt #we dont need this anymore
 ##### This block moves output for a given reference to the relevant folders.
 
 fi # end of pile up
-mv temp_cvs $the_output #for testing
-mv multi_poly $the_output #for testing
-mv multi_poly_names.txt $the_output #for testing
 
+mv temp_cvs $the_output #for testing
+#mv multi_poly $the_output #for testing
+#mv multi_poly_names.txt $the_output #for testing
+rm -f -r multi_poly_names.txt multi_poly
 mv $the_output $The_folder
 rm -f folder_names.txt
 
@@ -904,9 +902,9 @@ echo "Thenumber: $Number"
 $Rscript $mydir/mk_profiles_all.R $Number $R_packages $Normalized
 
 mv  scaled_profiles_allrefs $The_folder
-mv  *ReadMe* The_summary.txt  $The_folder #move read me to the final folder
+mv  *ReadMe*  $The_folder #move read me to the final folder
+mv The_summary.txt $The_folder
 rm -f The_summary.txt ref_temp.txt bowtie.log  *db.2*
-mv references_used $The_folder
 
 ##### end combined color profiles and output organization
 
@@ -974,7 +972,7 @@ fi
 mv map_depth_allrefs $The_folder
 mv index_conv.txt $The_folder #for testing
 
-mv Run_summary.csv Errors_README.log References_summary_base_coverage.csv $The_folder 2> /dev/null
+mv Run_summary.csv Errors_README.log base_coverage_summary.csv $The_folder 2> /dev/null
 rm -f  *Rplots* Single_summary.csv
 
 if [[ -f normalized_table.csv ]]; then
@@ -1012,6 +1010,11 @@ done
 rm -f -r master_bam
 
 
+mv singlecopy_warnings.txt $The_folder 2> /dev/null
+
+mkdir temp 
+mv ${The_folder}/index_conv.txt ${The_folder}/The_summary.txt temp
+mv *.txt *.fa *.fai temp
 #design of the cow was borrowed from the famous cowsay package
 
 echo "________________________________"

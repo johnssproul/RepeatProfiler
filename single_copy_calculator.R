@@ -49,7 +49,7 @@ for(i in 2:ncol(all.depth)){
      
    }else{
      print("problemmmmmmmmmmmmmmmmmmm!")
-     cat(paste(The.summary[i-1,1],"wasnt used in normalization because it shorter than twice the read length",read_length,"\n"),append = TRUE,file="singcopy_Warrnings.txt")
+     cat(paste(The.summary[i-1,1],"wasnt used in normalization because it shorter than twice the read length",read_length,"\n"),append = TRUE,file="singlecopy_warnings.txt")
      
      
   }

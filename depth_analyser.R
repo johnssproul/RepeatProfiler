@@ -121,12 +121,12 @@ for(i in 2:ncol(all.depth)){
 
 # write summary table output 
 
-References_summary_base_coverage<-aggregate(The.summary$propotion_bases_with_coverage,by=list(Referance=The.summary$Reference),mean)
+References_summary_base_coverage<-aggregate(The.summary$propotion_bases_with_coverage,by=list(References=The.summary$Reference),mean)
 colnames(References_summary_base_coverage)[2]<-"mean_base_coverage"
 
 References_summary_base_coverage<-References_summary_base_coverage[order(References_summary_base_coverage$mean_base_coverage),]
 
-write.csv(References_summary_base_coverage,"References_summary_base_coverage.csv",row.names = FALSE)
+write.csv(References_summary_base_coverage,"base_coverage_summary.csv",row.names = FALSE)
 
 
 write.csv(The.summary, file = 'Run_summary.csv', row.names = FALSE)
