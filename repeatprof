@@ -820,7 +820,7 @@ $Rscript $mydir/encode_var.R  > Closely_related_reads_analysis.txt
 
 mv *.phy $the_output
 
-mv *variation_analysis* $the_output
+#mv *variation_analysis* $the_output
 rm -f Closely_related_reads_analysis.txt #we dont need this anymore
 
 ###### end variant summary in alignments
