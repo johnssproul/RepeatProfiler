@@ -1,2 +1,0 @@
-/mnt/d/Pipeline_project/scriptTest/reads//5M_isoG_1.fq.gz
-/mnt/d/Pipeline_project/scriptTest/reads//5M_mauG_R1.fq.gz

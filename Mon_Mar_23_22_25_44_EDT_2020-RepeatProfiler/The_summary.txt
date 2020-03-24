@@ -1,1 +1,0 @@
-Reference	Sample_index	Read1	Read2	Total_reads	percent_mapped
