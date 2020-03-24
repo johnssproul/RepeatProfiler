@@ -20,7 +20,7 @@ echo ""
 
 fofnsinglecheck=`cat fofnsingle.txt | wc -l`
 
-if [[ $fofnsinglecheck == 0 ]];then #if both are empty then there was no reads of correct format to begin with
+if [ $fofnsinglecheck == 0 ];then #if both are empty then there was no reads of correct format to begin with
   echo "PROBLEM !"
   echo "No singlecopy genes sequences detected in the reference sequence file you provided. Make sure your single copy reference names in the Fasta file end with '_singlecopy' "
   echo "more info can be found on the github page, or try repeatprof -h "
