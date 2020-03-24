@@ -261,7 +261,7 @@ if [[ -f $user_prov ]]; then
 	
 	cp  $user_prov $The_folder
 
-elif [ $infolder == "true" ]; then 
+elif [ "$infolder" == "true" ]; then 
 
 cp user_groups.txt $The_folder
 
