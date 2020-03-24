@@ -1,0 +1,3 @@
+Read_Index	Readlength
+001	150
+002	150

@@ -13,7 +13,7 @@ mkdir single_cvs
 rm -f -r multi_poly
 mkdir multi_poly
 refs_full_path=all_References.fa 
-ls references_used/*_singlecopy.fa > fofnsingle.txt 2> /dev/null
+#ls references_used/*_singlecopy.fa > fofnsingle.txt 2> /dev/null
 grep "_singlecopy" all_References.fa | sed 's/^.//'  > fofnsingle.txt
 
 echo ""

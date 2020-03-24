@@ -198,7 +198,7 @@ MAX=`wc -l < fofn1.txt`
 ##### end initial check and error handling for read data 
 
 
-
+	
 
 ##### checks input file for -corr flag, error handling
 
@@ -221,6 +221,7 @@ MAX=`wc -l < fofn1.txt`
         lines=`cat user_groups.txt | wc -l`
 		lines=`echo $[$lines-1]`
 		echo "$lines"
+		infolder=true
 	    if [[ $lines -ne $MAX ]]; then
            echo "Read files listed in user_groups.txt don't match the read files in path to reads you provided for this run. Ensure that user_groups is correctly formatted, and the path to reads is correct."
 		   echo "The user_groups.txt file format does not match read format selected for this run (i.e., -p or -u) If user_groups.txt was formatted for unpaired data, -u must be specified for the run. If formatted for paired data, -p must be specified. See help menu or user manual."
@@ -257,10 +258,14 @@ commands=$@
 before_pwd=`pwd`
 
 if [[ -f $user_prov ]]; then
+	
 	cp  $user_prov $The_folder
 
-fi
+elif [ $infolder == "true" ]; then 
 
+cp user_groups.txt $The_folder
+
+fi
 
 cd $The_folder
 if [[ -f $3 ]]; then 
@@ -521,6 +526,7 @@ echo ""
 
 #Runs external script for normalization analysis 
 bash $mydir/singlecopy.sh $mydir $4 $2 "2" $a $rmdup $refs_full_path
+
 
 
 
@@ -820,7 +826,7 @@ $Rscript $mydir/encode_var.R  > Closely_related_reads_analysis.txt
 
 mv *.phy $the_output
 
-#mv *variation_analysis* $the_output
+mv *variation_analysis* $the_output
 rm -f Closely_related_reads_analysis.txt #we dont need this anymore
 
 ###### end variant summary in alignments
@@ -1027,6 +1033,8 @@ echo "               ||----w |    "
 echo "               ||     ||    "
 if [[ -d $the_path ]]; then
 cd ..
+The_folder="$currentDate-RepeatProfiler"
+
 mv $The_folder $the_path
 fi
 
