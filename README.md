@@ -67,7 +67,7 @@ bash repeatprof
 
 ##### Required Input
 
-To generate profiles, you need two input types: (1) one or more reference sequence, and (2) short-read sequence data from one or more samples.
+To generate profiles, you need two input types: (1) reference sequence(s) to analyze, and (2) short-read sequence data from one or more samples.
 
 1. Reference sequence(s) to analyze (FASTA format).
  - Multi-fasta files are supported. Valid file extensions are '.fa', '.fasta', and 
