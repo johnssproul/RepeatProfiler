@@ -6,7 +6,7 @@
 
 
 ##### defines variables
-
+mkdir mapping_log_files
 REF=$1 #the reference name is passed from the repeatprof script
 
 BASE="refbase_" #this is for the indexed reference files that was built by bowtie2-build command in the repeatprof
@@ -124,7 +124,7 @@ do
   fi
 
   if [ $3 = "-p" ]; then #if data is paired then run this
-    (bowtie2 -p $4 -x $BASE -1 $READ1 -2 $READ2 $5    | samtools view -bS -h -F 4 /dev/stdin |  samtools sort -o  ${F}_sorted.bam  /dev/stdin) 2> master_bam/${F}_bowtie.log
+    (bowtie2 -p $4 -x $BASE -1 $READ1 -2 $READ2 $5    | samtools view -bS -h -F 4 /dev/stdin |  samtools sort -o  ${F}_sorted.bam  /dev/stdin) 2> mapping_log_files/${F}_bowtie.log
     retval=$? #catches exit code to check for error
 	if [ $6 == "TRUE" ]
 	then 
@@ -140,7 +140,7 @@ do
     rm -f ${F}_sorted.bam
     # Finally mark and remove duplicates
 	samtools markdup positionsort.bam ${F}_sorted.bam
-	samtools flagstat ${F}_sorted.bam > master_bam/${F}_dupicate_removal_info.txt
+	samtools flagstat ${F}_sorted.bam > mapping_log_files/${F}_dupicate_removal_info.txt
     samtools markdup -r positionsort.bam ${F}_sorted.bam
 
     rm -f  positionsort.bam fixmate.bam namesort.bam
@@ -154,7 +154,7 @@ echo "${F}	${Read_length}" >> read_lengths.txt
   fi
 
   if [ $3 = "-u" ]; then #if data is unpaired then run that
-    (bowtie2 -p $4 -x $BASE -U $READ1 $5   | samtools view -bS -h -F 4 /dev/stdin | samtools sort -o ${F}_sorted.bam /dev/stdin) 2> master_bam/${F}_bowtie.log
+    (bowtie2 -p $4 -x $BASE -U $READ1 $5   | samtools view -bS -h -F 4 /dev/stdin | samtools sort -o ${F}_sorted.bam /dev/stdin) 2> mapping_log_files/${F}_bowtie.log
     retval=$? #catches exit code to check for error
 	if [ $6 == "TRUE" ]
 	then 
@@ -170,9 +170,8 @@ echo "${F}	${Read_length}" >> read_lengths.txt
     rm -f ${F}_sorted.bam
     # Finally mark duplicates
 	
-	samtools markdup positionsort.bam > master_bam/${F}_dupicate_removal_info.txt
 	samtools markdup positionsort ${F}_sorted.bam
-    samtools flagstat ${F}_sorted.bam > master_bam/${F}_dupicate_removal_info.txt
+    samtools flagstat ${F}_sorted.bam > mapping_log_files/${F}_dupicate_removal_info.txt
 	samtools markdup -r positionsort.bam ${F}_sorted.bam
 
 

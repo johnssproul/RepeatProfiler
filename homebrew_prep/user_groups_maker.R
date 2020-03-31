@@ -30,10 +30,9 @@ if(identical(as.character(args[1]), '-p') || identical(as.character(args[1]), '-
 
   write.table(user.supplied,'user_groups.txt',row.names = FALSE, quote = FALSE, sep = '\t')
 
-  cat ('
-  	user_groups.txt has been created in the current directory.
-    Replace 'TEMPORARY' (it is a placeholder) with your desired group designations for each sample such that each member of a given group has the same number in that column.
-    The command 'repeatprof pre-corr -v' checks that the format is still correct, and allows you to view your file.')
+  cat ('user_groups.txt has been created in the current directory.
+    Replace TEMPORARY (it is a placeholder) with your desired group designations for each sample such that each member of a given group has the same number in that column.
+    The command repeatprof pre-corr -v checks that the format is still correct, and allows you to view your file.')
 }
 
 #argument is -v
@@ -42,7 +41,7 @@ if(identical(as.character(args[1]), '-v')){
 
   col.names <- colnames(user.supplied)
   if(is.element('Read1',col.names) && is.element('Group',col.names)){
-    print('correct format detected, file ready for correlation analysis ('-corr' flag) ')
+    print('correct format detected, file ready for correlation analysis (-corr flag) ')
     print(user.supplied)
   }else{
     print('Headers in incorrect format. For unpaired reads headers should be: |Read1|Group| For paired reads use: |Read1|Read2|Group| \n')

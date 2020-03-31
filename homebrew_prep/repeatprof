@@ -7,7 +7,7 @@ num_commands=`echo $commands | wc -w ` #gets the number  of commands
 if ((num_commands == 0 )) # if no commands entered, show this
  then
 
-echo "RepeatProfiler v 0.94 -prerelease- x fast x as x the hedgehog x"
+echo "RepeatProfiler v 0.97 -prerelease- x Calm x Waves x"
 echo "use -h flag for help using this tool"
 echo "____ ____ ___  ____ ____ ___    ___  ____ ____ ____ _ _    ____ ____"
 echo "|__/ |___ |__] |___ |__|  |     |__] |__/ |  | |___ | |    |___ |__/ "
@@ -24,9 +24,10 @@ rm -f Errors_README.txt
 echo "generating symlinks"
 
 #brew link --overwrite >/dev/null 2>&1  #brew stuff
-mydir=`echo "$(brew --cellar repeatprof)/0.92/libexec"` #brew stuff
+mydir=`echo "$(brew --cellar repeatprof)/0.97/libexec"` #brew stuff
 #R_packages="default_rpackages"
-R_packages=`echo "$(brew --cellar repeatprof)/0.92/R_packages"` #brew stuff
+R_packages=`echo "$(brew --cellar repeatprof)/0.97/R_packages"` #brew stuff
+#images=`echo "$(brew --cellar repeatprof)/0.92/images-RP"`  #brew stuff
 Rscript=`echo "$(brew --prefix R)/bin/Rscript"`  #brew stuff
 #mydir=`pwd` #comment when running it for brew
 #Rscript="Rscript" #comment when running it for brew
@@ -197,7 +198,7 @@ MAX=`wc -l < fofn1.txt`
 ##### end initial check and error handling for read data 
 
 
-
+	
 
 ##### checks input file for -corr flag, error handling
 
@@ -220,6 +221,7 @@ MAX=`wc -l < fofn1.txt`
         lines=`cat user_groups.txt | wc -l`
 		lines=`echo $[$lines-1]`
 		echo "$lines"
+		infolder=true
 	    if [[ $lines -ne $MAX ]]; then
            echo "Read files listed in user_groups.txt don't match the read files in path to reads you provided for this run. Ensure that user_groups is correctly formatted, and the path to reads is correct."
 		   echo "The user_groups.txt file format does not match read format selected for this run (i.e., -p or -u) If user_groups.txt was formatted for unpaired data, -u must be specified for the run. If formatted for paired data, -p must be specified. See help menu or user manual."
@@ -255,6 +257,16 @@ commands=$@
 
 before_pwd=`pwd`
 
+if [[ -f $user_prov ]]; then
+	
+	cp  $user_prov $The_folder
+
+elif [ "$infolder" == "true" ]; then 
+
+cp user_groups.txt $The_folder
+
+fi
+
 cd $The_folder
 if [[ -f $3 ]]; then 
 
@@ -266,7 +278,7 @@ refs_full_path=`echo "${before_pwd}/$3"`
 
 fi 
 
-
+The_folder=${The_folder}_output
 
 mkdir $The_folder
 
@@ -274,8 +286,6 @@ mkdir $The_folder
 
 if [[ -d $refs_full_path ]]; then # checking if 3rd parameter (refrence path) for profile is directory or a file
 #if it is a directory then sum up all the .fa files and put them int o one and send them to fasta splitter to prepare them as single fasta sequences for analysis
-	rm -f -r references_used
-	mkdir references_used
 	path_refs=`cat $refs_full_path/*.fa > all_refs.fa`
 
 
@@ -298,9 +308,8 @@ fi
 
 elif [[ -f $refs_full_path ]]; then # if the reference entered as a file  then just send it to fasta splitter in case it is multi sequence fasta
 	rm -f -r references_used
-	mkdir references_used
 
-bash $mydir/fasta_splitter.sh $refs_full_path #split comment
+	bash $mydir/fasta_splitter.sh $refs_full_path #split comment
 
 
 retval=$? #check if any error occured by getting the exit code
@@ -430,6 +439,28 @@ echo "yes"
 
 
 
+#check if singlecopy gene present if singlecopy option selected
+for i in "${array[@]}"
+do
+
+if [[ $i == "-singlecopy" ]]; then
+
+grep "_singlecopy" all_References.fa | sed 's/^.//'  > fofnsingle.txt
+
+echo ""
+
+fofnsinglecheck=`cat fofnsingle.txt | wc -l`
+
+if [ $fofnsinglecheck == 0 ];then #if both are empty then there was no reads of correct format to begin with
+  echo "PROBLEM !"
+  echo "No singlecopy genes sequences detected in the reference sequence file you provided. Make sure your single copy reference names in the Fasta file end with '_singlecopy' "
+  echo "more info can be found on the github page, or try repeatprof -h "
+  exit 1
+fi
+
+fi
+
+done
 
 
 
@@ -438,15 +469,7 @@ echo "yes"
 
 
 
-
-
-
-
-
-
-
-
-
+bash $mydir/readme_gen.sh #this starts generating the readme. which will be populated later with the index to read conversions
 
 
 
@@ -516,6 +539,7 @@ echo ""
 
 #Runs external script for normalization analysis 
 bash $mydir/singlecopy.sh $mydir $4 $2 "2" $a $rmdup $refs_full_path
+
 
 
 
@@ -625,7 +649,6 @@ The_ref_size=$ref_char_count #same as above re_char_count
 
 
 
-bash $mydir/readme_gen.sh #this starts generating the readme. which will be populated later with the index to read conversions
 
   #  bowtie2-build $line $BASE > /dev/null 2> /dev/null # this build index for the current reference
     echo "The reference sequence currently under analysis:"
@@ -854,10 +877,11 @@ rm -f Closely_related_reads_analysis.txt #we dont need this anymore
 ##### This block moves output for a given reference to the relevant folders.
 
 fi # end of pile up
-mv temp_cvs $the_output #for testing
-mv multi_poly $the_output #for testing
-mv multi_poly_names.txt $the_output #for testing
 
+mv temp_cvs $the_output #for testing
+#mv multi_poly $the_output #for testing
+#mv multi_poly_names.txt $the_output #for testing
+rm -f -r multi_poly_names.txt multi_poly
 mv $the_output $The_folder
 rm -f folder_names.txt
 
@@ -897,9 +921,9 @@ echo "Thenumber: $Number"
 $Rscript $mydir/mk_profiles_all.R $Number $R_packages $Normalized
 
 mv  scaled_profiles_allrefs $The_folder
-mv  *ReadMe* The_summary.txt  $The_folder #move read me to the final folder
+mv  *ReadMe*  $The_folder #move read me to the final folder
+mv The_summary.txt $The_folder
 rm -f The_summary.txt ref_temp.txt bowtie.log  *db.2*
-mv references_used $The_folder
 
 ##### end combined color profiles and output organization
 
@@ -967,7 +991,7 @@ fi
 mv map_depth_allrefs $The_folder
 mv index_conv.txt $The_folder #for testing
 
-mv Run_summary.csv Errors_README.log References_summary_base_coverage.csv $The_folder 2> /dev/null
+mv Run_summary.csv Errors_README.log base_coverage_summary.csv $The_folder 2> /dev/null
 rm -f  *Rplots* Single_summary.csv
 
 if [[ -f normalized_table.csv ]]; then
@@ -1005,6 +1029,11 @@ done
 rm -f -r master_bam
 
 
+mv singlecopy_warnings.txt $The_folder 2> /dev/null
+
+mkdir temp 
+mv ${The_folder}/index_conv.txt ${The_folder}/The_summary.txt temp
+mv *.txt *.fa *.fai temp
 #design of the cow was borrowed from the famous cowsay package
 
 echo "________________________________"
@@ -1016,6 +1045,9 @@ echo "           (__)\       )\/\  "
 echo "               ||----w |    "
 echo "               ||     ||    "
 if [[ -d $the_path ]]; then
+cd ..
+The_folder="$currentDate-RepeatProfiler"
+
 mv $The_folder $the_path
 fi
 
@@ -1260,44 +1292,60 @@ fi
 #####code for help menu
 if [ "$1" == "-h" ]; then
 echo ""
+echo "Thank you for checking out RepeatProfiler."
+echo "Have a look at our GitHub page (https://github.com/johnssproul/RepeatProfiler) for more info"
+echo ""
 echo "Usage:"
-echo "repeatprof profile <-p for paired reads or  -u for unpaired> <the reference sequence path > <path of the folder containing reads> [opitonal flags]"
 echo ""
-echo "optional flags:"
-echo "-o <folder_path>		use to specifiy an directory where the final output file  be directed to. Default: current directory"
-echo "-corr				type this flag to make the correlation analysis. user_groups.txt will be assumed to be in same directory"
-echo "-corr	<user_groups.txt path >   type this flag to make the correlation analysis providing User_provided.txt path"
-echo "-k				use this flag if you want to keep the sorted bam files of the alignments in the final output folder"
+echo "General command structure:"
+echo "    repeatprof profile <'-p' for paired-end reads or '-u' for single-end> <filename (or path) of references>" 
+echo "                       <path to reads folder> [opitonal flags]"
 echo ""
-echo "other optional flags can be used:"
-echo "--very-sensitive		bowtie alignment setting. Default:--very-sensitive"
-echo "--very-fast			bowtie alignment setting. Default:--very-sensitive"
-echo "--local				bowtie alignment setting. Default:--very-sensitive"
-echo "--fast				bowtie alignment setting. Default:--very-sensitive"
-echo "--very-fast-local		bowtie alignment setting. Default:--very-sensitive"
-echo "--fast-local			bowtie alignment setting. Default:--very-sensitive"
-echo "--sensitive			bowtie alignment setting. Default:--very-sensitive"
-echo "--very-sensitive		bowtie alignment setting. Default:--very-sensitive"
-echo "--very-sensitive-local	        bowtie alignment setting. Default:--very-sensitive"
-echo "--sensitive-local		bowtie alignment setting. Default:--very-sensitive"
+echo "Example command: 'repeatprof profile -p Refs.fa /RepeatProfilerData/Test1'"
+echo "    Explanation:"
+echo "	'repeatprof' calls the program"
+echo "	'profile' command to run primary analysis"
+echo "	'-p' tells the program input reads are paired"
+echo "	'Refs.fa' name of file with reference sequences (provide path if not in current directory"
+echo "	'/RepeatProfilerData/Test1' path to folder with input reads"
+echo ""
+echo ""
+echo "Commands:"
+echo "    profile .............. Primary analysis command, see 'Example command' above for required arguments."
+echo "    pre-corr ............. Auto-generates user_groups.txt base file for correlation analysis."
+echo "    clean ................ Cleans up directory following a terminated/broken run"
+echo ""
+echo ""
+echo "Optional flags:"
+echo "    -h ................... Displays help menu."		
+echo "    -t ................... Sets the number of threads. Default is 4."
+echo "    -k ................... Use this flag to keep bam files in the final output folder."
+echo "    -o <folder_path> ..... Directs output to specified folder. Default is current directory."
+echo "    -corr ................ Runs a correlation analysis of profile shape among user-defined groups."
+echo "  		     	      Requires user_groups.txt input file in current directory. see manual."
+echo "    -corr <file_path> .... Used to run correlation analysis when user_groups.txt is not in" 
+echo "			      current directory."
+echo "    -vertical ............ Generates color-scaled profiles with a vertical color gradient." 
+echo " 			      Default is a horizontal gradient."
+echo "    -singlecopy .......... Normalizes read coverage of all samples relative to single-copy genes." 
+echo "			      Add one or more single-copy sequences to reference sequence file and append" 
+echo " 			      their FASTA header with '_singlecopy. see manual.'"
+echo "    --<bowtie_command> ... Allows user to change Bowtie 2 mapping parameters. Valid arguments" 
+echo " 			      include '--very-fast-local', --fast-local', '--sensitive-local', '--very-sensitive-local',"
+echo "			      '--very-fast','--fast', '--sensitive', '--very-sensitive'. In addition to Bowtie 2 presets,"
+echo "			      full bowtie command strings may be used. Default is '--very-sensitive-local."
 echo ""
 echo "Supported input formats:"
-echo "reference:	.fa .fasta .txt "
-echo "Paired reads: _R1.fastq _R1.fastq.gz _R1.fq  _R1.fq.gz  _1.fastq _1.fastq.gz _1.fq  _1.fq.gz  "
-echo "              _R2.fastq _R2.fastq.gz _R2.fq  _R2.fq.gz  _2.fastq _2.fastq.gz _2.fq  _2.fq.gz  "
-echo "Unpaired reads:  .fastq .fastq.gz .fq  .fq.gz  .fastq .fastq.gz .fq"
+echo "    -Reference sequences should be in FASTA format. Valid extensions include: '.fa' .'fasta' '.txt' "
 echo ""
-echo "references need to be in fasta format. They can be multi-sequence or single sequence fasta file."
+echo "    -Input reads should be in FASTQ format (zipped, or not)." 
+echo "         -Valid extensions include: '.fastq', '.fq', '.fastq.gz', and '.fq.gz'"
+echo "         -For paired reads the last string before the file extension should be ‘_1’ and ‘_2’" 
+echo "              for reads 1 and 2 respectively (alternatively ‘_R1’ and ‘_R2’ also supported)"
+echo "         -An example of a valid paired read file names is: ‘SampleName_1.fastq.gz’ (read 1)" 
+echo "                                                           ‘SampleName_1.fastq.gz’ (read 2)"
 echo ""
-echo "--------------------------------other usages: "
-echo ""
-echo "repeatprof pre-corr <-u for unpaired reads  or -p paired reads> <path of the folder containing reads> use this command to help prepare user_groups.txt for correlation graph produced by -corr flag in profile "
-echo ""
-echo "repeatprof pre-corr -v  use this command to review your edited user_groups.txt with your desired groups. This ensures that it is still in the correct file format. Need to be in same directory as file"
-echo ""
-echo "repeatprof clean    use this command to cleanup a broken/terminated run"
-echo ""
-echo "check our github page https://github.com/johnssproul/RepeatProfiler for more detailed info on how to run the tool/sample inputs/ output explanation/tutorial "
+echo "*Check our github page https://github.com/johnssproul/RepeatProfiler for more info"
 
 fi
 

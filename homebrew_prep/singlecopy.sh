@@ -13,14 +13,14 @@ mkdir single_cvs
 rm -f -r multi_poly
 mkdir multi_poly
 refs_full_path=all_References.fa 
-ls references_used/*_singlecopy.fa > fofnsingle.txt 2> /dev/null
+#ls references_used/*_singlecopy.fa > fofnsingle.txt 2> /dev/null
 grep "_singlecopy" all_References.fa | sed 's/^.//'  > fofnsingle.txt
 
 echo ""
 
 fofnsinglecheck=`cat fofnsingle.txt | wc -l`
 
-if [ $fofnsinglecheck == 0 ];then #if both are empty then there was no reads of correct format to begin with
+if [[ $fofnsinglecheck == 0 ]];then #if both are empty then there was no reads of correct format to begin with
   echo "PROBLEM !"
   echo "No singlecopy genes sequences detected in the reference sequence file you provided. Make sure your single copy reference names in the Fasta file end with '_singlecopy' "
   echo "more info can be found on the github page, or try repeatprof -h "
@@ -158,7 +158,6 @@ done < fofnsingle.txt
 rm -f  references_used/*_singlecopy.fa
 rm -f depth_counts.txt
 #rm -f fofn_bam.txt
-rm -f ReadMe.txt
 rm -f -r multi_poly
 
 ##### end script
