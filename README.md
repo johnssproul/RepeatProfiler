@@ -47,7 +47,7 @@ For more information about how to use RepeatProfiler with Docker see the [repeat
 #### Manual Installation
 As an alternative to homebrew you can download [.zip] of the latest program version and install the dependencies separately. 
 Required dependencies are:
- - bowtie2
+ - bowtie2 (v2.3.5.1 or newer)
  - samtools
  - python2
  - R
