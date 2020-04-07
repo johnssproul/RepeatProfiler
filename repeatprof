@@ -1,5 +1,4 @@
 #!/bin/bash
-
 commands=$@
 BASE="refbase_"
 num_commands=`echo $commands | wc -w ` #gets the number  of commands
@@ -30,6 +29,7 @@ R_packages="default_rpackages"
 #images=`echo "$(brew --cellar repeatprof)/0.92/images-RP"`  #brew stuff
 #Rscript=`echo "$(brew --prefix R)/bin/Rscript"`  #brew stuff
 mydir=`pwd` #comment when running it for brew
+mydir="${mydir}/scripts/" #comment when running it for brew
 Rscript="Rscript" #comment when running it for brew
 
 
@@ -249,6 +249,9 @@ done
 The_folder="$currentDate-RepeatProfiler"
 mkdir $The_folder # this creates the main output folder
 
+
+
+
 BASE="refbase_" #this is just for the naming of the refrence index made by bowtie2-build, so it can be detected later when aligning using bowtie2
 commands=$@
 
@@ -268,6 +271,8 @@ cp user_groups.txt $The_folder
 fi
 
 cd $The_folder
+exec > >(tee -i logfile.log)
+
 if [[ -f $3 ]]; then 
 
 refs_full_path=$3
@@ -839,7 +844,7 @@ $Rscript $mydir/encode_var.R  > Closely_related_reads_analysis.txt
 
 mv *.phy $the_output
 
-mv *variation_analysis* $the_output
+#mv *variation_analysis* $the_output
 rm -f Closely_related_reads_analysis.txt #we dont need this anymore
 
 ###### end variant summary in alignments
