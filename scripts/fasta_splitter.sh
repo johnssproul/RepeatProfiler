@@ -19,12 +19,12 @@ cat test.fa  > all_References.fa
 
 
 if [[ $Start != '>' ]]; then
-  echo "file dont appear to be in fasta format. it doesnt start with >"
+  echo "file doesn't appear to be in fasta format. First character expected ('>') not found."
   exit 2
 fi
 
 if [[ ! -z $end  ]]; then
-  echo "Please make sure the file is unix formated. Which means it ends with an empty line. You can use tool like dos2unix to make sure it is"
+  echo "Please make sure the file of references ends in empty line (i.e., unix formatted). You can use tool like dos2unix to confirm unix format."
   exit 2
 fi
 
