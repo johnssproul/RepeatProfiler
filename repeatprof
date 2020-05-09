@@ -246,7 +246,7 @@ done
 
 
 
-The_folder="$currentDate-RepeatProfiler"
+The_folder="$currentDate-RP"
 mkdir $The_folder # this creates the main output folder
 
 
@@ -1051,7 +1051,7 @@ echo "               ||----w |    "
 echo "               ||     ||    "
 if [[ -d $the_path ]]; then
 cd ..
-The_folder="$currentDate-RepeatProfiler"
+The_folder="$currentDate-RP"
 
 mv $The_folder $the_path
 fi
@@ -1097,7 +1097,7 @@ if [ $2 = "-u" ]; then
 
 if [[ -f $reads ]]; then
 
-if [[ $reads == *.fq ]] || [[ $reads == *.fastq ]] || [[ $reads == *.gz ]]; then 
+if [[ $reads == *.fq ]] || [[ $reads == *.fastq ]] || [[ $reads == *.fq.gz ]] || [[ $reads == *.fastq.gz ]]; then 
 ls $reads > fofn1.txt
 
 ls $reads > fofn2.txt
@@ -1189,7 +1189,7 @@ if [ $2 = "-u" ]; then
 #if user specified unpaired data  then look for that. We make two fofn here for unpaired data because rest of the code was built on paired data, the second copy will be ignored in the end
 if [[ -f $reads ]]; then
 
-if [[ $reads == *.fq ]] || [[ $reads == *.fastq ]] || [[ $reads == *.gz ]]; then 
+if [[ $reads == *.fq ]] || [[ $reads == *.fastq ]] || [[ $reads == *.fq.gz ]] || [[ $reads == *.fastq.gz ]]; then 
 ls $reads > fofn1.txt
 ls $reads > fofn2.txt
 
