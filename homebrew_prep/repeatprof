@@ -1,5 +1,4 @@
 #!/bin/bash
-
 commands=$@
 BASE="refbase_"
 num_commands=`echo $commands | wc -w ` #gets the number  of commands
@@ -7,7 +6,7 @@ num_commands=`echo $commands | wc -w ` #gets the number  of commands
 if ((num_commands == 0 )) # if no commands entered, show this
  then
 
-echo "RepeatProfiler v 0.97 -prerelease- x Calm x Waves x"
+echo "RepeatProfiler v 0.98 -prerelease- x deadline x approaching x ? x"
 echo "use -h flag for help using this tool"
 echo "____ ____ ___  ____ ____ ___    ___  ____ ____ ____ _ _    ____ ____"
 echo "|__/ |___ |__] |___ |__|  |     |__] |__/ |  | |___ | |    |___ |__/ "
@@ -24,12 +23,13 @@ rm -f Errors_README.txt
 echo "generating symlinks"
 
 #brew link --overwrite >/dev/null 2>&1  #brew stuff
-mydir=`echo "$(brew --cellar repeatprof)/0.97/libexec"` #brew stuff
+mydir=`echo "$(brew --cellar repeatprof)/0.98/libexec"` #brew stuff
 #R_packages="default_rpackages"
-R_packages=`echo "$(brew --cellar repeatprof)/0.97/R_packages"` #brew stuff
+R_packages=`echo "$(brew --cellar repeatprof)/0.98/R_packages"` #brew stuff
 #images=`echo "$(brew --cellar repeatprof)/0.92/images-RP"`  #brew stuff
 Rscript=`echo "$(brew --prefix R)/bin/Rscript"`  #brew stuff
 #mydir=`pwd` #comment when running it for brew
+#mydir="${mydir}/scripts/" #comment when running it for brew
 #Rscript="Rscript" #comment when running it for brew
 
 
@@ -41,7 +41,7 @@ if  [[ $1 == "profile" ]] || [[ $1 == "corr" ]] ||  [[ $1  ==  "clean" ]] || [[ 
 echo "" > /dev/null
 
 else
-echo "Incorrect command structure -- invalid first argument after 'repeatprof'. Use -h to view list of repeatprof commands or refer to the manual."
+echo "Incorrect command structure -- invalid first argument after 'repeatprof'. Use 'repeatprof -h' to view valid commands or refer to the manual."
 exit 1
 
 fi
@@ -54,7 +54,7 @@ currentdir=`pwd`
 if [ "$1" == "profile" ]; then  # check if the second parameter is profile, If yes then preform profiling stuff
 
 #cp -r $images $currentdir #brew stuff images-RP
-if  [[ $2 == "-u" ]] ||  [[ $2  ==  "-p" ]]; then # check if the user inputed -u or -p if not give him an error as it is a madantory command
+if  [[ $2 == "-u" ]] ||  [[ $2  ==  "-p" ]]; then # check if the user input -u or -p if not give him an error as it is a madantory command
 echo "" > /dev/null
 
 else
@@ -66,7 +66,7 @@ fi
 
 if (( num_commands < 4 )) #If commands are less than 4 (which is number of the 4 madantory flags for profile)
  then
-echo "Not all madantory arguments for 'profile' command were used. Use -h to view list of mandatory arguments for 'profile' or refer to the manual."
+echo "Missing madantory arguments for 'profile' command. Use 'repeatprof -h' to view list of mandatory arguments for 'profile' or refer to the manual."
 exit 1
 
 fi
@@ -155,8 +155,8 @@ ls $reads > fofn2.txt
 
 else 
 
-echo "The path to the unpaired reads file(s) is incorrect, or the file(s) is/are in a unsupported format"
-echo "Make sure the path is correct (including checking for blanks). Make sure read files have '.fastq' or '.fq' extensions. Compressed (i.e., '.gz') formats also accepted (e.g., 'fastq.gz')."
+echo "The path to the unpaired reads file(s) is incorrect, or the file(s) format is unsupported"
+echo "Make sure the path is correct (note that spaces in directory names may cause errors). Make sure read files have '.fastq' or '.fq' extensions. Compressed (i.e., '.gz') formats also accepted (e.g., 'fastq.gz')."
 exit 1
 fi 
 
@@ -177,8 +177,8 @@ reads2_check=`cat fofn2.txt | wc -l `
 
 if [[ $reads1_check == 0 && $reads2_check == 0 ]];then #if both are empty then there was no reads of correct format to begin with 
 echo ""
-echo "The path to the paired reads file(s) is incorrect, or the file(s) is/are in a unsupported format"| tee -a Errors_README.log
-echo "Make sure the path is correct (including checking for blanks). Make sure read files have '.fastq' or '.fq' extensions. Compressed (i.e., '.gz') formats also accepted (e.g., 'fastq.gz')."| tee -a Errors_README.log
+echo "The path to the paired reads file(s) is incorrect, or the file(s) format is not supported"| tee -a Errors_README.log
+echo "Make sure the path is correct (note that spaces in directory names may cause errors). Make sure read files have '.fastq' or '.fq' extensions. Compressed (i.e., '.gz') formats also accepted (e.g., 'fastq.gz')."| tee -a Errors_README.log
 exit 1
 
 fi
@@ -246,8 +246,11 @@ done
 
 
 
-The_folder="$currentDate-RepeatProfiler"
+The_folder="$currentDate-RP"
 mkdir $The_folder # this creates the main output folder
+
+
+
 
 BASE="refbase_" #this is just for the naming of the refrence index made by bowtie2-build, so it can be detected later when aligning using bowtie2
 commands=$@
@@ -268,6 +271,8 @@ cp user_groups.txt $The_folder
 fi
 
 cd $The_folder
+exec > >(tee -i logfile.log)
+
 if [[ -f $3 ]]; then 
 
 refs_full_path=$3
@@ -839,7 +844,7 @@ $Rscript $mydir/encode_var.R  > Closely_related_reads_analysis.txt
 
 mv *.phy $the_output
 
-mv *variation_analysis* $the_output
+#mv *variation_analysis* $the_output
 rm -f Closely_related_reads_analysis.txt #we dont need this anymore
 
 ###### end variant summary in alignments
@@ -938,7 +943,7 @@ rm -f  R_all_correlation_errors.txt
 
 if [[ !(-f user_groups.txt) ]]; then
 
-echo "user_groups.txt was not found -- full correlation analysis not conducted " > R_all_correlation_errors.txt
+echo "user_groups.txt was not found -- full correlation analysis skipped " > R_all_correlation_errors.txt
 
 else
 rm -f -r correlation_analysis
@@ -960,22 +965,22 @@ $Rscript $mydir/all_corr.R $R_packages $Normalized
 echo "*****correlation analysis*****"  > correlation_README.txt  
 echo "" >> correlation_README.txt
 echo "" >> correlation_README.txt
-echo "4 output folders are outputed in Correlation analysis." >> correlation_README.txt
+echo "4 output folders are included in Correlation analysis." >> correlation_README.txt
 echo "">> correlation_README.txt
 echo "First folder: correlation_boxplots_by_group">> correlation_README.txt
-echo "This folder contains boxplots for each group you inputed in your user_groups.txt. The boxplots show how does a group vary among all references used in the run. Each group has its own plot.">> correlation_README.txt
+echo "This folder contains boxplots for each group defined in user_groups.txt. The boxplots combine correlation values across all repeat references used in the run. Each group has its own plot.">> correlation_README.txt
 echo "">> correlation_README.txt
 echo "Second folder: correlation_boxplots_by_reference">> correlation_README.txt
-echo " This folder contains boxplots that compare profile shape within and between user-defined groups, organized by reference.">> correlation_README.txt
+echo " This folder contains boxplots that show correlation of profile shape within and between user-defined groups for individual repeat references in the run.">> correlation_README.txt
 echo "">> correlation_README.txt
 echo "Third folder: correlation_data">> correlation_README.txt
 echo " This folder contains correlation matrices for each reference. The matrices shows all the correlation values among all samples for a reference. Each refrence has its own matrix.">> correlation_README.txt
 echo "">> correlation_README.txt
 echo "Fourth folder:correlation_histograms">> correlation_README.txt
-echo " This folder contains histograms of within, and between group correlation values for each reference.">> correlation_README.txt
+echo " This folder contains histograms of within and between-group correlation values for each reference.">> correlation_README.txt
 echo "">> correlation_README.txt
 echo "Last file: correlation_summary.csv">> correlation_README.txt
-echo "  This table contains average values of within and between each group correlation value for each reference. It summarizes information for all correlation done in the run">> correlation_README.txt
+echo "  This table contains average values of within and between each group correlation value for each reference. It summarizes information for all correlation values calculated in the run">> correlation_README.txt
 
 mv correlation_README.txt correlation_analysis/
 #
@@ -1037,16 +1042,11 @@ mv *.txt *.fa *.fai temp
 #design of the cow was borrowed from the famous cowsay package
 
 echo "________________________________"
-echo "< WOW what a great pipeline !!!! >"
+echo "< The analysis has been completed! >"
 echo "--------------------------------"
-echo "       \   ^__^"
-echo "        \  (oo)\_______         "
-echo "           (__)\       )\/\  "
-echo "               ||----w |    "
-echo "               ||     ||    "
 if [[ -d $the_path ]]; then
 cd ..
-The_folder="$currentDate-RepeatProfiler"
+The_folder="$currentDate-RP"
 
 mv $The_folder $the_path
 fi
@@ -1092,7 +1092,7 @@ if [ $2 = "-u" ]; then
 
 if [[ -f $reads ]]; then
 
-if [[ $reads == *.fq ]] || [[ $reads == *.fastq ]] || [[ $reads == *.gz ]]; then 
+if [[ $reads == *.fq ]] || [[ $reads == *.fastq ]] || [[ $reads == *.fq.gz ]] || [[ $reads == *.fastq.gz ]]; then 
 ls $reads > fofn1.txt
 
 ls $reads > fofn2.txt
@@ -1184,14 +1184,14 @@ if [ $2 = "-u" ]; then
 #if user specified unpaired data  then look for that. We make two fofn here for unpaired data because rest of the code was built on paired data, the second copy will be ignored in the end
 if [[ -f $reads ]]; then
 
-if [[ $reads == *.fq ]] || [[ $reads == *.fastq ]] || [[ $reads == *.gz ]]; then 
+if [[ $reads == *.fq ]] || [[ $reads == *.fastq ]] || [[ $reads == *.fq.gz ]] || [[ $reads == *.fastq.gz ]]; then 
 ls $reads > fofn1.txt
 ls $reads > fofn2.txt
 
 else 
 
-echo "The path to the unpaired reads file(s) is incorrect, or the file(s) is/are in a unsupported format"
-echo "Make sure the path is correct (including checking for blanks). Make sure read files have '.fastq' or '.fq' extensions. Compressed (i.e., '.gz') formats also accepted (e.g., 'fastq.gz')."
+echo "The path to the unpaired reads file(s) is incorrect, or the file(s) format is not supported"
+echo "Make sure the path is correct (note that spaces in directory names can cause errors). Make sure read files have '.fastq' or '.fq' extensions. Compressed (i.e., '.gz') formats also accepted (e.g., 'fastq.gz')."
 
 fi 
 
@@ -1349,4 +1349,15 @@ echo "*Check our github page https://github.com/johnssproul/RepeatProfiler for m
 
 fi
 
+if [ "$1" == "-cow" ]; then
+
+echo "________________________________"
+echo "< WOW what a great pipeline !!!! >"
+echo "--------------------------------"
+echo "       \   ^__^"
+echo "        \  (oo)\_______         "
+echo "           (__)\       )\/\  "
+echo "               ||----w |    "
+echo "               ||     ||    "
+fi
 ##### end help menu

@@ -40,9 +40,9 @@ ls $reads > fofn2.txt
 
 else 
 
-echo "The path to the unpaired reads file(s) is incorrect, or the file(s) is/are in a unsupported format"
+echo "The path to the unpaired reads file(s) is incorrect, or the file(s)format is not supported"
 
-echo "Make sure the path is correct (including checking for blanks). Make sure read files have '.fastq' or '.fq' extensions. Compressed (i.e., '.gz') formats also accepted (e.g., 'fastq.gz')."
+echo "Make sure the path is correct (note that spaces in directory names can cause errors). Make sure read files have '.fastq' or '.fq' extensions. Compressed (i.e., '.gz') formats also accepted (e.g., 'fastq.gz')."
 
 
 fi 

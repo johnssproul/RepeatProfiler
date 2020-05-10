@@ -7,7 +7,7 @@ args <- commandArgs(trailingOnly = TRUE)
 
 cat('Saving color plots scaled across all references (horizontal gradient)... \n')
 
-#print(as.character(args[2])) #brew stuff
+print(as.character(args[2])) #brew stuff
 .libPaths(as.character(args[2])) #brew stuff
 
 library(ggplot2)

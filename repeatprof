@@ -1042,13 +1042,8 @@ mv *.txt *.fa *.fai temp
 #design of the cow was borrowed from the famous cowsay package
 
 echo "________________________________"
-echo "< WOW what a great pipeline !!!! >"
+echo "< The analysis has been completed! >"
 echo "--------------------------------"
-echo "       \   ^__^"
-echo "        \  (oo)\_______         "
-echo "           (__)\       )\/\  "
-echo "               ||----w |    "
-echo "               ||     ||    "
 if [[ -d $the_path ]]; then
 cd ..
 The_folder="$currentDate-RP"
@@ -1354,4 +1349,15 @@ echo "*Check our github page https://github.com/johnssproul/RepeatProfiler for m
 
 fi
 
+if [ "$1" == "-cow" ]; then
+
+echo "________________________________"
+echo "< WOW what a great pipeline !!!! >"
+echo "--------------------------------"
+echo "       \   ^__^"
+echo "        \  (oo)\_______         "
+echo "           (__)\       )\/\  "
+echo "               ||----w |    "
+echo "               ||     ||    "
+fi
 ##### end help menu
