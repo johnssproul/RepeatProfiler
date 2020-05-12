@@ -3,7 +3,7 @@ args <- commandArgs(trailingOnly = TRUE)
 #.libPaths(as.character(args[1])) #brew stuff
 
 library(ggplot2)
-ft<-".png"
+ft<-".pdf"
 
 Normalized <- as.character(args[2]) #normalize stuff
 print(paste('CorrNormalized', Normalized))
