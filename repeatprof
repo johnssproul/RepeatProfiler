@@ -965,10 +965,10 @@ $Rscript $mydir/all_corr.R $R_packages $Normalized
 echo "*****correlation analysis*****"  > correlation_README.txt  
 echo "" >> correlation_README.txt
 echo "" >> correlation_README.txt
-echo "4 output folders are included in Correlation analysis." >> correlation_README.txt
+echo "Four output folders are included in Correlation analysis." >> correlation_README.txt
 echo "">> correlation_README.txt
 echo "First folder: correlation_boxplots_by_group">> correlation_README.txt
-echo "This folder contains boxplots for each group defined in user_groups.txt. The boxplots combine correlation values across all repeat references used in the run. Each group has its own plot.">> correlation_README.txt
+echo " This folder contains boxplots for each group defined in user_groups.txt. The boxplots combine correlation values across all repeat references used in the run. Each group has its own plot.">> correlation_README.txt
 echo "">> correlation_README.txt
 echo "Second folder: correlation_boxplots_by_reference">> correlation_README.txt
 echo " This folder contains boxplots that show correlation of profile shape within and between user-defined groups for individual repeat references in the run.">> correlation_README.txt
@@ -976,11 +976,11 @@ echo "">> correlation_README.txt
 echo "Third folder: correlation_data">> correlation_README.txt
 echo " This folder contains correlation matrices for each reference. The matrices shows all the correlation values among all samples for a reference. Each refrence has its own matrix.">> correlation_README.txt
 echo "">> correlation_README.txt
-echo "Fourth folder:correlation_histograms">> correlation_README.txt
+echo "Fourth folder: correlation_histograms">> correlation_README.txt
 echo " This folder contains histograms of within and between-group correlation values for each reference.">> correlation_README.txt
 echo "">> correlation_README.txt
 echo "Last file: correlation_summary.csv">> correlation_README.txt
-echo "  This table contains average values of within and between each group correlation value for each reference. It summarizes information for all correlation values calculated in the run">> correlation_README.txt
+echo " This table contains average values of within and between each group correlation value for each reference. It summarizes information for all correlation values calculated in the run">> correlation_README.txt
 
 mv correlation_README.txt correlation_analysis/
 #
