@@ -39,7 +39,7 @@ docker pull durberg7/repeatprof
 To test if the installation was successful, try calling the program at the command line using:
 
 ```sh
-docker exec <container ID> ./repeatprof
+docker exec <container ID> bash repeatprof
 ```
 
 For more information about how to use RepeatProfiler with Docker see the [repeatprof repository] on Docker hub.
