@@ -6,34 +6,18 @@
 
 To generate profiles, you need two input types: (1) one or more reference sequences and (2) short-read sequence data from one or more samples.
 
-1. Reference sequences
-  - One or more reference sequence of repeats in [FASTA format]
-  - For tips on obtaining reference sequences for groups that lack repeat reference libraries see the full [tutorial](tutorial.md)
+1. Reference sequences (FASTA format)
+  - Multi-fasta files are supported. Valid file extensions are '.fa', '.fasta', and '.txt'
 
-2. Sequence data
-  - Read files should be in FASTQ format
-  - Files should end in the '.fastq', or compressed '.fastq.gz' extension ('.fq' and '.fq.gz' are also supported)
-  - Input reads may be paired, or unpaired 
-    - If paired data are used, the last string before the file extension should be '_1' for Read1 and '_2' for Read2 (alternatively '_R1' and '_R2' may be used)
-  - ex. ‘SampleName_1.fastq.gz’ and ‘SampleName_2.fastq.gz’
-  
-###### Supported Final Strings and File Formats
-
-|  Input |   |   |   |   |   |   |   |
-|---|---|---|---|---|---|---|---|
-| Paired Reads   | _R1.fastq | _R1.fastq.gz | _R1.fq | _1.fastq | _1.fastq.gz | _1.fq | _1.fq.gz |   
-|                | _R2.fastq | _R2.fastq.gz | _R2.fq | _2.fastq | _2.fastq.gz | _2.fq | _2.fq.gz |   
-| Unpaired Reads | .fq.gz    | .fastq.gz    | .fq    | .fastq   | .fastq      | .fq   | .fq.gz   |   
-| Reference      | .fa       | .fasta       | .txt   |          |             |       |          |                
-
-Review the sample input data set provided [here]. Also make sure all your files have Unix LF - ie. an empty line at the end of the file. This is standard among all linux and macOS text files.
-
+2. Sequence data (FASTQ format)
+  - Paired or unpaired reads are supported. Valid extensions are '.fastq', '.fq'. Compressed reads ‘i.e., .fastq.gz’ also supported.
+  - For paired reads, the last string before the file extension should be ‘_1’ for Read1 and ‘_2’ for Read2 (alternatively ‘_R1’ and ‘_R2’ may be used). For example: ‘SampleName_1.fastq.gz’ and ‘SampleName_2.fastq.gz’.
 
 ### Generating Profiles
 
 ###### General Command Structure:
 ```sh
-repeatprof profile <-p for paired reads or -u for unpaired> <the reference sequence path > <path of the folder containing reads> [optional flags]
+repeatprof profile <-p for paired reads or -u for unpaired> <path to reference sequence> <path to the folder containing reads> [optional flags]
 ```
 
 ###### Functional Command:
@@ -48,44 +32,41 @@ repeatprof profile -p Refs.fa /RepeatProfilerData/Test1
 - 'Refs.fa' specifies the FASTA files containing reference sequences (located in the current directory in this example)
 – '/RepeatProfilerData/Test1' specifies the path of the directory containing input read files
 
+### Sample Data
+
+Download the sample input data set provided [here].
+
+1. Unzip and navigate into the downloaded folder and enter the command:
+```sh
+repeatprof profile -p reference.fa  <enter full path of current directory>
+```
+2. Check if no errors were generated and program ran smoothly.
 
 ###### Optional Flags for Profile:
 
 | Flag| Usage |
-|-------------------------------------|---|
-| -o <folder_path>                    | direct the final output folder to the specified folder. Default: current directory |
-| -corr                               | run correlation analysis. A user_groups.txt is needed for the correlation graph   |
-| -usrprov <user_groups.txt path>   | provide path of user_groups.txt Default: current directory                          |
-| -k                                  | keep the sorted bam files of the alignments in the final output folder             |
-| --very-sensitive                    | bowtie alignment setting. Default: --very-sensitive-local                          |
-| --sensitive                         | bowtie alignment setting. Default: --very-sensitive-local                          |
-| --very-fast                         | bowtie alignment setting. Default: --very-sensitive-local                          |
-| --fast                              | bowtie alignment setting. Default: --very-sensitive-local                          |
-| --local                             | bowtie alignment setting. Default: --very-sensitive-local                          |
-| --very-sensitive-local              | bowtie alignment setting. Default: --very-sensitive-local                          |
-| --sensitive-local                   | bowtie alignment setting. Default: --very-sensitive-local                          |
-| --fast-local                        | bowtie alignment setting. Default: --very-sensitive-local                          |
-| --very-fast-local                   | bowtie alignment setting. Default: --very-sensitive-local                          |
+|---|---|
+| -h | Displays help menu. |
+| -o <folder_path> | Directs output folder to the specified folder. Default: current directory. |
+| -corr | Runs a correlation analysis of profile shape among user-defined groups. If this flag is used ensure the user_groups.txt is present in the working directory (but see next). See below for instructions on preparing the user_groups.txt file. |
+| -corr <file_path> | Use this to run correlation analysis when user_groups.txt is not in the current directory. |
+| -t | Sets the number of threads for multi-processor systems. Default: 4. |
+| -k | Use this flag to keep bam files in the final output folder. |
+| -vertical| Generates color-scaled profiles with a vertical color gradient. Default: horizontal gradient. |
+| -singlecopy | Normalizes read coverage of all samples relative to single-copy genes. This flag is useful when it is useful to compare relative abundance of repeats across samples. When this flag is used, the user needs to provide one or more references of single-copy genes in the FASTA file that contains reference sequences. Single-copy genes must be indicated in that file by appending the FASTA header with 'singlecopy' |
+| -rmdup | Uses SAMtools to remove PCR duplicates from read mapping output (left off by default as reads from repetitive loci may be incorrectly assigned as PCR duplicates). |
+| -- <bowtie_setting> | Allows user to change Bowtie 2 mapping parameters. Valid arguments include '--very-fast-local', '--fast-local', '--sensitive-local', '--very-sensitive-local', '--very-fast', '--fast', '--sensitive', '--very-sensitive'. In addition to these Bowtie 2 presets, any valid full bowtie command string may be entered. Default: '--very-sensitive-local'. See [Bowtie2 Manual] for more information.|
 
-##### NOTE on Bowtie2 alignment settings: sensitive settings are generally more accurate, but slower, while fast settings are generally less accurate, but faster. See the [Bowtie2 Manual] for more information.
+##### NOTE: Don't include the <> when typing paths . It is just for illustration here. Also make sure all paths passed into the command have no blank spaces. By default the program looks for input files in the current directory so if only file names are provided it will assume the files are in the current directory.
 
-##### NOTE on Flag Arguments: Don't include the <> when typing paths. Also, paths passed into this command cannot have blank spaces.
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
-### Generating Correlation Analysis
-###### Preparing user_groups.txt for -corr
-Lets say you want to make a profile for reads you prepared and want to include correlation analysis graphs which show how similar/different read mapping depth are. In order to conduct this analysis reads must be grouped. The manner of grouping is dependent on what you are aiming to get out of this analysis.
-
-###### Generate user_groups.txt:
+### Correlation Analysis
+If you are making profiles for multiple samples and want to compare profile shape across samples using the correlation analysis feature (i.e., the -corr flag). This command is designed for cases when multiple samples per category are present (e.g., multiple individuals per species) such that -within group correlation values can be compared to -between group values. The -corr flag requires that you provide an input text file (user_groups.txt) that assigns your samples to groups. The user can generate this file manually, or use the program to auto-generate the base user_groups.txt file using this command:
 
 ```sh
-repeatprof pre-corr < -u for unpaired reads  or -p paired reads  > <path reads folder>
+repeatprof pre-corr <'-u' for unpaired reads or '-p' for paired reads> <path reads folder>
 ```
 
-After running this command a file named user_groups.txt will be generated in your current directory based on your reads. In order to use this file for correlation analysis replace the placeholder 'temporary' with your own desired groups.  
-
-###### Verify Correct format and View:
+After running this command the user_groups.txt will be generated based on your input reads and you can simply replace the placeholder 'TEMPORARY' with your own group numbers such that each sample belonging to a given group has the same number in the 'group' column. You can run this command to view the file and verify that it is in the correct format.
 
 ```sh
 repeatprof pre-corr -v   
@@ -94,17 +75,8 @@ repeatprof pre-corr -v
 ###### Example of user_groups.txt
 ![](./pics/user_groups.png)
 
-##### NOTE: The user_groups.txt must be in the same directory you are running repeatprof in. Also, each row should be tab separated.
-
-Now you are all set for generating profiles with nice looking correlation groups graph and using the tool. GOOD JOB!
-
-If a run was terminated early or did not complete as expected, use this command to clean up intermediate files created by the tool:
-```sh
-repeatprof clean   
-```
+##### NOTE: The user_groups.txt must be in the same directory you are running repeatprof in. 
 
 [//]: #
    [here]: <https://github.com/johnssproul/RepeatProfiler/releases/download/0.9/sample_input.zip>
-   [FASTA format]: <https://en.wikipedia.org/wiki/FASTA_format>
-   [Bowtie2 Manual]: <http://gensoft.pasteur.fr/docs/bowtie2/2.0.0/>
-   
+   [Bowtie2 Manual]: <http://gensoft.pasteur.fr/docs/bowtie2/2.0.0/>  
