@@ -6,7 +6,7 @@ num_commands=`echo $commands | wc -w ` #gets the number  of commands
 if ((num_commands == 0 )) # if no commands entered, show this
  then
 
-echo "RepeatProfiler v 0.94 -prerelease- x fast x as x the hedgehog x"
+echo "RepeatProfiler v 0.98 -prerelease- x deadline x approaching x ? x"
 echo "use -h flag for help using this tool"
 echo "____ ____ ___  ____ ____ ___    ___  ____ ____ ____ _ _    ____ ____"
 echo "|__/ |___ |__] |___ |__|  |     |__] |__/ |  | |___ | |    |___ |__/ "
@@ -37,7 +37,7 @@ Rscript="Rscript" #comment when running it for brew
 
 ##### this block checks for correct command structure and does error handling 
 
-if  [[ $1 == "profile" ]] || [[ $1 == "corr" ]] ||  [[ $1  ==  "clean" ]] || [[ $1 ==  "-h" ]] || [[ $1 == "pre-corr" ]]; then  # check if the 2nd parameter is any of these. If not, terminate the program and tell the user.
+if  [[ $1 == "profile" ]] || [[ $1 == "-cow" ]] || [[ $1 == "corr" ]] ||  [[ $1  ==  "clean" ]] || [[ $1 ==  "-h" ]] || [[ $1 == "pre-corr" ]]; then  # check if the 2nd parameter is any of these. If not, terminate the program and tell the user.
 echo "" > /dev/null
 
 else
