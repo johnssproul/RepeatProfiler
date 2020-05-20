@@ -6,7 +6,7 @@ num_commands=`echo $commands | wc -w ` #gets the number  of commands
 if ((num_commands == 0 )) # if no commands entered, show this
  then
 
-echo "RepeatProfiler v 0.98 -prerelease- x deadline x approaching x ? x"
+echo "RepeatProfiler v 0.99 -prerelease- x soon x"
 echo "use -h flag for help using this tool"
 echo "____ ____ ___  ____ ____ ___    ___  ____ ____ ____ _ _    ____ ____"
 echo "|__/ |___ |__] |___ |__|  |     |__] |__/ |  | |___ | |    |___ |__/ "
@@ -22,11 +22,10 @@ currentDate=`tr ' :' '_' <<<"$currentDate"`
 rm -f Errors_README.txt
 echo "generating symlinks"
 
-#brew link --overwrite >/dev/null 2>&1  #brew stuff
-mydir=`echo "$(brew --cellar repeatprof)/0.98/libexec"` #brew stuff
+brew link --overwrite >/dev/null 2>&1  #brew stuff
+#mydir=`echo "$(brew --cellar repeatprof)/0.92/libexec"` #brew stuff
 #R_packages="default_rpackages"
-R_packages=`echo "$(brew --cellar repeatprof)/0.98/R_packages"` #brew stuff
-#images=`echo "$(brew --cellar repeatprof)/0.92/images-RP"`  #brew stuff
+R_packages=`echo "$(brew --cellar repeatprof)/0.92/R_packages"` #brew stuff
 Rscript=`echo "$(brew --prefix R)/bin/Rscript"`  #brew stuff
 #mydir=`pwd` #comment when running it for brew
 #mydir="${mydir}/scripts/" #comment when running it for brew
@@ -37,7 +36,7 @@ Rscript=`echo "$(brew --prefix R)/bin/Rscript"`  #brew stuff
 
 ##### this block checks for correct command structure and does error handling 
 
-if  [[ $1 == "profile" ]] || [[ $1 == "corr" ]] ||  [[ $1  ==  "clean" ]] || [[ $1 ==  "-h" ]] || [[ $1 == "pre-corr" ]]; then  # check if the 2nd parameter is any of these. If not, terminate the program and tell the user.
+if  [[ $1 == "profile" ]] || [[ $1 == "-cow" ]] || [[ $1 == "corr" ]] ||  [[ $1  ==  "clean" ]] || [[ $1 ==  "-h" ]] || [[ $1 == "pre-corr" ]]; then  # check if the 2nd parameter is any of these. If not, terminate the program and tell the user.
 echo "" > /dev/null
 
 else
@@ -965,10 +964,10 @@ $Rscript $mydir/all_corr.R $R_packages $Normalized
 echo "*****correlation analysis*****"  > correlation_README.txt  
 echo "" >> correlation_README.txt
 echo "" >> correlation_README.txt
-echo "4 output folders are included in Correlation analysis." >> correlation_README.txt
+echo "Four output folders are included in Correlation analysis." >> correlation_README.txt
 echo "">> correlation_README.txt
 echo "First folder: correlation_boxplots_by_group">> correlation_README.txt
-echo "This folder contains boxplots for each group defined in user_groups.txt. The boxplots combine correlation values across all repeat references used in the run. Each group has its own plot.">> correlation_README.txt
+echo " This folder contains boxplots for each group defined in user_groups.txt. The boxplots combine correlation values across all repeat references used in the run. Each group has its own plot.">> correlation_README.txt
 echo "">> correlation_README.txt
 echo "Second folder: correlation_boxplots_by_reference">> correlation_README.txt
 echo " This folder contains boxplots that show correlation of profile shape within and between user-defined groups for individual repeat references in the run.">> correlation_README.txt
@@ -976,11 +975,11 @@ echo "">> correlation_README.txt
 echo "Third folder: correlation_data">> correlation_README.txt
 echo " This folder contains correlation matrices for each reference. The matrices shows all the correlation values among all samples for a reference. Each refrence has its own matrix.">> correlation_README.txt
 echo "">> correlation_README.txt
-echo "Fourth folder:correlation_histograms">> correlation_README.txt
+echo "Fourth folder: correlation_histograms">> correlation_README.txt
 echo " This folder contains histograms of within and between-group correlation values for each reference.">> correlation_README.txt
 echo "">> correlation_README.txt
 echo "Last file: correlation_summary.csv">> correlation_README.txt
-echo "  This table contains average values of within and between each group correlation value for each reference. It summarizes information for all correlation values calculated in the run">> correlation_README.txt
+echo " This table contains average values of within and between each group correlation value for each reference. It summarizes information for all correlation values calculated in the run">> correlation_README.txt
 
 mv correlation_README.txt correlation_analysis/
 #
