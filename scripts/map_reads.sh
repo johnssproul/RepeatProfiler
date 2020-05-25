@@ -185,7 +185,7 @@ echo "${F}	${Read_length}" >> read_lengths.txt
  fi
 
   if [ $retval -ne 0 ]; then #if bowtie or samtools gave an error this will chatch  and terminate
-    echo "Something is wrong with bowtie2 parameters that were input. Refer to repeatprof -h or the user manual for help"
+    echo "Run terminated due to Bowtie2 errors. This may be caused by a problem with the reference sequences (e.g., duplicate sequence name present) or the read file names (no _R1 or _R2 before extension in paired files). Check the Bowtie2 log file in 'mapping_log_files' directory. Refer to repeatprof -h or the user manual for help"
 
     exit 1
   fi
