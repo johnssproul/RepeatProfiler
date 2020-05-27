@@ -47,7 +47,7 @@ For more information about how to use RepeatProfiler with Docker see the [repeat
 #### Manual Installation
 As an alternative to homebrew you can clone this repository for the latest program version and install the dependencies separately. 
 ```
-clone https://github.com/johnssproul/RepeatProfiler/
+git clone https://github.com/johnssproul/RepeatProfiler/
 ```
 Required dependencies are:
  - bowtie2 (v2.3.5.1 or newer)
