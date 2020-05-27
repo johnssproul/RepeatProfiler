@@ -85,12 +85,12 @@ To generate profiles, you need two input types: (1) reference sequence(s) to ana
 
 ##### Generating profiles:
 
-a sample profile command with mandatory flags explained 
+Here is a sample profile command with mandatory flags explained: 
 ```sh
 repeatprof profile <'-p' for paired-end reads or '-u' for single-end> <path to reference sequence> <path of the folder containing reads> [optional flags] 
 ```
 
-an example of a functional example command (explanations omitted).
+Here is an example of a functional example command (explanations omitted):
 
 ```sh
 repeatprof profile -p Refs.fa /RepeatProfilerData/Test1
@@ -100,7 +100,7 @@ Explanation:
 - 'repeatprof'  calls the program
 - 'profile'  the command that directs program to generate profiles (see other command options below) 
 - '-p'  indicates the input reads are paired 
-- 'Refs.fa'  specifies the FASTA files containing reference sequences (located in the current directory in this example, alternatively a path can be provided)
+- 'Refs.fa'  specifies the FASTA file containing reference sequences (located in the current directory in this example, alternatively a path can be provided)
 - '/RepeatProfilerData/Test1'  specifies the path of the directory containing input read files
 
 #### SAMPLE DATA 
@@ -112,7 +112,7 @@ Download the sample input data set provided [here].
 repeatprof profile -p reference.fa  <enter full path of current directory>
 
 ```
-2- check if no errors generated and program ran smoothly this means you have it correctly set up
+2- If it runs without errors, everything should set up correctly
 
 
 
