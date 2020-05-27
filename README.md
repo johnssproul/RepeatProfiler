@@ -16,14 +16,14 @@ A tool for studying repetitive DNA dynamics using low-coverage, short-read data.
 ### Installation
 
 #### Homebrew
-The easiest way to setup RepeatProfiler with all of its dependencies is through the package manager [Homebrew]. If you don’t have homebrew, it is available for installation on [linux/WSL] and on [macOS].
+The easiest way to setup RepeatProfiler with all of its dependencies is through the package manager [Homebrew]. If you don’t have Homebrew, it is available for installation on [linux/WSL] and on [macOS].
 
-After homebrew is installed, run this command:
+After Homebrew is installed, run this command:
 ```
 brew install HounerX/homebrew-repo/repeatprof
 ```
 
-To test if the installation was successful, try calling the program at the command line using:
+Note that the installation can take some time, so you may need to be patient. To test if the installation was successful, try calling the program at the command line using:
 
 ```sh
 repeatprof
@@ -45,14 +45,14 @@ docker exec <container ID> bash repeatprof
 For more information about how to use RepeatProfiler with Docker see the [repeatprof repository] on Docker hub.
 
 #### Manual Installation
-As an alternative to homebrew you can clone this repository for the latest program version and install the dependencies separately. 
+As an alternative to Homebrew and Docker you can clone this repository for the latest program version and install the dependencies separately. 
 ```
 git clone https://github.com/johnssproul/RepeatProfiler/
 ```
 Required dependencies are:
  - bowtie2 (v2.3.5.1 or newer)
  - samtools
- - python2
+ - python (2 and 3)
  - R
  - R packages: ggplot2, ggpubr, scales, reshape2
 You can install required R packages by running this command:  
