@@ -45,7 +45,10 @@ docker exec <container ID> bash repeatprof
 For more information about how to use RepeatProfiler with Docker see the [repeatprof repository] on Docker hub.
 
 #### Manual Installation
-As an alternative to homebrew you can download [.zip] of the latest program version and install the dependencies separately. 
+As an alternative to homebrew you can clone this repository for the latest program version and install the dependencies separately. 
+```
+clone https://github.com/johnssproul/RepeatProfiler/
+```
 Required dependencies are:
  - bowtie2 (v2.3.5.1 or newer)
  - samtools
