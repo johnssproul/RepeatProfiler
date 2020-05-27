@@ -57,7 +57,7 @@ Required dependencies are:
  - R packages: ggplot2, ggpubr, scales, reshape2
 You can install required R packages by running this command:  
 ```sh
-echo "install.packages(c('ggplot2','ggpubr','scales','reshape2'), repos=\"https://cran.rstudio.com\")" | R --no-save
+echo "install.packages(c('ggplot2','ggpubr','scales','reshape2','png'), repos=\"https://cran.rstudio.com\")" | R --no-save
 ```
 After dependencies are installed, move to the unzipped directory containing the program in the terminal and run the following command to check that the program is working. The words “REPEAT PROFILER” should print to the screen.  
 
