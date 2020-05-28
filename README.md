@@ -194,7 +194,7 @@ Output also includes the Run_summary.csv table. It contains useful info about th
 
 ![](https://github.com/johnssproul/RepeatProfiler/raw/master/pics_readme/photo10.PNG)
 
-In this table, each row summarizes results of mapping reads from a given sample to a single reference seqeuence. So if you had a run with reads from four samples, and four reference sequences, this table would include 16 rows, with four for each reference sequence corresponding to each of the four samples that were mapped.
+In this table each row summarizes results of mapping reads from a given sample to a single reference seqeuence. So if you had a run with reads from four samples, and four reference sequences, this table would include 16 rows, with four for each reference sequence corresponding to each of the four samples that were mapped.
 
 
 The folder called plots_single_copy is only generated if the '-singlecopy' normalization flag is used. It has coverage profiles for each single copy gene. This (as well as the Run_summary.csv table) helps confirm that read mapping patterns on single-copy genes are in line with expectations and leading to reasonable normalized estimates (e.g., they don't show some unexpectedly high coverage region that could skew estimates). 
@@ -203,7 +203,7 @@ The folder called map_depth_allrefs has some raw output with depth per postion f
 
 
 
-Now take a look at the next level our folders by looking in the folder named 'Ref1_DmelR1_output'. In this run, Ref1 is a sequence of the R1 non-LTR retrotransposon in Drosophila melanogaster. 
+Now take a look at the next level of folders by opening the folder named 'Ref1_DmelR1_output'. In this run, Ref1 is a sequence of the R1 non-LTR retrotransposon in Drosophila melanogaster. 
 
 The contents of this folder look like this: 
 
@@ -229,44 +229,42 @@ This director also has a PHYLIP-formatted file:
 ![](https://github.com/johnssproul/RepeatProfiler/raw/master/pics_readme/photo8.PNG)
 
 
-This file summarizes signatures in variant-enhanced profiles by encoding abundant variants at each site as molecular-morphological characters.
-
-This phylip files are most informative for long refrence sequences (1000+) bases. You can run this phylip file in your favorite tree software. We use iq-tree. Check the detalied tutorial on the website for on how to choose which phylip files to get most accurate relationships between the samples  *upcoming*
+This file summarizes signatures in variant-enhanced profiles by encoding abundant variants at each site as molecular-morphological characters (details on this process are provided in out paper on RepeatProfiler). This file can be directly fed into phylogenetic software and analyzed as morphological data. We commonly do this using IQ-TREE. This approach leverages the statistical framework of phylogenetic analysis to groups samples based on signal from variant profiles.
 
 
 Now let's look in one of the sample-specific subfolders:
 ![](https://github.com/johnssproul/RepeatProfiler/raw/master/pics_readme/photo5.PNG)
 
-These subfolders contain same plots we looked at earlier but stored as indifidual PDFs. Although they are not grouped with all other samples, they are still saved on the standardized color scale that is shown in the 'scaled_profiles' file shown above. Another PDF file contains a simplified version of the profiles (an area plot instead of a bar plot) -- we include this as a smaller, but still vector-based file that may be useful for some visual display purposes. This folder also includes a text file with raw output of depth of every postion and variants relative to the reference sequence. 
+These subfolders contain same plots we looked at earlier but stored as indifidual PDFs. Although they are not grouped with all other samples, they still show the same standardized color scale used in the 'scaled_profiles' file shown above. Another PDF file contains a simplified version of the profiles (an area plot instead of a bar plot) -- we include this as a smaller, but still vector-based file that may be useful for some visual display purposes. This folder also includes a text file with raw output of depth of every postion and variants relative to the reference sequence. 
 
 
  
 Back to the main output folder, You will find a table called *References_summary_base_coverage*.
  ![](https://github.com/johnssproul/RepeatProfiler/raw/master/pics_readme/photo1A.PNG)
  
-This tells you the mean base coverage between all samples for a reference (max value is 1). It is helpful you can discard references with low mean base coverage from phylogentic analysis as their phylip files will not be very imformative 
+This file reports the average fraction of bases with at least 1X coverage for each reference sequence. We have used this file in runs that include many (i.e., hundreds) of repeat reference sequences to help us filter out low-coverage repeats.
 
-The folder called *scaled_profiles_allrefs* contains coverage plots scaled based on entire run not just a single reference
+The folder called *scaled_profiles_allrefs* contains color-enhanced profiles for the entire run (i.e., all reference sequences) that are shown on the same color scale. This is similar to the 'scaled_profiles.pdf' file found in the output folders for each reference sequence, except that the color scale is set based on the maximum coverage for all profiles in the run, instead of the maximum observed within a reference sequence. Scanning the PDFs in this folder is a good way to identify interesting patterns across repeats. 
 
 
 #####  Correlation analysis output
 
-Four output folders are generaged by the correlation analysis (i.e., '-corr' flag.
+Four output folders are generaged by the correlation analysis (i.e., '-corr' flag).
 
 *First folder*: correlation_boxplots_by_group
-This folder contains boxplots for each group you inputed in your user_groups.txt. The boxplots show how does a group vary among all references used in the run. Each group has its own plot.
+ This folder contains boxplots for each group defined in user_groups.txt. The boxplots combine correlation values across all repeat references used in the run. Each group has its own plot.
 
 *Second folder*: correlation_boxplots_by_reference
- This folder contains boxplots that compare profile shape within and between user-defined groups, organized by reference.
+ This folder contains boxplots that show correlation of profile shape within and between user-defined groups for individual repeat references in the run.
 
 *Third folder*: correlation_data
  This folder contains correlation matrices for each reference. The matrices shows all the correlation values among all samples for a reference. Each refrence has its own matrix.
 
 *Fourth folder*:correlation_histograms
- This folder contains histograms of within, and between group correlation values for each reference.
+ This folder contains histograms of within and between-group correlation values for each reference.
 
 *Last file*: correlation_summary.csv
-  This table contains average values of within and between each group correlation value for each reference. It summarizes information for all correlation done in the run
+ This table contains average values of within and between each group correlation value for each reference. It summarizes information for all correlation done in the run.
 
 ![](https://github.com/johnssproul/RepeatProfiler/raw/master/pics_readme/photo2A.png)
 
