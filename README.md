@@ -218,35 +218,30 @@ Next you will notice the *scaled_profiles.pdf* file .
 This file groups color-enhanced profiles for all samples into the same PDF. All profiles are shown on the same relative color scale, which makes it easy to scan profiles of all samples for this reference to note interesting patterns. Any single profile shown can be found as a single PDF in the sub-folders mentioned above that are indexed by sample.
 
 
-Another summary PDF in this directory is *variant_profiles.pdf*. This file contains variant-enhanced profiles for all samples within this reference. These profiles show base-pair resolution of variants relative to the reference sequence across samples, which can also reveal interesting patterns when compared across samples. Again, files with individual profiles for each sample are available in the sample-specific subfolders in this directory 
+Another summary PDF in this directory is *variant_profiles.pdf*. This file contains variant-enhanced profiles for all samples within this reference. These profiles show base-pair resolution of variants relative to the reference sequence across samples, which can also reveal interesting patterns when compared across samples. Again, files with individual profiles for each sample are available in the sample-specific subfolders in this directory. 
 
 
 ![](https://github.com/johnssproul/RepeatProfiler/raw/master/pics_readme/photo7.PNG)
 
 
-
-Now let's look in one of the sample-specific subfolders:
-![](https://github.com/johnssproul/RepeatProfiler/raw/master/pics_readme/photo5.PNG)
-
-These subfolders contain same plots we looked at earlier but stored as indifidual PDFs. Although they are not grouped with all other samples, they are still saved on the standardized color scale that is shown in the 'scaled_profiles' file shown above. There is also a text file with raw output of depth of every postion and variants relative to the reference sequence. 
-
-
-
-
-
-Now lets go back and check what is in the Phylip file and what does it mean  
+This director also has a PHYLIP-formatted file:  
 
 ![](https://github.com/johnssproul/RepeatProfiler/raw/master/pics_readme/photo8.PNG)
 
 
-Based on the variation plots explained earlier, we were able to capture phylogentic informative sites from these plots. We analysed each plot indivudaly and recored the bases that had high mis match coverage over 10% from the actual coverage. We also accounted for ambigous sites.
+This file summarizes signatures in variant-enhanced profiles by encoding abundant variants at each site as molecular-morphological characters.
 
- This phylip files are most informative for long refrence sequences (1000+) bases. You can run this phylip file in your favorite tree software. We use iq-tree. Check the detalied tutorial on the website for on how to choose which phylip files to get most accurate relationships between the samples  *upcoming*
- 
+This phylip files are most informative for long refrence sequences (1000+) bases. You can run this phylip file in your favorite tree software. We use iq-tree. Check the detalied tutorial on the website for on how to choose which phylip files to get most accurate relationships between the samples  *upcoming*
+
+
+Now let's look in one of the sample-specific subfolders:
+![](https://github.com/johnssproul/RepeatProfiler/raw/master/pics_readme/photo5.PNG)
+
+These subfolders contain same plots we looked at earlier but stored as indifidual PDFs. Although they are not grouped with all other samples, they are still saved on the standardized color scale that is shown in the 'scaled_profiles' file shown above. Another PDF file contains a simplified version of the profiles (an area plot instead of a bar plot) -- we include this as a smaller, but still vector-based file that may be useful for some visual display purposes. This folder also includes a text file with raw output of depth of every postion and variants relative to the reference sequence. 
+
 
  
- Back to  main output folder, You will find a table called
- *References_summary_base_coverage*.
+Back to the main output folder, You will find a table called *References_summary_base_coverage*.
  ![](https://github.com/johnssproul/RepeatProfiler/raw/master/pics_readme/photo1A.PNG)
  
 This tells you the mean base coverage between all samples for a reference (max value is 1). It is helpful you can discard references with low mean base coverage from phylogentic analysis as their phylip files will not be very imformative 
@@ -256,7 +251,7 @@ The folder called *scaled_profiles_allrefs* contains coverage plots scaled based
 
 #####  Correlation analysis output
 
-4 output folders are outputed in Correlation analysis.
+Four output folders are generaged by the correlation analysis (i.e., '-corr' flag.
 
 *First folder*: correlation_boxplots_by_group
 This folder contains boxplots for each group you inputed in your user_groups.txt. The boxplots show how does a group vary among all references used in the run. Each group has its own plot.
