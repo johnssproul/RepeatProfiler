@@ -197,47 +197,44 @@ Output also includes the Run_summary.csv table. It contains useful info about th
 In this table, each row summarizes results of mapping reads from a given sample to a single reference seqeuence. So if you had a run with reads from four samples, and four reference sequences, this table would include 16 rows, with four for each reference sequence corresponding to each of the four samples that were mapped.
 
 
-The folder called plots_single_copy contains coverage plots for each single copy gene inputed. This helps in vizualizing the abudance of the single_copy genes provided for normalization
+The folder called plots_single_copy is only generated if the '-singlecopy' normalization flag is used. It has coverage profiles for each single copy gene. This (as well as the Run_summary.csv table) helps confirm that read mapping patterns on single-copy genes are in line with expectations and leading to reasonable normalized estimates (e.g., they don't show some unexpectedly high coverage region that could skew estimates). 
 
-The folder called map_depth_allrefs contains depth per postion for every sample per reference. 
+The folder called map_depth_allrefs has some raw output with depth per postion for every sample within a reference sequence. 
 
 
 
-Lets say we will go the first folder which is refrence named Ref1_DmelR1_output.  This reference is D.mel R1 element 
+Now take a look at the next level our folders by looking in the folder named 'Ref1_DmelR1_output'. In this run, Ref1 is a sequence of the R1 non-LTR retrotransposon in Drosophila melanogaster. 
 
-You will find  the folder look like this 
+The contents of this folder look like this: 
 
 ![](https://github.com/johnssproul/RepeatProfiler/raw/master/pics_readme/photo3.PNG)
 
-First thing you will notice is these sub folders. Each subfolder belong to the sample (this can be either read or read pair) for this specific reference sequence. The indexes which we talked about earlier. We will go into the subfolders later.
+The first thing to notice are the numbered subfolders which each contain output (including profiles) for each sample (i.e., set of reads) included in the run. As mentioned earlier, the numbers appended to folder names are internal indexes that correspond to input sample reads. We will go into the subfolders later.
 
-Now, next thing you will notice  is *scaled_profiles.pdf* file . 
+Next you will notice the *scaled_profiles.pdf* file . 
 
 ![](https://github.com/johnssproul/RepeatProfiler/raw/master/pics_readme/phtoto6.PNG)
 =
-Each of these graph represent the coverage of the read/read pair when mapped to that  specfic refrence we opened its folder.  They are all based on a single color scale. That means by just quick looking at the graph you can tell which parts of the refrence sequence (refrence sequence base position is on x axis ) has the highest (red)/lowest(blue)  coverage. This  can tell you a lot about this read and refrence sequence. How/where this sequence enriched in that species reads compared to the other species reads. Color scaling accross different reads will help you in a great way to vizualize differences  among very large group of data.
+This file groups color-enhanced profiles for all samples into the same PDF. All profiles are shown on the same relative color scale, which makes it easy to scan profiles of all samples for this reference to note interesting patterns. Any single profile shown can be found as a single PDF in the sub-folders mentioned above that are indexed by sample.
 
 
-Next pdf in the output folder is the *variant_profiles.pdf*
-These plots has the variation(mismatches) in  among all the reads for this specific refrences. They have been put together for your convience to compare. 
+Another summary PDF in this directory is *variant_profiles.pdf*. This file contains variant-enhanced profiles for all samples within this reference. These profiles show base-pair resolution of variants relative to the reference sequence across samples, which can also reveal interesting patterns when compared across samples. Again, files with individual profiles for each sample are available in the sample-specific subfolders in this directory 
 
 
 ![](https://github.com/johnssproul/RepeatProfiler/raw/master/pics_readme/photo7.PNG)
 
 
-For example, by investigating this pdf, user can tell which regions of the reference has common mismatches between samples 
 
-
-Opening one of the sub folders will look like this
+Now let's look in one of the sample-specific subfolders:
 ![](https://github.com/johnssproul/RepeatProfiler/raw/master/pics_readme/photo5.PNG)
 
-it contain  the same plots we looked at earlier but indvidully. Keep in mind they are still scaled among all reads, so its main use if you wanted to use a high quality indvidual graph.A text file that contains the information per every position in the refrence sequence. It contains the depth of every postion/mismatches of A/mismatches of T/mismatches of C//mismatches of G/. 
+These subfolders contain same plots we looked at earlier but stored as indifidual PDFs. Although they are not grouped with all other samples, they are still saved on the standardized color scale that is shown in the 'scaled_profiles' file shown above. There is also a text file with raw output of depth of every postion and variants relative to the reference sequence. 
 
 
 
 
 
-Now  lets go back and check what is in the Phylip file and what does it mean  
+Now lets go back and check what is in the Phylip file and what does it mean  
 
 ![](https://github.com/johnssproul/RepeatProfiler/raw/master/pics_readme/photo8.PNG)
 
