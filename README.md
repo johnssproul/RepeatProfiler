@@ -179,7 +179,7 @@ folder in your current directory (or the output directory you specified using '-
 
 ![](https://github.com/johnssproul/RepeatProfiler/raw/master/pics_readme/photo_of_the_folder.PNG)
 
-The directory name includes a time stamp of when the run was started. In the directory you will find 3 folders (mapping_log_files not shown here), the primary output folder with a time stamp and 'temp'. temp contains program intermidate files, so can help us trace errors if there's an issue you can't track down on your own. The 'mapping_log_files' folder (not shown) has the logfile from Bowtie2 which can be useful for troubleshooting problems with your input references, reads, or non-default mapping parameters.  
+The directory name includes a time stamp of when the run was started. In the directory you will find 3 folders (mapping_log_files not shown here), the primary output folder with a time stamp and 'temp'. The 'temp' folder contains program intermediate files that can help us trace errors if there's an issue you can't track down on your own. The 'mapping_log_files' folder (not shown) has the logfile from Bowtie2 which can be useful for troubleshooting problems with your input references, reads, or non-default mapping parameters.  
 ![](https://github.com/johnssproul/RepeatProfiler/raw/master/pics_readme/photo2.PNG)
 
 The time-stamped folder has the bulk of the program output: 
