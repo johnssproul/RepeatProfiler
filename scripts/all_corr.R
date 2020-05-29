@@ -15,7 +15,7 @@ multmerge <- function(mypath){
 }
 
 map_depth_allrefs <- multmerge('map_depth_allrefs')
-index.conv <- read.table('Index_conv.txt', header = TRUE, stringsAsFactors = FALSE)
+index.conv <- read.table('index_conv.txt', header = TRUE, stringsAsFactors = FALSE)
 
 #normalization codes
 if(Normalized=="true"){
@@ -435,7 +435,7 @@ for (i in 1:length(groups)) {
 
   plot <- ggplot(data = data, aes(x = all_species, y = all_correlation, fill = all_groups))+
     geom_boxplot(data = data, position = 'dodge2', width = 0.7, outlier.size = 0.2, colour = 'gray25', size = 0.2)+
-    scale_fill_manual(name = 'Groups', values = c('darkorchid2', 'seagreen3'))+
+    #scale_fill_manual(name = 'Groups', values = c('darkorchid2', 'seagreen3'))+
     #guides(fill = guide_legend(reverse = TRUE))+ #horizontal boxplots
     xlab('')+ ylab('Correlation')+
     theme_bw()+ theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), #to remove gridlines

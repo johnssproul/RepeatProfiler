@@ -412,7 +412,14 @@ a=`echo "$commands" | awk '{for (I=1;I<=NF;I++) if ($I == "-D") {print $I " " $(
 
 fi
 
+if [[ $@  ==  *"-bowtieflag"* ]]; then
+commands=$@
+a=`echo "$commands" | awk '{for (I=1;I<=NF;I++) if ($I == "-bowtieflag") {print $(I+1) };}' `
+
+fi
+
 echo "Bowtie2 alignment settings: $a"
+#exit 1
 echo $4
 line="All_references"
 
