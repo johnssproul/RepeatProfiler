@@ -138,7 +138,7 @@ repeatprof profile -p reference.fa  <enter full path of current directory>
 | -singlecopy                                | Normalizes read coverage of all samples relative to single-copy genes. This flag is useful when it is useful to compare relative abundance of repeats across samples. When this flag is used, the user needs to provide one or more references of single-copy genes in the FASTA file that contains reference sequences. Single-copy genes must be indicated in that file by appending the FASTA header with '_singlecopy'.                   |
 | -rmdup                                   | Uses SAMtools to remove PCR duplicates from read mapping output (left off by default as reads from repetitive loci may be incorrectly assigned as PCR duplicates).                                                            |
 | --<bowtie_setting>                     | Allows user to change among Bowtie 2 preset parameters. Valid arguments include '--very-fast-local', '--fast-local', '--sensitive-local', '--very-sensitive-local', '--very-fast', '--fast', '--sensitive', '--very-sensitive'. Default is '--very-sensitive-local'. If changing Bowtie2 settings beyond these presets, use the next flag|
-| -bowtieflag ""                   | Use this flag to enter more complex Bowtie2 settings. Any valid Bowtie2 command can be entered between the quotes. For example:   -bowtieflag "--sensitive-local -no-mixed"|
+| -bowtieflag ""                   | Use this flag to enter more complex Bowtie2 settings. Any valid Bowtie2 command can be entered between the quotes. For example:   -bowtieflag "--sensitive-local --no-mixed"|
 
 
 
