@@ -226,7 +226,7 @@ samples <- fraction_table[,1]
 Polyarray <- list()
 
 for (r in 1:NROW(fraction_table)) {
-  v <- replicate(Ref_size, "-")
+  v <- replicate(Ref_size, "x")
 
   #Base A
   v1 <- strsplit(fraction_table[r,"Peaks_A"], " ")
@@ -237,7 +237,7 @@ for (r in 1:NROW(fraction_table)) {
     for (i in 1:NROW(v1)) {
       peak <- v1[[i]]
 
-      if(v[[peak]] == "-"){
+      if(v[[peak]] == "x"){
         v[[peak]] <- "0"
       } else {
         v[[peak]] <- paste(v[[peak]], "0", sep = " ")
@@ -253,7 +253,7 @@ for (r in 1:NROW(fraction_table)) {
     for (i in 1:NROW(v1)) {
       peak <- v1[[i]]
 
-      if(v[[peak]] == "-"){
+      if(v[[peak]] == "x"){
         v[[peak]] <- "1"
       } else {
         v[[peak]] <- paste(v[[peak]], "1", sep = " ")
@@ -270,7 +270,7 @@ for (r in 1:NROW(fraction_table)) {
     for (i in 1:NROW(v1)) {
       peak <- v1[[i]]
 
-      if(v[[peak]] == "-"){
+      if(v[[peak]] == "x"){
         v[[peak]] <- "2"
       } else {
         v[[peak]] <- paste(v[[peak]], "2", sep = " ")
@@ -287,7 +287,7 @@ for (r in 1:NROW(fraction_table)) {
     for (i in 1:NROW(v1)) {
       peak <- v1[[i]]
 
-      if(v[[peak]] == "-"){
+      if(v[[peak]] == "x"){
         v[[peak]] <- "3"
       } else {
         v[[peak]] <- paste(v[[peak]], "3", sep = " ")
