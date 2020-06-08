@@ -77,7 +77,7 @@ To generate profiles, you need two input types: (1) reference sequence(s) to ana
 '.txt'
 
 2. Sequence data (FASTQ format)
- - Paired or unpaired reads are supported. Valid extensions are '.fastq', '.fq'. Compressed reads ‘i.e., .fastq.gz’ also supported.
+ - Paired-end or single-end reads are supported. Valid extensions are '.fastq', '.fq'. Compressed reads ‘i.e., .fastq.gz’ also supported.
  - For paired reads, the last string before the file extension should be ‘_1’ for Read1 and ‘_2’ for Read2 (alternatively ‘_R1’ and ‘_R2’ may be used). For example: ‘SampleName_1.fastq.gz’ and ‘SampleName_2.fastq.gz’.
 
 
