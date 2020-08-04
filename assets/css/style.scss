@@ -1,0 +1,23 @@
+---
+---
+
+@import 'jekyll-theme-hacker';
+
+nav ul, footer ul {
+  padding: 20px;
+  list-style: none;
+  font-weight: bold;
+}
+
+nav ul li, footer ul li {
+  display: inline;
+  margin-right: 20px;
+}
+
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
