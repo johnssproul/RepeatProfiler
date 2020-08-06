@@ -51,8 +51,6 @@ This folder has some raw data with depth per postion for every sample within a r
 
 ##### melR1_output 
 
-[//]: # (Where does it come frome?)
-
 The contents of this folder look like this:
 
 ![ref_output folder](ref_output.png)
