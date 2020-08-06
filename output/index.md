@@ -41,7 +41,7 @@ In this table each row summarizes results of mapping reads from a given sample t
 
 ### `plots_single_copy`
 
-This folder is only generated if the '-singlecopy' normalization flag is used. It has coverage profiles for each single copy gene. This ~~(as well as the Run_summary.csv table)~~ helps confirm that read mapping patterns on single-copy genes are in line with expectations and lead to reasonable normalized estimates (i.e., they don't show some unexpectedly high coverage region that could skew estimates).
+This folder is only generated if the '-singlecopy' normalization flag is used. It has coverage profiles for each single copy gene. This helps confirm that read mapping patterns on single-copy genes are in line with expectations and lead to reasonable normalized estimates (i.e., they don't show some unexpectedly high coverage region that could skew estimates).
 
 ### `map_depth_allrefs`
 
@@ -49,7 +49,9 @@ This folder has some raw data with depth per postion for every sample within a r
 
 ### `[refname]_output` 
 
-##### melR1_output [//]: # (Where does it come frome?)
+##### melR1_output 
+
+[//]: # (Where does it come frome?)
 
 The contents of this folder look like this:
 
