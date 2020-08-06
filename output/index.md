@@ -49,9 +49,7 @@ This folder has some raw data with depth per postion for every sample within a r
 
 ### `[refname]_output` 
 
-##### melR1_output
-
-~~In this run, Ref1 is a sequence of the R1 non-LTR retrotransposon in Drosophila melanogaster.~~ ?
+##### melR1_output [//]: # (Where does it come frome?)
 
 The contents of this folder look like this:
 
