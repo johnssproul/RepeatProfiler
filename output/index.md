@@ -5,13 +5,13 @@ title: Output
 
 <nav>
     <ul>
-      <li><a href="/">Home</a></li>
-      <li><a href="/installation">Installation</a></li>
-      <li><a href="/gettingstarted">Getting Started</a></li>
-      <li><a href="/output" style="color:red">Output</a></li>
-      <li><a href="/application">Application</a></li>
-      <li><a href="/documentation">Documentation</a></li>
-      <li><a href="/FAQ">FAQ</a></li>
+      <li><a href="/RepeatProfiler/">Home</a></li>
+      <li><a href="/RepeatProfiler/installation">Installation</a></li>
+      <li><a href="/RepeatProfiler/gettingstarted">Getting Started</a></li>
+      <li><a href="/RepeatProfiler/output" style="color:red">Output</a></li>
+      <li><a href="/RepeatProfiler/application">Applications</a></li>
+      <li><a href="/RepeatProfiler/documentation">Documentation</a></li>
+      <li><a href="/RepeatProfiler/FAQ">FAQ</a></li>
     </ul>
 </nav>
 
@@ -33,7 +33,7 @@ Here, there is one folder named `[refname]_output` for each reference. This fold
 
 ![readme](readme.png)
 
-This read me tells you how internal index numbers used by the pipeline correspond to your input samples. These indexes appear on reference-specific output folders. For example in a folder named 'refname_output_001', the '001' indicates this folder has output for the first set of sample reads processed by the pipeline.
+This read me tells you how internal index numbers used by the pipeline correspond to your input samples. These indices appear on reference-specific output folders. For example in a folder named 'refname_output_001', the '001' indicates this folder has output for the first set of sample reads processed by the pipeline.
 
 <pre>Output also includes the Run_summary.csv table. It contains information about the references you used (e.g. length), average coverage, percent coverage, etc. Since this run included the '-singlecopy' flag which normalizes coverage based on single-copy genes, there will be some info about single copy genes at the bottom of the table.
 
@@ -41,17 +41,17 @@ In this table each row summarizes results of mapping reads from a given sample t
 
 ### `plots_single_copy`
 
-This folder is only generated if the '-singlecopy' normalization flag is used. It has coverage profiles for each single copy gene. This (as well as the Run_summary.csv table) helps confirm that read mapping patterns on single-copy genes are in line with expectations and leading to reasonable normalized estimates (e.g., they don't show some unexpectedly high coverage region that could skew estimates).
+This folder is only generated if the '-singlecopy' normalization flag is used. It has coverage profiles for each single copy gene. This ~~(as well as the Run_summary.csv table)~~ helps confirm that read mapping patterns on single-copy genes are in line with expectations and lead to reasonable normalized estimates (i.e., they don't show some unexpectedly high coverage region that could skew estimates).
 
 ### `map_depth_allrefs`
 
-This folder has some raw output with depth per postion for every sample within a reference sequence.
+This folder has some raw data with depth per postion for every sample within a reference sequence.
 
 ### `[refname]_output` 
 
 ##### melR1_output
 
-~~In this run, Ref1 is a sequence of the R1 non-LTR retrotransposon in Drosophila melanogaster.~~
+~~In this run, Ref1 is a sequence of the R1 non-LTR retrotransposon in Drosophila melanogaster.~~ ?
 
 The contents of this folder look like this:
 
@@ -75,7 +75,7 @@ Another summary PDF in this directory is variant_profiles.pdf. This file contain
 
 ![phylip](phylip.png)
 
-This file summarizes signatures in variant-enhanced profiles by encoding abundant variants at each site as molecular-morphological characters (details on this process are provided in out paper on RepeatProfiler). This file can be directly fed into phylogenetic software and analyzed as morphological data. We commonly do this using IQ-TREE. This approach leverages the statistical framework of phylogenetic analysis to groups samples based on signal from variant profiles.
+This file summarizes signatures in variant-enhanced profiles by encoding abundant variants at each site as molecular-morphological characters (details on this process are provided in our paper on RepeatProfiler). This file can be directly fed into phylogenetic software and analyzed as morphological data. We commonly do this using <a href="http://www.iqtree.org/" target="_blank">IQ-TREE</a>. This approach leverages the statistical framework of phylogenetic analysis to group samples based on signal from variant profiles.
 
 ### Sample Specific Subfolders
 
@@ -85,11 +85,11 @@ The contents of this folder look like this:
 
 ![sample_output](sample_output.png)
 
-These subfolders contain same plots we looked at earlier but stored as indifidual PDFs. Although they are not grouped with all other samples, they still show the same standardized color scale used in the 'scaled_profiles' file shown above. Another PDF file contains a simplified version of the profiles (an area plot instead of a bar plot) -- we include this as a smaller, but still vector-based file that may be useful for some visual display purposes. This folder also includes a text file with raw output of depth of every postion and variants relative to the reference sequence.
+These subfolders contain the same plots we looked at earlier but stored as individual PDFs. Although they are not grouped with all other samples, they still show the same standardized color scale used in the `scaled_profiles` PDF shown above. The `simple_vector_profile` shows a simplified version of the profiles (an area plot instead of a bar plot). We include this as a smaller, but still vector-based file that may be useful for some visual display purposes. This folder also includes `depth_counts` which has raw output of depth of every postion and variants relative to the reference sequence. 
 
 ### `scaled_profiles_allrefs`
 
-This folder contains color-enhanced profiles for the entire run (i.e., all reference sequences) that are shown on the same color scale. This is similar to the 'scaled_profiles.pdf' file found in the output folders for each reference sequence, except that the color scale is set based on the maximum coverage for all profiles in the run, instead of the maximum observed within a reference sequence. Scanning the PDFs in this folder is a good way to identify interesting patterns across repeats.
+This folder contains color-enhanced profiles for the entire run (i.e., all reference sequences) that are shown on the same color scale. This is similar to the `scaled_profiles.pdf` file found in the output folders for each reference sequence, except that the color scale is set based on the maximum coverage for all profiles in the run, instead of the maximum observed within a reference sequence. Scanning the PDFs in this folder is a good way to identify interesting patterns across repeats.
 
 ### Correlation Analysis Output
 
@@ -97,16 +97,26 @@ This folder contains color-enhanced profiles for the entire run (i.e., all refer
 
 Four output folders are generaged by the correlation analysis (i.e., '-corr' flag).
 
-First folder: correlation_boxplots_by_group This folder contains boxplots for each group defined in user_groups.txt. The boxplots combine correlation values across all repeat references used in the run. Each group has its own plot.
+`correlation_boxplots_by_group`
 
-Second folder: correlation_boxplots_by_reference This folder contains boxplots that show correlation of profile shape within and between user-defined groups for individual repeat references in the run.
+This folder contains boxplots for each group defined in user_groups.txt. The boxplots combine correlation values across all repeat references used in the run. Each group has its own plot.
 
-Third folder: correlation_data This folder contains correlation matrices for each reference. The matrices shows all the correlation values among all samples for a reference. Each refrence has its own matrix.
+`correlation_boxplots_by_reference` 
 
-Fourth folder:correlation_histograms This folder contains histograms of within and between-group correlation values for each reference.
+This folder contains boxplots that show correlation of profile shape within and between user-defined groups for individual repeat references in the run.
 
-Last file: correlation_summary.csv This table contains average values of within and between each group correlation value for each reference. It summarizes information for all correlation done in the run.
+`correlation_data` 
+
+This folder contains correlation matrices for each reference. The matrices show all the correlation values among all samples for a reference. Each refrence has its own matrix.
+
+`correlation_histograms` 
+
+This folder contains histograms of within and between-group correlation values for each reference.
+
+`correlation_summary.csv` 
+
+This table contains average values of within and between each group correlation values for each reference. It summarizes information for all correlation done in the run.
 
 ## Troubleshooting
 
-If you get a formatting error related to reference sequences, check that the file is in FASTA format, and that it has Unix LF (an empty line at the end of the file -- this is standard among all linux and macOS text files.)
+If you get a formatting error related to reference sequences, check that the file is in FASTA format and that it has Unix LF (an empty line at the end of the file) -- this is standard among all linux and macOS text files.

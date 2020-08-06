@@ -5,13 +5,13 @@ title: Installation
 
 <nav>
     <ul>
-      <li><a href="/">Home</a></li>
-      <li><a href="/installation" style="color:red">Installation</a></li>
-      <li><a href="/gettingstarted">Getting Started</a></li>
-      <li><a href="/output">Output</a></li>
-      <li><a href="/application">Application</a></li>
-      <li><a href="/documentation">Documentation</a></li>
-      <li><a href="/FAQ">FAQ</a></li>
+      <li><a href="/RepeatProfiler/">Home</a></li>
+      <li><a href="/RepeatProfiler/installation" style="color:red">Installation</a></li>
+      <li><a href="/RepeatProfiler/gettingstarted">Getting Started</a></li>
+      <li><a href="/RepeatProfiler/output">Output</a></li>
+      <li><a href="/RepeatProfiler/application">Applications</a></li>
+      <li><a href="/RepeatProfiler/documentation">Documentation</a></li>
+      <li><a href="/RepeatProfiler/FAQ">FAQ</a></li>
     </ul>
 </nav>
 
@@ -47,7 +47,7 @@ To test if the installation was successful, try calling the program at the comma
 docker exec <container ID> bash repeatprof
 ```
 
-For more information about how to use RepeatProfiler with Docker see __________.
+For more information about how to use RepeatProfiler with Docker see the <a href="https://hub.docker.com/r/durberg7/repeatprof">Docker Hub repository</a>.
 
 
 ## Manual
@@ -62,10 +62,10 @@ Required dependencies are:
 - samtools
 - python (2 or 3)
 - R and R packages
-	- reshape2
-	- scales
-	- ggplot2
-	- ggpubr
+  - reshape2
+  - scales
+  - ggplot2
+  - ggpubr
 
 You can install required R packages by running this command:
 
