@@ -6,7 +6,7 @@ title: Home
 <nav>
     <ul>
       <li><a href="/" style="color:red">Home</a></li>
-      <li><a href="/installation">Installation</a></li>
+      <li><a href="/installation/index.md">Installation</a></li>
       <li><a href="/gettingstarted">Getting Started</a></li>
       <li><a href="/output">Output</a></li>
       <li><a href="/application">Application</a></li>
