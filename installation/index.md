@@ -47,7 +47,7 @@ To test if the installation was successful, try calling the program at the comma
 docker exec <container ID> bash repeatprof
 ```
 
-For more information about how to use RepeatProfiler with Docker see the <a href="https://hub.docker.com/r/durberg7/repeatprof" target="blank">Docker Hub repository</a>.
+For more information about how to use RepeatProfiler with Docker see the <a href="https://hub.docker.com/r/durberg7/repeatprof" target="_blank">Docker Hub repository</a>.
 
 
 ## Manual
