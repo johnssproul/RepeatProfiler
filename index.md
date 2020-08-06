@@ -6,7 +6,7 @@ title: Home
 <nav>
     <ul>
       <li><a href="/" style="color:red">Home</a></li>
-      <li><a href="https://johnssproul.github.io/installation/index.md">Installation</a></li>
+      <li><a href="https://johnssproul.github.io/RepeatProfiler/installation/index.md">Installation</a></li>
       <li><a href="/gettingstarted">Getting Started</a></li>
       <li><a href="/output">Output</a></li>
       <li><a href="/application">Application</a></li>
