@@ -6,12 +6,12 @@ title: Home
 <nav>
     <ul>
       <li><a href="/RepeatProfiler/" style="color:red">Home</a></li>
-      <li><a href="https://johnssproul.github.io/RepeatProfiler/installation/index.md">Installation</a></li>
-      <li><a href="/gettingstarted">Getting Started</a></li>
-      <li><a href="/output">Output</a></li>
-      <li><a href="/application">Application</a></li>
-      <li><a href="/documentation">Documentation</a></li>
-      <li><a href="/FAQ">FAQ</a></li>
+      <li><a href="/RepeatProfiler/installation">Installation</a></li>
+      <li><a href="/RepeatProfiler/gettingstarted">Getting Started</a></li>
+      <li><a href="/RepeatProfiler/output">Output</a></li>
+      <li><a href="/RepeatProfiler/application">Application</a></li>
+      <li><a href="/RepeatProfiler/documentation">Documentation</a></li>
+      <li><a href="/RepeatProfiler/FAQ">FAQ</a></li>
     </ul>
 </nav>
 
