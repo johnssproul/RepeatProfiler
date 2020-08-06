@@ -9,7 +9,7 @@ title: Home
       <li><a href="/RepeatProfiler/installation">Installation</a></li>
       <li><a href="/RepeatProfiler/gettingstarted">Getting Started</a></li>
       <li><a href="/RepeatProfiler/output">Output</a></li>
-      <li><a href="/RepeatProfiler/application">Applications</a></li>
+      <li><a href="/RepeatProfiler/application">Application</a></li>
       <li><a href="/RepeatProfiler/documentation">Documentation</a></li>
       <li><a href="/RepeatProfiler/FAQ">FAQ</a></li>
     </ul>
