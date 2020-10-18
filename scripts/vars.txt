@@ -1,0 +1,84 @@
+BASE=refbase_
+BASH=/bin/bash
+BASHOPTS=cmdhist:complete_fullquote:extquote:force_fignore:hostcomplete:interactive_comments:progcomp:promptvars:sourcepath
+BASH_ALIASES=()
+BASH_ARGC=([0]="4")
+BASH_ARGV=([0]="/mnt/d/Pipeline_project/scriptTest/reads/" [1]="/mnt/d/Pipeline_project/scriptTest/reads/ETS.txt" [2]="-p" [3]="profile")
+BASH_CMDS=()
+BASH_LINENO=([0]="0")
+BASH_SOURCE=([0]="repeatprof")
+BASH_VERSINFO=([0]="4" [1]="4" [2]="19" [3]="1" [4]="release" [5]="x86_64-pc-linux-gnu")
+BASH_VERSION='4.4.19(1)-release'
+CONDA_EXE=/home/sherif/miniconda2/bin/conda
+CONDA_PYTHON_EXE=/home/sherif/miniconda2/bin/python
+CONDA_SHLVL=0
+DIRSTACK=()
+DISPLAY=localhost:0.0
+EUID=1000
+GROUPS=()
+HOME=/home/sherif
+HOMEBREW_CELLAR=/home/linuxbrew/.linuxbrew/Cellar
+HOMEBREW_PREFIX=/home/linuxbrew/.linuxbrew
+HOMEBREW_REPOSITORY=/home/linuxbrew/.linuxbrew/Homebrew
+HOSTNAME=Sherif-MSI
+HOSTTYPE=x86_64
+IFS=' 	
+'
+INFOPATH=/home/linuxbrew/.linuxbrew/share/info:
+LANG=C.UTF-8
+LESSCLOSE='/usr/bin/lesspipe %s %s'
+LESSOPEN='| /usr/bin/lesspipe %s'
+LOGNAME=sherif
+LS_COLORS='rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'
+MACHTYPE=x86_64-pc-linux-gnu
+MANPATH=/home/linuxbrew/.linuxbrew/share/man:
+NAME=Sherif-MSI
+Normalized=false
+OLDPWD=/mnt/d/Pipeline_project/scriptTest/scriptTest/RepeatProfiler
+OPTERR=1
+OPTIND=1
+OSTYPE=linux-gnu
+PATH='/home/sherif/miniconda2/condabin:/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:/home/linuxbrew/.linuxbrew/opt/openjdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/mnt/c/Program Files (x86)/Common Files/Oracle/Java/javapath:/mnt/c/Program Files (x86)/Intel/Intel(R) Management Engine Components/iCLS/:/mnt/c/Program Files/Intel/Intel(R) Management Engine Components/iCLS/:/mnt/c/Windows/system32:/mnt/c/Windows:/mnt/c/Windows/System32/Wbem:/mnt/c/Windows/System32/WindowsPowerShell/v1.0/:/mnt/c/Program Files (x86)/Intel/Intel(R) Management Engine Components/DAL:/mnt/c/Program Files/Intel/Intel(R) Management Engine Components/DAL:/mnt/c/Program Files (x86)/Intel/Intel(R) Management Engine Components/IPT:/mnt/c/Program Files/Intel/Intel(R) Management Engine Components/IPT:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files (x86)/Calibre2/:/mnt/c/Program Files/PuTTY/:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files/MEGA-X:/mnt/c/Program Files/MiKTeX 2.9/miktex/bin/x64/:/mnt/c/Users/shere/Anaconda3:/mnt/c/Users/shere/Anaconda3/Library/mingw-w64/bin:/mnt/c/Users/shere/Anaconda3/Library/usr/bin:/mnt/c/Users/shere/Anaconda3/Library/bin:/mnt/c/Users/shere/Anaconda3/Scripts:/mnt/c/Users/shere/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/shere/AppData/Local/JetBrains/PyCharm 2019.3.1/bin:/mnt/c/Users/shere/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/shere/AppData/Local/Markdown Monster:/snap/bin'
+PIPESTATUS=([0]="0")
+POSIXLY_CORRECT=y
+PPID=2867
+PS4='+ '
+PWD=/mnt/d/Pipeline_project/scriptTest/scriptTest/RepeatProfiler/Fri_Oct_16_00_29_31_EDT_2020-RP
+R_packages=default_rpackages
+Rscript=Rscript
+SHELL=/bin/bash
+SHELLOPTS=braceexpand:hashall:interactive-comments:posix
+SHLVL=6
+TERM=xterm-256color
+The_folder=Fri_Oct_16_00_29_31_EDT_2020-RP_output
+UID=1000
+USER=sherif
+WSLENV=WT_SESSION::WT_PROFILE_ID
+WSL_DISTRO_NAME=Ubuntu
+WT_PROFILE_ID='{61c54bbd-c2c6-5271-96e7-009a87ff44bf}'
+WT_SESSION=ca03a53c-06e1-4d9e-a337-3cd82878c30b
+XDG_DATA_DIRS=/usr/local/share:/usr/share:/var/lib/snapd/desktop
+_=posix
+_CE_CONDA=
+_CE_M=
+a=--very-sensitive-local
+array=([0]="profile" [1]="-p" [2]="/mnt/d/Pipeline_project/scriptTest/reads/ETS.txt" [3]="/mnt/d/Pipeline_project/scriptTest/reads/")
+before_pwd=/mnt/d/Pipeline_project/scriptTest/scriptTest/RepeatProfiler
+commands='profile -p /mnt/d/Pipeline_project/scriptTest/reads/ETS.txt /mnt/d/Pipeline_project/scriptTest/reads/'
+currentDate=Fri_Oct_16_00_29_31_EDT_2020
+currentdir=/mnt/d/Pipeline_project/scriptTest/scriptTest/RepeatProfiler
+fofncheck=1
+i=/mnt/d/Pipeline_project/scriptTest/reads/
+index=4
+line=dmel_rDNA_E__TS_Other_rDNA
+mydir=/mnt/d/Pipeline_project/scriptTest/scriptTest/RepeatProfiler/scripts/
+num_commands=4
+p=8
+reads=/mnt/d/Pipeline_project/scriptTest/reads/
+refs=references_used
+refs_full_path=/mnt/d/Pipeline_project/scriptTest/reads/ETS.txt
+retval=0
+rmdup=FALSE
+t=/mnt/d/Pipeline_project/scriptTest/reads/
+th=/mnt/d/Pipeline_project/scriptTest/reads/
+verticalplots=false
