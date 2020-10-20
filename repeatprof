@@ -50,11 +50,55 @@ fi
 currentdir=`pwd`
 
 
+#bam work in progress 
+
+
+
+
+
+
+
+
+
+
+
+
+
+#
+
+reads=$4
+
+u_or_p_flag=$2
+
 
 if [ "$1" == "profile" ]; then  # check if the second parameter is profile, If yes then preform profiling stuff
 
+
+if [ "$u_or_p_flag" == "-bam" ];
+then
+
+
+mkdir temp_work_dir_RP_${currentDate}
+ 
+
+echo "yes" > temp_work_dir_RP_${currentDate}/test.fastq
+ls $reads/*.bam > temp_work_dir_RP_${currentDate}/temp_bamnames.txt
+
+fofn_bamcounts=$(wc -l temp_work_dir_RP_${currentDate}/temp_bamnames.txt | cut -f1 -d " ")
+if [[ $fofn_bamcounts == 0 ]];
+then
+ echo "There are no bam files in the directory provided."
+exit 1 
+fi
+
+
+reads="temp_work_dir_RP_${currentDate}/"
+bam_mode="true"
+u_or_p_flag="-u"
+fi
+
 #cp -r $images $currentdir #brew stuff images-RP
-if  [[ $2 == "-u" ]] ||  [[ $2  ==  "-p" ]]; then # check if the user input -u or -p if not give him an error as it is a madantory command
+if  [[ $u_or_p_flag == "-u" ]] ||  [[ $u_or_p_flag  ==  "-p" ]]; then # check if the user input -u or -p if not give him an error as it is a madantory command
 echo "" > /dev/null
 
 else
@@ -64,7 +108,7 @@ exit 1
 fi
 
 
-if (( num_commands < 4 )) #If commands are less than 4 (which is number of the 4 madantory flags for profile)
+ if (( num_commands < 4 )) #If commands are less than 4 (which is number of the 4 madantory flags for profile)
  then
 echo "Missing madantory arguments for 'profile' command. Use 'repeatprof -h' to view list of mandatory arguments for 'profile' or refer to the manual."
 exit 1
@@ -121,10 +165,139 @@ if [[ $t  ==  "-vertical" ]]; then # this if statement says if the flag in the a
     fi
 done
 
+
+
+
+
+The_folder="$currentDate-RP"
+mkdir $The_folder # this creates the main output folder
+
+
+
+
+BASE="refbase_" #this is just for the naming of the refrence index made by bowtie2-build, so it can be detected later when aligning using bowtie2
+commands=$@
+
+
+#refs_full_path=`readlink -f $3`
+
+before_pwd=`pwd`
+
+if [[ -f $user_prov ]]; then
+	
+	cp  $user_prov $The_folder
+
+elif [ "$infolder" == "true" ]; then 
+
+cp user_groups.txt $The_folder
+
+fi
+
+cd $The_folder
+exec > >(tee -i logfile.log)
+
+if [[ -f $3 ]]; then 
+
+refs_full_path=$3
+
+else
+
+refs_full_path=`echo "${before_pwd}/$3"`
+
+fi 
+
+The_folder=${The_folder}_output
+
+mkdir $The_folder
+
+##### detects input reference file(s), prepares them for the run using fasta_splitter script, error handling 
+
+if [[ -d $refs_full_path ]]; then # checking if 3rd parameter (refrence path) for profile is directory or a file
+#if it is a directory then sum up all the .fa files and put them int o one and send them to fasta splitter to prepare them as single fasta sequences for analysis
+	path_refs=`cat $refs_full_path/*.fa > all_refs.fa`
+bash $mydir/fasta_splitter.sh $refs_full_path
+
+
+retval=$? #check if any error occured by getting the exit code
+
+if [ $retval -eq 2 ]; then #if an error occured and the exit code isn't 0 then exit. The error message will be printed from map_mileup not here
+exit 1
+
+elif [ $retval -ne 0 ]; then #if an error occured and the exit code isnt 0  then exit. The error message will be printed from map_mileup not here
+	echo "Something is wrong with the file containing reference sequences -- check that it is in fasta format and the last line ends in a carriage return"
+exit 1
+
+fi
+
+
+	refs=references_used #this is where bowtie will look for refrence sequence ot align. It is a sub directory
+
+elif [[ -f $refs_full_path ]]; then # if the reference entered as a file  then just send it to fasta splitter in case it is multi sequence fasta
+	rm -f -r references_used
+	bash $mydir/fasta_splitter.sh $refs_full_path #split comment
+
+
+retval=$? #check if any error occured by getting the exit code
+
+if [ $retval -eq 2 ]; then #if an error occured and the exit code isnt 0  then exit. The error message will be printed from map_mileup not here
+exit 1
+
+elif [ $retval -ne 0 ]; then #if an error occured and the exit code isnt 0  then exit. The error message will be printed from map_mileup not here
+	echo "Something is wrong with the file containing reference sequences -- check that it is in fasta format and the last line ends in a carriage return"
+exit 1
+
+fi
+
+refs=references_used
+
+else
+    echo "The path to file containing the reference sequence(s)is not valid"
+    exit 1
+
+fi
+
+
+#inserting preparing bam here
+
+
+if [[ $bam_mode == "true" ]]; 
+
+then
+
+echo "yes in"
+
+bash $mydir/preparing_bam_to_analyze.sh $4 
+
+retval=$? #check if any error occured by getting the exit code
+
+if [[ $retval == 1 ]];
+then
+
+exit 1
+
+else
+
+reads=$(pwd)
+reads="$reads/badfastqs"
+fi
+
+fi
+
+
+
+
+
+
+
+
+
+
+
+exit 1
+
 #
 array=(${commands})
 index=0
-reads=$4
 
 for p in "${array[@]}"
 do
@@ -139,7 +312,7 @@ if [[ $p  ==  "-corr" ]]; then
 
 ##### this block does an initial check to detect read data, does error handling, and makes relevant files of file names for downstream loops etc.
 
-if [ $2 = "-p" ]; then #if user specified paired data then look for this 
+if [ $u_or_p_flag = "-p" ]; then #if user specified paired data then look for this 
 
   ls ${reads}/*_R1.fastq ${reads}/*_R1.gz ${reads}/*_R1.fq ${reads}/*_R1.fq.gz  ${reads}/*_1.fq ${reads}/*_1.fq.gz ${reads}/*_1.gz ${reads}/*_1.fastq ${reads}/*_1.fastq.gz > fofn1.txt 2>/dev/null
 
@@ -147,7 +320,7 @@ if [ $2 = "-p" ]; then #if user specified paired data then look for this
 
 fi
 
-if [ $2 = "-u" ]; then
+if [ $u_or_p_flag = "-u" ]; then
 #if user specified unpaired data then look for that. We make 2 fofn for unpaired data here because downstream code was built on paired data, but in the end the second fofn for unpaired data will be ignored
 if [[ -f $reads ]]; then
 if [[ $reads == *.fq ]] || [[ $reads == *.fastq ]] || [[ $reads == *.gz ]]; then 
@@ -247,95 +420,9 @@ done
 
 
 
-The_folder="$currentDate-RP"
-mkdir $The_folder # this creates the main output folder
 
 
 
-
-BASE="refbase_" #this is just for the naming of the refrence index made by bowtie2-build, so it can be detected later when aligning using bowtie2
-commands=$@
-
-
-#refs_full_path=`readlink -f $3`
-
-before_pwd=`pwd`
-
-if [[ -f $user_prov ]]; then
-	
-	cp  $user_prov $The_folder
-
-elif [ "$infolder" == "true" ]; then 
-
-cp user_groups.txt $The_folder
-
-fi
-
-cd $The_folder
-exec > >(tee -i logfile.log)
-
-if [[ -f $3 ]]; then 
-
-refs_full_path=$3
-
-else
-
-refs_full_path=`echo "${before_pwd}/$3"`
-
-fi 
-
-The_folder=${The_folder}_output
-
-mkdir $The_folder
-
-##### detects input reference file(s), prepares them for the run using fasta_splitter script, error handling 
-
-if [[ -d $refs_full_path ]]; then # checking if 3rd parameter (refrence path) for profile is directory or a file
-#if it is a directory then sum up all the .fa files and put them int o one and send them to fasta splitter to prepare them as single fasta sequences for analysis
-	path_refs=`cat $refs_full_path/*.fa > all_refs.fa`
-
-
-bash $mydir/fasta_splitter.sh $refs_full_path
-
-
-retval=$? #check if any error occured by getting the exit code
-
-if [ $retval -eq 2 ]; then #if an error occured and the exit code isn't 0 then exit. The error message will be printed from map_mileup not here
-exit 1
-
-elif [ $retval -ne 0 ]; then #if an error occured and the exit code isnt 0  then exit. The error message will be printed from map_mileup not here
-	echo "Something is wrong with the file containing reference sequences -- check that it is in fasta format and the last line ends in a carriage return"
-exit 1
-
-fi
-
-
-	refs=references_used #this is where bowtie will look for refrence sequence ot align. It is a sub directory
-
-elif [[ -f $refs_full_path ]]; then # if the reference entered as a file  then just send it to fasta splitter in case it is multi sequence fasta
-	rm -f -r references_used
-
-	bash $mydir/fasta_splitter.sh $refs_full_path #split comment
-
-
-retval=$? #check if any error occured by getting the exit code
-
-if [ $retval -eq 2 ]; then #if an error occured and the exit code isnt 0  then exit. The error message will be printed from map_mileup not here
-exit 1
-
-elif [ $retval -ne 0 ]; then #if an error occured and the exit code isnt 0  then exit. The error message will be printed from map_mileup not here
-	echo "Something is wrong with the file containing reference sequences -- check that it is in fasta format and the last line ends in a carriage return"
-exit 1
-
-fi
-
-refs=references_used
-
-else
-    echo "The path to file containing the reference sequence(s)is not valid"
-    exit 1
-
-fi
 
 
 #this is just to clear out the clutter one-time use intermidiate output 
@@ -421,7 +508,7 @@ fi
 
 echo "Bowtie2 alignment settings: $a"
 #exit 1
-echo $4
+echo $reads
 line="All_references"
 
 
@@ -485,12 +572,26 @@ done
 bash $mydir/readme_gen.sh #this starts generating the readme. which will be populated later with the index to read conversions
 
 
+if [[ $bam_mode==true ]];
+then
+echo "yes"
 
+ 
+#continue working here yasta
+
+
+else
 ##preps references for read mapping in bowtie2
 bowtie2-build all_References.fa $BASE 
 
 ##calls map_reads.sh which runs bowtie aligning and uses the indexes we built and also run samtools mpileup
-bash $mydir/map_reads.sh $line $4 $2 $p $a $rmdup
+bash $mydir/map_reads.sh $line $reads $u_or_p_flag $p $a $rmdup 
+
+fi
+
+
+
+#work in progress up ^
 
 
 retval=$? 
@@ -551,7 +652,7 @@ echo ""
 
 
 #Runs external script for normalization analysis 
-bash $mydir/singlecopy.sh $mydir $4 $2 "2" $a $rmdup $refs_full_path
+bash $mydir/singlecopy.sh $mydir $reads $u_or_p_flag "2" $a $rmdup $refs_full_path
 
 
 
@@ -829,7 +930,7 @@ fi
 if [ "$1" == "pre-corr" ]; then
 reads=$3
 
-if  [[ $2 == "-u" ]] ||  [[ $2  ==  "-p" ]] ||  [[ $2  ==  "-v" ]]; then
+if  [[ $u_or_p_flag == "-u" ]] ||  [[ $u_or_p_flag  ==  "-p" ]] ||  [[ $u_or_p_flag  ==  "-v" ]]; then
 echo "" > /dev/null
 
 else
@@ -837,7 +938,7 @@ echo "Incorrect command structure for 'pre-corr'. Refer to repeatprof -h or manu
 exit 1
 fi
 
-if [ $2 = "-p" ]; then
+if [ $u_or_p_flag = "-p" ]; then
 
   ls ${reads}/*_R1.fastq ${reads}/*_R1.gz ${reads}/*_R1.fq ${reads}/*_R1.fq.gz  ${reads}/*_1.fq ${reads}/*_1.fq.gz ${reads}/*_1.gz ${reads}/*_1.fastq ${reads}/*_1.fastq.gz > fofn1.txt 2>/dev/null
 
@@ -855,7 +956,7 @@ fi
 
 ##### if user specified unpaired data then look for that. We use it double here because rest of the code was built on paired data, but dont worry it gets dealt with laterye
 
-if [ $2 = "-u" ]; then
+if [ $u_or_p_flag = "-u" ]; then
 
 if [[ -f $reads ]]; then
 
@@ -902,7 +1003,7 @@ fi
 
 
 ##### -corr flag can be run as a module independent of a full run. This block takes the output of a previous run and does correlation analysis
-$Rscript $mydir/user_groups_maker.R $2
+$Rscript $mydir/user_groups_maker.R $u_or_p_flag
 
 echo ""
 
@@ -917,7 +1018,7 @@ exit 1
 
 fi
 
-if  [[ $2 == "-u" ]] ||  [[ $2  ==  "-p" ]]; then # check if the user inputed -u or -p if not give him an error as it is a madantory command
+if  [[ $u_or_p_flag == "-u" ]] ||  [[ $u_or_p_flag  ==  "-p" ]]; then # check if the user inputed -u or -p if not give him an error as it is a madantory command
 echo "" > /dev/null
 
 else
@@ -931,14 +1032,14 @@ echo "Invalid path to the output folder.refer to repeatprof -h to check command 
 
 fi
 
-if [[ ! -d $4 ]]; then 
+if [[ ! -d $reads ]]; then 
 echo "Invalid path to the reads folder. Please refer to repeatprof -h to check command structure"
 
 fi 
 
-reads=$4
+reads=$reads
 
-if [ $2 = "-p" ]; then
+if [ $u_or_p_flag = "-p" ]; then
   ls ${reads}/*_R1.fastq ${reads}/*_R1.gz ${reads}/*_R1.fq ${reads}/*_R1.fq.gz  ${reads}/*_1.fq ${reads}/*_1.fq.gz ${reads}/*_1.gz ${reads}/*_1.fastq ${reads}/*_1.fastq.gz > fofn1.txt 2>/dev/null
 
   ls ${reads}/*_R2.fastq ${reads}/*_R2.gz ${reads}/*_R2.fq ${reads}/*_R2.fq.gz  ${reads}/*_2.fq.gz  ${reads}/*_2.fq ${reads}/*_2.gz ${reads}/*_2.fastq ${reads}/*_2.fastq.gz > fofn2.txt 2>/dev/null
@@ -947,7 +1048,7 @@ reads2_check=`cat fofn2.txt | wc -l `
 
 fi
 
-if [ $2 = "-u" ]; then
+if [ $u_or_p_flag = "-u" ]; then
 
 #if user specified unpaired data  then look for that. We make two fofn here for unpaired data because rest of the code was built on paired data, the second copy will be ignored in the end
 if [[ -f $reads ]]; then

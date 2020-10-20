@@ -156,6 +156,7 @@ echo "${F}	${Read_length}" >> read_lengths.txt
   fi
 
   if [ $3 = "-u" ]; then #if data is unpaired then run that
+  if [[ 
     (bowtie2 -p $4 -x $BASE -U $READ1 $5   | samtools view -bS -h -F 4 /dev/stdin | samtools sort -o ${F}_sorted.bam /dev/stdin) 2> mapping_log_files/${F}_bowtie.log
     retval=$? #catches exit code to check for error
 	if [ $6 == "TRUE" ]
