@@ -293,7 +293,6 @@ fi
 
 
 
-exit 1
 
 #
 array=(${commands})
@@ -572,10 +571,10 @@ done
 bash $mydir/readme_gen.sh #this starts generating the readme. which will be populated later with the index to read conversions
 
 
-if [[ $bam_mode==true ]];
+if [[ $bam_mode == "true" ]];
 then
 echo "yes"
-
+echo "$bam_mode"
  
 #continue working here yasta
 
@@ -587,7 +586,7 @@ bowtie2-build all_References.fa $BASE
 ##calls map_reads.sh which runs bowtie aligning and uses the indexes we built and also run samtools mpileup
 bash $mydir/map_reads.sh $line $reads $u_or_p_flag $p $a $rmdup 
 
-fi
+
 
 
 
@@ -602,7 +601,7 @@ exit 1
 fi
 
 echo "mapped reads"
-
+fi
 
 
 
@@ -743,7 +742,7 @@ echo "refs_full_path=$refs_full_path">>vars.txt
 echo "retval=$retval">>vars.txt
 echo "rmdup=$rmdup">>vars.txt
 echo "t=$t">>vars.txt
-echo "th=$th">>vars.txt
+echo "p=$p">>vars.txt
 echo "verticalplots=$verticalplots">>vars.txt
 echo "i=$i">>vars.txt
 echo "a=$a">>vars.txt
@@ -764,10 +763,10 @@ echo "The_folder=$The_folder">>vars.txt
 echo "bash $mydir/analyze_per_ref.sh $line" >> analyzing_refs_commands.txt
 
 #bash $mydir/analyze_per_ref.sh $line 
-echo "done"
+echo "analyzing reference: $line"
  #this an fi for error handling dont mess with it. this is the end of the reference
 done < fofnrefs.txt #keep looping until all references inputed undergone the analysis
-cat analyzing_refs_commands.txt | parallel 
+cat analyzing_refs_commands.txt | parallel -j $p --will-cite
 rm -f Run_summary.csv
 $Rscript $mydir/depth_analyser.R $Normalized #run the depth analyzer which produces the final summary table
 
@@ -905,12 +904,26 @@ mv singlecopy_warnings.txt $The_folder 2> /dev/null
 
 mkdir temp 
 mv ${The_folder}/index_conv.txt ${The_folder}/The_summary.txt temp
-mv *.txt *.fa temp  #.fai
+mv *.txt *.fa *_tempi *.bt2 temp  #.fai
 #design of the cow was borrowed from the famous cowsay package
 
 echo "________________________________"
 echo "< The analysis has been completed! >"
 echo "--------------------------------"
+
+
+echo "________________________________"
+echo "< WOW what a great pipeline !!!! >"
+echo "--------------------------------"
+echo "       \   ^__^"
+echo "        \  (oo)\_______         "
+echo "           (__)\       )\/\  "
+echo "               ||----w |    "
+echo "               ||     ||    "
+
+
+
+
 if [[ -d $the_path ]]; then
 cd ..
 The_folder="$currentDate-RP"

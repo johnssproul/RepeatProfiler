@@ -32,9 +32,9 @@ cd ${PWD}/${line}_tempi
 
 
 
-echo "$mydir"
-echo "$fofncheck"
-echo "why"
+#echo "$mydir"
+#echo "$fofncheck"
+#echo "why"
 
 #echo $line | cat -v 
 #exit 1
