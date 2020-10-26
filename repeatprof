@@ -388,6 +388,10 @@ Normalized=false #this is equal 1 always unless the user chooses to normalize
 
 ##### This block is for normalization analysis (e.g., -singlecopy flag), detects mapping settings, runs external script, error handling
 
+      Normalized=true
+      readnumbers=`cat fofnsingle.txt | wc -l`
+      echo "The Normalization values calculated:"
+      $Rscript $mydir/single_copy_Calculator.R $readnumbers
 
 #cat $refs/*.fa > all_References.fa #the folder where fasta spliter stores all the .fa file after splitting them. This line just gets a list of these references with their paths
 
@@ -432,6 +436,7 @@ array=(${commands})
   done
   ###end of single copy stuff
 
+  echo "Reference	Sample_index	Read1	Read2	Total_reads	percent_mapped" > The_summary.txt #preparing the summary table
 
 if [[ $@  ==  *"-D"* ]]; then
 commands=$@
