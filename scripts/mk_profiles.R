@@ -133,7 +133,7 @@ lc <- function(plot) {
 }
 
 ########## Plot Aesthetics ##########
-colors <- c('blue4', 'springgreen2', 'yellow', 'orange', 'red', 'red') #sets color scheme for gradient
+colors <- c('#440154FF', '#3B528BFF', '#21908CFF', '#5DC863FF', '#5DC863FF', '#FDE725FF') #sets color scheme for gradient
 cs <- scale_colour_gradientn(name = plot_yaxis, values = c(0, .20, .40, .60, .80, 1.0), colours = colors, limits = c(0, max), guide = 'colourbar', aesthetics = 'fill') #sets color gradient environment for gradient plots (horizontal and vertical)
 tf <- theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), #to remove gridlines
         plot.title = element_text(size = 6, face = 'bold'), axis.title = element_text(size = 6)) #formats plot title
@@ -152,7 +152,7 @@ horizontalPlot <- ggplot(data = df1, aes(x = Position, y = Depth))+
 
 horizontalPlot <- lc(horizontalPlot)
 
-#horizontalPlot #testing
+# horizontalPlot #testing
 
 #plot1name <- paste('/Volumes/SamsungUSB/RP_test/Validation_010819_scaled/Test_plots/Horizontal_gradient', ft, sep = '') #testing
 plot1name <- paste(as.character(args[1]), '/scaled_profile', ft, sep = '')
