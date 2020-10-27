@@ -89,7 +89,7 @@ for (i in 2:NCOL(all.depth.csv)) {
 
 ########## Plot Aesthetics ##########
 colors <- c('#440154FF', '#3B528BFF', '#21908CFF', '#5DC863FF', '#5DC863FF', '#FDE725FF') #sets color scheme for gradient
-cs <- scale_colour_gradientn(name = 'Depth', values = c(0, .20, .40, .60, .80, 1.0), colours = colors, limits = c(0, max), guide = 'colourbar', aesthetics = 'fill') #sets color gradient environment for gradient plots (horizontal and vertical)
+cs <- scale_fill_gradientn(name = 'Depth', values = c(0, .20, .40, .60, .80, 1.0), colours = colors, limits = c(0, max), guide = 'colourbar', aesthetics = 'fill') #sets color gradient environment for gradient plots (horizontal and vertical)
 tf <- theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), #to remove gridlines
             plot.title = element_text(size = 10, face = 'bold'), axis.title = element_text(size = 6)) #formats plot title
 tl <- theme(legend.text = element_text(size = 6)) #formats legend
