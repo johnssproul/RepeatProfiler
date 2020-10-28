@@ -2,6 +2,7 @@
 commands=$@
 BASE="refbase_"
 num_commands=`echo $commands | wc -w ` #gets the number  of commands
+bam_mode="false"
 
 if ((num_commands == 0 )) # if no commands entered, show this
  then
@@ -51,16 +52,6 @@ currentdir=`pwd`
 
 
 #bam work in progress 
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -171,10 +162,13 @@ done
 
 The_folder="$currentDate-RP"
 mkdir $The_folder # this creates the main output folder
+if [[ $bam_mode == "true" ]]; 
+then
 
+cp  temp_work_dir_RP_${currentDate}/temp_bamnames.txt $The_folder
+rm -fr temp_work_dir_RP_${currentDate}
 
-
-
+fi
 BASE="refbase_" #this is just for the naming of the refrence index made by bowtie2-build, so it can be detected later when aligning using bowtie2
 commands=$@
 
@@ -369,15 +363,16 @@ fi
 MAX=`wc -l < fofn1.txt`
 
 ##### end initial check and error handling for read data 
-
-
-	
+pwd
+echo "checking"
 
 ##### checks input file for -corr flag, error handling
 
 	user_prov=${array[index]}
+
 	    if [[ -f $user_prov ]]; then
 		rm -f user_groups.txt
+		cp $user_prov .
         lines=`cat $user_prov | wc -l`
 		lines=`echo $[$lines-1]`
 	    if [[ $lines -ne $MAX ]]; then
@@ -390,7 +385,8 @@ MAX=`wc -l < fofn1.txt`
 
 		 cp $user_prov  $currentdir
 		 
-		elif [[ -f user_groups.txt ]]; then
+		elif [[ -f $before_pwd/user_groups.txt ]]; then
+		cp $before_pwd/user_groups.txt .
         lines=`cat user_groups.txt | wc -l`
 		lines=`echo $[$lines-1]`
 		echo "$lines"
@@ -571,26 +567,20 @@ done
 bash $mydir/readme_gen.sh #this starts generating the readme. which will be populated later with the index to read conversions
 
 
-if [[ $bam_mode == "true" ]];
-then
 echo "yes"
 echo "$bam_mode"
- 
+
+echo $reads
+
 #continue working here yasta
-
-
-else
+#bash $mydir/bam_analyses.sh $line $reads $u_or_p_flag $p $a $rmdup
+if [[ $bam_mode == "false" ]];
+then
 ##preps references for read mapping in bowtie2
 bowtie2-build all_References.fa $BASE 
-
+fi 
 ##calls map_reads.sh which runs bowtie aligning and uses the indexes we built and also run samtools mpileup
-bash $mydir/map_reads.sh $line $reads $u_or_p_flag $p $a $rmdup 
-
-
-
-
-
-#work in progress up ^
+bash $mydir/map_reads.sh $line $reads $u_or_p_flag $p $a $rmdup $bam_mode
 
 
 retval=$? 
@@ -601,7 +591,6 @@ exit 1
 fi
 
 echo "mapped reads"
-fi
 
 
 
@@ -904,7 +893,8 @@ mv singlecopy_warnings.txt $The_folder 2> /dev/null
 
 mkdir temp 
 mv ${The_folder}/index_conv.txt ${The_folder}/The_summary.txt temp
-mv *.txt *.fa *_tempi *.bt2 temp  #.fai
+mv *.txt *.fa *_tempi  temp  #.fai
+rm -f *.bt2
 #design of the cow was borrowed from the famous cowsay package
 
 echo "________________________________"
@@ -943,7 +933,7 @@ fi
 if [ "$1" == "pre-corr" ]; then
 reads=$3
 
-if  [[ $u_or_p_flag == "-u" ]] ||  [[ $u_or_p_flag  ==  "-p" ]] ||  [[ $u_or_p_flag  ==  "-v" ]]; then
+if  [[ $u_or_p_flag == "-u" ]] ||  [[ $u_or_p_flag  ==  "-p" ]] ||  [[ $u_or_p_flag  ==  "-v" ]] || [[ $u_or_p_flag  ==  "-bam" ]]; then
 echo "" > /dev/null
 
 else
@@ -963,6 +953,19 @@ reads2_check=`cat fofn2.txt | wc -l `
 fi
 
 ##### end pre-corr help
+
+#preparing bam files to be used in pre-corr
+if [[ $u_or_p_flag = "-bam" ]]; then
+bash $mydir/preparing_bam_to_analyze.sh $reads
+reads=$(pwd)
+reads="$reads/badfastqs"
+u_or_p_flag="-u"
+
+
+
+fi
+
+
 
 
 

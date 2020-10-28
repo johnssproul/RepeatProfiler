@@ -12,12 +12,14 @@ mkdir badfastqs
 while read line
 do
 cur_bam=$line
-samtools index $cur_bam
+#samtools index $cur_bam
 
-samtools view $cur_bam | cut -f3 | uniq > cur_bam_names.txt
+samtools view $cur_bam | cut -f3 | sort | uniq > cur_bam_names.txt
 
 countmatches_bam=$(grep  -c -f  cur_bam_names.txt $reference)
 countmatches_refs=$(grep -c ">" $reference)
+echo $countmatches_bam
+echo $countmatches_refs
 
 
 if [[ $countmatches_bam == $countmatches_refs ]]; then
@@ -31,7 +33,7 @@ echo "$bamname"
 yes "pseudoreadplaceholder" | head -n $cur_bam_reads > badfastqs/${bamname}.fastq
 
 else
-    echo "${cur_bam} reference names dont match all reference names in fast file provided. Ignoring the bam"
+    echo "${cur_bam} reference names dont match  reference names in fast file provided. Terminating run"
 	exit 1 
 fi
 

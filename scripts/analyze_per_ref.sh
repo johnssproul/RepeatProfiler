@@ -8,7 +8,7 @@ line=$1
 
 
 
-
+echo $line
 
 
 

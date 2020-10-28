@@ -12,7 +12,7 @@ REF=$1 #the reference name is passed from the repeatprof script
 BASE="refbase_" #this is for the indexed reference files that was built by bowtie2-build command in the repeatprof
 
 reads=$2 #the reads path is passed from repeatprof
-bam_mode=$7		
+		
 DIR=`pwd` #this is just the current dictionary
 
 rm  -f -r master_bam
@@ -96,16 +96,8 @@ do
 	F=`printf "%03d\n" $N` #this puts the number in format 001 for example
 	READ1="$(sed "${N}q;d" fofn1.txt)"
 	READ2="$(sed "${N}q;d" fofn2.txt)"
-if [[ $bam_mode == "true" ]];
-then
+	bamname="$(sed "${N}q;d" temp_bamnames.txt)"
 
-bamname="$(sed "${N}q;d" temp_bamnames.txt)"
-
-
-
-fi	
-	
-	
 	Read1name=$(awk -F "/" '{print $NF}' <<< $READ1) #seprates the read name on / and gets the last thing separated
 	Read2name=$(awk -F "/" '{print $NF}' <<< $READ2)
 	echo "index= $F" >> ReadMe.txt
@@ -165,40 +157,9 @@ echo "${F}	${Read_length}" >> read_lengths.txt
   fi
 
   if [ $3 = "-u" ]; then #if data is unpaired then run that
-	if [[ $bam_mode == "true" ]];
-	then
-	
-	#samtools view -h $bamname
 	
     (samtools view -h $bamname  | samtools view -bS -h -F 4 /dev/stdin | samtools sort -o ${F}_sorted.bam /dev/stdin) 2> mapping_log_files/${F}_bowtie.log
     retval=$? #catches exit code to check for error
-	
-	#changing names to match names in fasta splitter
-	samtools view -h ${F}_sorted.bam > temp.sam
-	samtools view ${F}_sorted.bam | cut -f 3 | sort | uniq | grep -v "^*"  > temp_ref_names.txt
-	
-	while read line; 
-	do
-		echo "changing names"
-
-		name_edited=$(echo "$line" | tr ' \\<.,:#"/\|?' '_')
-
-		sed -i 's/"$line"/"$name_edited"/g' temp.sam
-		
-	done < temp_ref_names.txt
-
-	samtools view -bh temp.sam > ${F}_sorted.bam
-
-	#
-	
-	
-	
-	rm -f temp.sam
-else
-
-    (bowtie2 -p $4 -x $BASE -U $READ1 $5   | samtools view -bS -h -F 4 /dev/stdin | samtools sort -o ${F}_sorted.bam /dev/stdin) 2> mapping_log_files/${F}_bowtie.log
-    retval=$? #catches exit code to check for error
-fi 
 	if [ $6 == "TRUE" ]
 	then 
 	echo "we are removing duplicates !"
@@ -266,8 +227,6 @@ done #< RefList2.txt
 mv *.bam  master_bam
 
 ls master_bam/*.bam > master_bams.txt
-
-echo "done"
 
 exit 0
 
