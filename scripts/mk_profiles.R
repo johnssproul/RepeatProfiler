@@ -106,6 +106,13 @@ df1 <- na.omit(df1)
 colnames(df1)[2] <- 'Depth'
 df1.max <- max(df1$Depth)
 
+#testing
+df1 <- read.table("./depth_counts.txt", header=T)
+df1.max <- max(df1$Depth)
+max <- df1.max
+plot_yaxis <- "Depth"
+t <- "Example"
+
 #determines bin split based on number of positions; this n value is used for vertical gradient plot and the solid plot
 if ((length(df1$Position) < 500) || df1.max < 1500){
   n <- 1
@@ -152,7 +159,7 @@ horizontalPlot <- ggplot(data = df1, aes(x = Position, y = Depth))+
 
 horizontalPlot <- lc(horizontalPlot)
 
-# horizontalPlot #testing
+horizontalPlot #testing
 
 #plot1name <- paste('/Volumes/SamsungUSB/RP_test/Validation_010819_scaled/Test_plots/Horizontal_gradient', ft, sep = '') #testing
 plot1name <- paste(as.character(args[1]), '/scaled_profile', ft, sep = '')
