@@ -70,7 +70,7 @@ Profiles of tandem repeats such as satellite DNAs (satDNAs) can be interesting e
 
 You might also consider the length of your reference sequence. Tandem repeats commonly have relatively short repeat units, which means larger fractions of resulting profiles will be affected by read mapping artefacts near the ends of reference sequences. For repeat units that are shorter than or similar to the length of reads being mapped, concatenating multiple copies of the repeat, such that the concatenated reference sequence length exceeds the read length, will produce profiles that are more straightforward to interpret than profiles of shorter reference sequences. In cases where reference sequences comprise concatenated tandem repeats, the user can annotate the boundaries of each repeat unit by including a BED file containing annotation coordinates for each reference using the “-bed” flag. We provide tips for obtaining reference sequences of tandem repeats including satDNAs <a href="#obtaining">here</a>.
 
-~[](./figure.png)
+![](./figure.png)
 
 <h3 id="multi">For multi-species runs, which species should serve as the source of reference sequences?</h3>
 
