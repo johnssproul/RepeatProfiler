@@ -26,12 +26,6 @@ title: Applications
     <li><a href="#satdna">How should I approach making profiles of tandem repeats (e.g., satDNAs) and/or short reference sequences?</a></li>
     <li><a href="#multi">For multi-species runs, which species should serve as the source of reference sequences?</a></li>
   </ul>
-  <li><a href="#validation">Validation Methods</a></li>
-  <ul>
-    <li><a href="#bowtie">Bowtie2 Parameters</a></li>
-    <li><a href="#normlaization">Normalization</a></li>
-    <li><a href="#sequence">Sequence Divergence</a></li>
-  </ul>
 </ul>
 
 <hr>
