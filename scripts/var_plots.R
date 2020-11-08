@@ -69,7 +69,7 @@ length(base.countsRed.m$Bases)
 
 polymorphPlot <- ggplot(base.countsRed.m, aes(x = Position, y = Depth, fill = Bases, alpha = Bases))+
   geom_bar(stat = 'identity', width = 1.0)+
-  scale_fill_manual(values = c('gray', 'red', 'blue', 'yellow', 'green'))+
+  scale_fill_manual(values = c('gray65', 'red', 'blue', 'yellow', 'green'))+
   scale_alpha_manual(values = c(0.35, 1.0, 1.0, 1.0, 1.0))+
   theme_bw()+ #to remove grey background
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
