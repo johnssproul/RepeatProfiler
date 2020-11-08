@@ -31,15 +31,17 @@ The folder named with a time stamp followed by `-RP_output` has the bulk of the 
 
 Here, there is one folder named `[refname]_output` for each reference. This folder will have output related to that reference. More on that can be found below.
 
-### `ReadMe.txt`
+### `README.txt`
 
 ![readme](readme.png)
 
-This read me tells you how internal index numbers used by the pipeline correspond to your input samples. These indices appear on reference-specific output folders. For example in a folder named 'refname_output_001', the '001' indicates this folder has output for the first set of sample reads processed by the pipeline.
+This README tells you how internal index numbers used by the pipeline correspond to your input samples. These indices appear on reference-specific output folders. For example in a folder named 'refname_output_001', the '001' indicates this folder has output for the first set of sample reads processed by the pipeline.
 
-<pre>Output also includes the Run_summary.csv table. It contains information about the references you used (e.g. length), average coverage, percent coverage, etc. Since this run included the '-singlecopy' flag which normalizes coverage based on single-copy genes, there will be some info about single copy genes at the bottom of the table.
+### `Run_summary.csv`
 
-In this table each row summarizes results of mapping reads from a given sample to a single reference seqeuence. So if you had a run with reads from four samples, and four reference sequences, this table would include 16 rows, with four for each reference sequence corresponding to each of the four samples that were mapped.</pre>
+Output also includes the Run_summary.csv table. It contains information about the references you used (e.g. length), average coverage, percent coverage, etc. Since this run included the '-singlecopy' flag which normalizes coverage based on single-copy genes, there will be some info about single copy genes at the bottom of the table.
+
+In this table each row summarizes results of mapping reads from a given sample to a single reference seqeuence. So if you had a run with reads from four samples, and four reference sequences, this table would include 16 rows, with four for each reference sequence corresponding to each of the four samples that were mapped.
 
 ### `plots_single_copy`
 
@@ -63,7 +65,7 @@ The subfolders contain ouput, including profiles, for each sample (i.e. set of r
 
 ![scaled_profiles](scaled_profiles.png)
 
-This file groups color-enhanced profiles for all samples into the same PDF. All profiles are shown on the same relative color scale, which makes it easy to scan profiles of all samples for this reference to note interesting patterns. Any single profile shown can be found as a single PDF in the sub-folders mentioned above that are indexed by sample.
+This file groups color-enhanced profiles for all samples into the same PDF. All profiles are shown on the same relative color scale, which makes it easy to scan profiles of all samples for this reference and note interesting patterns. Any single profile shown can be found as a single PDF in the sub-folders mentioned above that are indexed by sample.
 
 `variant_profiles.pdf`
 
@@ -76,6 +78,11 @@ Another summary PDF in this directory is variant_profiles.pdf. This file contain
 ![phylip](phylip.png)
 
 This file summarizes signatures in variant-enhanced profiles by encoding abundant variants at each site as molecular-morphological characters (details on this process are provided in our paper on RepeatProfiler). This file can be directly fed into phylogenetic software and analyzed as morphological data. We commonly do this using <a href="http://www.iqtree.org/" target="_blank">IQ-TREE</a>. This approach leverages the statistical framework of phylogenetic analysis to group samples based on signal from variant profiles.
+
+`References_summary_base_coverage.csv`
+
+This file reports the average fraction of bases with at least 1X coverage for each reference sequence. We have used this file in runs that include many (i.e., hundreds) of repeat reference sequences to help us filter out low-coverage repeats.
+
 
 ### Sample Specific Subfolders
 
@@ -93,9 +100,10 @@ This folder contains color-enhanced profiles for the entire run (i.e., all refer
 
 ### Correlation Analysis Output
 
+Four output folders are generaged by the correlation analysis (i.e., '-corr' flag).
+
 ![correlation](correlation.png)
 
-Four output folders are generaged by the correlation analysis (i.e., '-corr' flag).
 
 `correlation_boxplots_by_group`
 

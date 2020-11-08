@@ -35,7 +35,7 @@ title: Documentation
 
 `-o <folder_path>` :: Directs output to the specified folder. <span style="color:yellow">Default: current directory</span>.
 
-`-corr` :: Runs a correlation analysis of profile shape among user-defined groups. If this flag is used ensure the user_groups.txt is present in the working directory (but see next). See <a href="/RepeatProfiler/gettingstarted">Getting Started</a> for instructions on preparing the user_groups.txt file.
+`-corr` :: Runs a correlation analysis of profile shape among user-defined groups. If this flag is used, ensure the user_groups.txt is present in the working directory (but see next). See <a href="/RepeatProfiler/gettingstarted">Getting Started</a> for instructions on preparing the user_groups.txt file.
 
 `-corr <file_path>` :: Use this to run correlation analysis when user_groups.txt is not in the current directory.
 

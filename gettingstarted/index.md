@@ -27,6 +27,7 @@ To generate profiles you need two input types:
 2. **Short-read sequence data (FASTQ format)**
   - paired-end and single-end reads are supported
     - for paired reads, the last string before the file extension should be '_1' for Read1 and '_2' for Read2 (or '_R1' and '_R2')
+  
   - compressed files are supported
   - *supported file extensions*: .fastq, .fq, .fastq.gz, etc.
 
@@ -66,7 +67,7 @@ Download sample input data set provided <a href="https://github.com/johnssproul/
 repeatprof profile -p reference.fa  <enter full path of current directory>
 ```
 
-If the program runs without errors, everything should be functioning properly.
+If the program runs without errors, everything should be set up properly.
 
 <p>For more commands and optional flags see the <a href="/RepeatProfiler/documentation">documentation</a>.</p>
   
@@ -79,7 +80,7 @@ If you are making profiles for multiple samples and want to compare profile shap
 repeatprof pre-corr <'-u' for unpaired reads or '-p' for paired reads> <path reads folder>
 ```
 
-After running this command, the user_groups.txt will be generated based on your input reads and you can simply replace the placeholder 'TEMPORARY' with your group labels such that each sample belonging to a given group has the same label in the 'group' column. You can run this command to view the file and verify that it is in the correct format.
+After running this command, the user_groups.txt will be generated based on your input reads and you can simply replace the placeholder 'TEMPORARY' with your group labels such that each sample belonging to a given group has the same label in the 'group' column. You can run the following command to view the file and verify that it is in the correct format.
 
 ```sh
 repeatprof pre-corr -v
