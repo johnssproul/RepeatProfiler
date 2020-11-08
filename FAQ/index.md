@@ -17,19 +17,25 @@ title: FAQ
 
 # FAQ
 
-##### Web page under development.
-
 #### For runs with multiple species, is there a limit to the evolutionary divergence that can be spanned by my taxon sampling?
+
+See answer <a href="/RepeatProfiler/tips#divergence">here</a>.
 
 #### How does RepeatProfiler handle read mapping?
 
+See answer <a href="/RepeatProfiler/tips#mapping">here</a>.
+
 #### How should I approach making profiles of tandem repeats (e.g., satDNAs) and/or short reference sequences?
+
+See answer <a href="/RepeatProfiler/tips#satdna">here</a>.
 
 #### For multi-species runs, which species should serve as the source of reference sequences?
 
+See answer <a href="/RepeatProfiler/tips#multi">here</a>.
+
 #### Can I provide my own BAM file, or do I need to let RepeatProfiler do the mapping for me?
 
-Yes, using the “-bam” flag you can feed your own BAM file into RepeatProfiler. See the README on GitHub for more details.
+Yes, using the “-bam” flag you can feed your own BAM file into RepeatProfiler. See the <a href="https://github.com/johnssproul/RepeatProfiler/blob/master/README.md" target="_blank">README</a> on GitHub for more details.
 
 #### Can RepeatProfiler handle long-read data?
 
@@ -37,7 +43,7 @@ Because RepeatProfier maps reads using bowtie2, which was designed for short-rea
 
 #### Can I annotate specific coordinates along profiles?
 
-Yes, using the “-bed” flag you can include a BED file with annotations for your reference which will be plotted along the x-axis of profiles. See the README on GitHub for more details
+Yes, using the “-bed” flag you can include a BED file with annotations for your reference which will be plotted along the x-axis of profiles. See the <a href="https://github.com/johnssproul/RepeatProfiler/blob/master/README.md" target="_blank">README</a> on GitHub for more details
 
 #### Should I remove PCR duplicates prior to making profiles?
 
