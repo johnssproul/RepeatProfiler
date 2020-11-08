@@ -82,33 +82,4 @@ In our limited exploration of this question, we observe that changing the specie
 
 We notice similar patterns with sequences evolving at different rates. Repetitive elements with domains under evolutionary constraints such as open reading frames, transposable elements, ribosomal DNA sequences, and high-copy genes may be less sensitive to changing the species identity of the reference sequences (and also tend to produce consistent profiles across deeper evolutionary splits) than repetitive elements that show rapid sequence turnover across their entire length (e.g., satellite DNAs).
 
-<h2 id="validation">Validation Methods</h2>
-
-<h3 id="bowtie">Bowtie2 Parameters</h3>
-
-The Bowtie2 settings affect how the reads are mapped to the reference and therefore what the resulting profile will look like. 
-
-The default setting for Bowtie2 read mapping is end-to-end. This setting maps reads only if the alignment contains all the characters of the read. In contrast, the `-local` tag indicates that these alignments may omit a few characters in the alignment if it improves the total alignment score of the read.
-
-See the <a href="http://bowtie-bio.sourceforge.net/bowtie2/manual.shtml" target="href">Bowtie2 Manual</a> for more information on these settings.
-
-![](./bowtie2.png)
-
-
-TO DO:
-
-<h3 id="normlaization">Normalization</h3>
-
-<ul>
-	<li>how normalization affects the results</li>
-	<li>normalization command</li>
-</ul>
-
-<h3 id="sequence">Sequence Divergence</h3>
-
-<ul>
-	<li>figure</li>
-	<li>the farther the reference is from the reads species-wise, the less coverage and less accurate the profiles will be</li>
-</ul>
-
 <br><br><br><br><br><br><br><br><br><br>
