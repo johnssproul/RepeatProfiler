@@ -9,7 +9,7 @@ title: Home
       <li><a href="/RepeatProfiler/installation">Installation</a></li>
       <li><a href="/RepeatProfiler/gettingstarted">Getting Started</a></li>
       <li><a href="/RepeatProfiler/output">Output</a></li>
-      <li><a href="/RepeatProfiler/application">Application</a></li>
+      <li><a href="/RepeatProfiler/tips">Tips for Users</a></li>
       <li><a href="/RepeatProfiler/documentation">Documentation</a></li>
       <li><a href="/RepeatProfiler/FAQ">FAQ</a></li>
     </ul>
@@ -24,3 +24,5 @@ A tool for studying repetitive DNA dynamics using low-coverage, short-read data.
 - Produces summary statistics related to repeat abundance
 - Conducts comparative analysis of profile shape between and within user-specified groups
 - Enables comparative study of variation within repeats through phylogenetic analysis
+
+<br><br><br><br><br><br><br><br><br><br>

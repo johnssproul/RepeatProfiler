@@ -9,7 +9,7 @@ title: Output
       <li><a href="/RepeatProfiler/installation">Installation</a></li>
       <li><a href="/RepeatProfiler/gettingstarted">Getting Started</a></li>
       <li><a href="/RepeatProfiler/output" style="color:red">Output</a></li>
-      <li><a href="/RepeatProfiler/application">Applications</a></li>
+      <li><a href="/RepeatProfiler/tips">Tips for Users</a></li>
       <li><a href="/RepeatProfiler/documentation">Documentation</a></li>
       <li><a href="/RepeatProfiler/FAQ">FAQ</a></li>
     </ul>
@@ -128,3 +128,5 @@ This table contains average values of within and between each group correlation 
 ## Troubleshooting
 
 If you get a formatting error related to reference sequences, check that the file is in FASTA format and that it has Unix LF (an empty line at the end of the file) -- this is standard among all linux and macOS text files.
+
+<br><br><br><br><br><br><br><br><br><br>

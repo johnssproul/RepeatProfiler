@@ -9,7 +9,7 @@ title: Getting Started
       <li><a href="/RepeatProfiler/installation">Installation</a></li>
       <li><a href="/RepeatProfiler/gettingstarted" style="color:red">Getting Started</a></li>
       <li><a href="/RepeatProfiler/output">Output</a></li>
-      <li><a href="/RepeatProfiler/application">Applications</a></li>
+      <li><a href="/RepeatProfiler/tips">Tips for Users</a></li>
       <li><a href="/RepeatProfiler/documentation">Documentation</a></li>
       <li><a href="/RepeatProfiler/FAQ">FAQ</a></li>
     </ul>
@@ -90,3 +90,5 @@ repeatprof pre-corr -v
 ![user_groups.txt](./user_groups.png)
 
 ##### NOTE: You need to have your edited user_groups.txt in the same directory in which you are running the above command.
+
+<br><br><br><br><br><br><br><br><br><br>

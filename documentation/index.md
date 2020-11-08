@@ -9,7 +9,7 @@ title: Documentation
       <li><a href="/RepeatProfiler/installation">Installation</a></li>
       <li><a href="/RepeatProfiler/gettingstarted">Getting Started</a></li>
       <li><a href="/RepeatProfiler/output">Output</a></li>
-      <li><a href="/RepeatProfiler/application">Applications</a></li>
+      <li><a href="/RepeatProfiler/tips">Tips for Users</a></li>
       <li><a href="/RepeatProfiler/documentation" style="color:red">Documentation</a></li>
       <li><a href="/RepeatProfiler/FAQ">FAQ</a></li>
     </ul>
@@ -56,3 +56,5 @@ title: Documentation
 ```
 -bowtieflag "--sensitive-local --no-mixed"
 ```
+
+<br><br><br><br><br><br><br><br><br><br>
