@@ -47,6 +47,6 @@ Yes, using the “-bed” flag you can include a BED file with annotations for y
 
 #### Should I remove PCR duplicates prior to making profiles?
 
-Users have the option to remove PCR duplicates using the “-rmdup” flag. Although we provide this option, we do not make a strong recommendation whether to remove duplicate sequences or not. Because the pipeline is built around mapping repetitive sequences, there is a risk that removing duplicates will eliminate valid indels from different repeats that should in fact contribute to profiles. We suggest users consider their library preparation and sequencing approach and explore output from different settings to help inform their use of this flag. 
+Users have the option to remove PCR duplicates using the “-rmdup” flag. Although we provide this option, we do not make a strong recommendation whether to remove duplicate sequences or not. Because the pipeline is built around mapping repetitive sequences, there is a risk that removing duplicates will eliminate reads that appear to be PCR duplicates but which are actually valid identical reads from different repeats should in fact contribute to profiles. We suggest users consider their library preparation and sequencing approach and explore output from different settings to help inform their use of this flag. 
 
 <br><br><br><br><br><br><br><br><br><br>
