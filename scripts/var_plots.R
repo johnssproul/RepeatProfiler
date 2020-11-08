@@ -18,6 +18,29 @@ library(ggplot2)
 
 ft <- '.pdf'
 
+
+
+
+annotation_file <- as.character(args[3]) #annotation file path
+
+if (annotation_file != "placeholder"){
+  
+  print("annotation is working")
+  annotation_file  <-  read.table(annotation_file,stringsAsFactors = FALSE)
+  colnames(annotation_file)<-c("ref","start","end","annot")
+  
+}
+
+
+
+
+
+
+
+
+
+
+
 #code if file type specified
 # if(is.null(args[3]) || is.na(args[3])) {
 #   ft <- '.png'
@@ -81,6 +104,45 @@ polymorphPlot <- ggplot(base.countsRed.m, aes(x = Position, y = Depth, fill = Ba
 if(max(base.counts$Depth) < 1) {
   polymorphPlot <- polymorphPlot+ cap
 }
+
+
+
+#annotate stuff
+
+if (NROW(annotation_file)>0){
+  
+  name.first <- strsplit(name, '_')
+  name.first <- name.first[[1]]
+  name.first <- name.first[1:length(name.first)-1]
+  name.first<- paste(name.first, collapse = '_')
+  
+  
+  annotation <-annotation_file[annotation_file$ref==name.first,]
+  if(NROW(annotation)>0){
+    print("annotation exist variation plot")
+    
+    if(any (annotation$start <0) || any(annotation$end >(NROW(base.countsRed.m$Depth)+100))){
+      
+      print(paste("The annotation for",name.first,"is out bounds. Skipped"))
+      
+    }
+    else{
+      polymorphPlot <-polymorphPlot + 
+        annotate("text", x = annotation$start+0.5*(annotation$end-annotation$start), y = max(base.countsRed.m$Depth), label = annotation$annot, size=5)+
+        annotate("rect", xmin=annotation$start, xmax=annotation$end, ymin=0, ymax=max(base.countsRed.m$Depth)+10, alpha=.2)
+      
+      
+    }
+  }
+  
+}
+
+#annotate stuff
+
+
+
+
+
 
 #polymorphPlot #testing
 

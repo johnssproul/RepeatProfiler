@@ -18,6 +18,18 @@ Normalized <- as.character(args[3]) #change it to args[3] when brew prep
 print(Normalized)
 plot_yaxis<-"Depth"
 ft <- '.pdf'
+
+
+annotation_file <- as.character(args[5]) #annotation file path
+
+if (annotation_file != "placeholder"){
+  
+  print("annotation is working")
+  annotation_file  <-  read.table(annotation_file,stringsAsFactors = FALSE)
+  colnames(annotation_file)<-c("ref","start","end","annot")
+  
+}
+
 #code if file type specified
 # if(is.null(args[3]) || is.na(args[3])) {
 #   ft <- '.png'
@@ -150,6 +162,40 @@ horizontalPlot <- ggplot(data = df1, aes(x = Position, y = Depth))+
   cs+ theme_bw()+ #to remove grey background
   tf+ ggtitle(t) +labs(y=plot_yaxis) #sets plot title
 
+
+
+
+
+if (NROW(annotation_file)>0){
+  print("annotation exist")
+  
+  name.first <- strsplit(name, '_')
+  name.first <- name.first[[1]]
+  name.first <- name.first[1:length(name.first)-1]
+  name.first<- paste(name.first, collapse = '_')
+  
+  
+  annotation <-annotation_file[annotation_file$ref==name.first,]
+  if(NROW(annotation)>0){
+    
+  if(any (annotation$start <0) || any(annotation$end >(NROW(df1$Depth)+100))){
+    
+    print(paste("The annotation for",name.first,"is out bounds. Skipped"))
+    
+  }
+  else{
+    horizontalPlot <- horizontalPlot+ 
+      annotate("text", x = annotation$start+0.5*(annotation$end-annotation$start), y = max(df1$Depth)+15, label = annotation$annot, size=6)+
+      annotate("rect", xmin=annotation$start, xmax=annotation$end, ymin=0, ymax=max(df1$Depth)+10, alpha=.2)
+    
+    
+  }
+  }
+  
+}
+
+
+
 horizontalPlot <- lc(horizontalPlot)
 
 #horizontalPlot #testing
@@ -196,6 +242,52 @@ verticalPlot <- ggplot(data = df2)+
   geom_rect(aes(xmin = Position, xmax = xend, ymin = Depth, ymax = yend, fill = Depth), size = 0.1)+
   cs+ theme_bw()+
   tf+ ggtitle(t)+ tl+ xlab('Position')+labs(y=plot_yaxis)
+
+
+
+
+
+
+if (NROW(annotation_file)>0){
+  print("annotation exist")
+  
+  name.first <- strsplit(name, '_')
+  name.first <- name.first[[1]]
+  name.first <- name.first[1:length(name.first)-1]
+  name.first<- paste(name.first, collapse = '_')
+  
+  
+  annotation <-annotation_file[annotation_file$ref==name.first,]
+  if(NROW(annotation)>0){
+    
+  if( any(annotation$start <0) || any(annotation$end >(NROW(df1$Depth)+100))){
+    
+    print(paste("The annotation for",name.first,"is out bounds. Skipped"))
+    
+  }
+  else{
+    
+    verticalPlot <- verticalPlot+ 
+      annotate("text", x = annotation$start+0.5*(annotation$end-annotation$start), y = max(df2$Depth)+15, label = annotation$annot, size=6)+
+      annotate("rect", xmin=annotation$start, xmax=annotation$end, ymin=0, ymax=max(df2$Depth)+10, alpha=.2)
+    
+    
+  }
+  }
+  
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 verticalPlot <- lc(verticalPlot)
 

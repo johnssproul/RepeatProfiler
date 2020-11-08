@@ -8,7 +8,7 @@ reference=all_References.fa
 
 ls ${path_of_bam}/*.bam > fofn_pre_bams.txt
 
-mkdir badfastqs
+mkdir badfastqs-temp-RP
 while read line
 do
 cur_bam=$line
@@ -23,14 +23,14 @@ echo $countmatches_refs
 
 
 if [[ $countmatches_bam == $countmatches_refs ]]; then
-echo "$line"
+#echo "$line"
 
 cur_bam_reads=$(samtools view -c $cur_bam)
 cur_bam_reads=$(( cur_bam_reads + cur_bam_reads + cur_bam_reads + cur_bam_reads ))
 
 bamname=$(awk -F "/" '{print $NF}' <<< $cur_bam)
-echo "$bamname"
-yes "pseudoreadplaceholder" | head -n $cur_bam_reads > badfastqs/${bamname}.fastq
+#echo "$bamname"
+yes "pseudoreadplaceholder" | head -n $cur_bam_reads > badfastqs-temp-RP/${bamname}.fastq
 
 else
     echo "${cur_bam} reference names dont match  reference names in fast file provided. Terminating run"

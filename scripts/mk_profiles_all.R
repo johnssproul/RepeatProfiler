@@ -13,6 +13,23 @@ cat('Saving color plots scaled across all references (horizontal gradient)... \n
 library(ggplot2)
 
 Normalized <- as.character(args[3]) #normalize stuff
+annotation_file <- as.character(args[4]) #annotation file path
+
+
+
+
+
+if (annotation_file != "placeholder"){
+  
+  print("annotation is working")
+  annotation_file  <-  read.table(annotation_file,stringsAsFactors = FALSE)
+  colnames(annotation_file)<-c("ref","start","end","annot")
+  print(annotation_file)
+
+}
+
+
+
 
 n <- 8
 ft <- '.pdf'
@@ -146,6 +163,73 @@ for(i in 2:NCOL(all.depth.csv)){
     horizontalPlot <- horizontalPlot+ cap
   }
 
+  
+  
+    
+if (NROW(annotation_file)>0){
+  
+  name <- names.all[i]
+  name.first <- strsplit(name, '_')
+  name.first <- name.first[[1]]
+  name.first <- name.first[1:length(name.first)-1]
+  name.first<- paste(name.first, collapse = '_')
+  
+  
+  annotation <-annotation_file[annotation_file$ref==name.first,]
+  
+  
+  if(NROW(annotation)>0){
+    
+  
+  if(any(annotation$start <0) || any(annotation$end >(NROW(df1$Depth)+100))){
+    
+    print(paste("The annotation for",name.first,"is out bounds. Skipped"))
+    
+  }
+  else{
+    print("annotation exist")
+    
+    horizontalPlot <- horizontalPlot+ 
+      annotate("text", x = annotation$start+0.5*(annotation$end-annotation$start), y = max(df1$Depth)+15, label = annotation$annot, size=6)+
+      annotate("rect", xmin=annotation$start, xmax=annotation$end, ymin=0, ymax=max(df1$Depth)+10, alpha=.2)
+    
+    
+  }
+  }
+  
+  
+  
+  
+  
+}
+  
+  
+  
+  
+  
+  
+
+  
+  
+  
+  
+  
+  
+  # annotPlot <- horizontalPlot+ 
+  #   annotate("text", x = gff$start+0.5*(gff$end-gff$start), y = -100, label = gff$annot, size=2)+
+  #   annotate("rect", xmin=gff$start, xmax=gff$end, ymin=-400, ymax=0, alpha=.2)
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   #makes name of file nicer by removing extention at the end
   name.file <- strsplit(depth.column, '_')
   name.file <- name.file[[1]]

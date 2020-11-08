@@ -4,4 +4,3 @@ dmel_rDNA_E2_rDNA
 dmel_rDNA_E3_rDNA
 dmel_rDNA_E4_rDNA
 dmel_rDNA_E5_rDNA
-dmel_rDNA_E6_rDNA

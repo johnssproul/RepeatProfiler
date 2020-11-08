@@ -210,7 +210,7 @@ echo "$output" >> fofn_folders.txt #adds the name to the fofn_folders.txt
 ## calls R script that makes depth profiles that summarize variants
 
 
-$Rscript $mydir/var_plots.R $output $R_packages 
+$Rscript $mydir/var_plots.R $output $R_packages $annotate_file
 rm -f -r $output
 mkdir $output
 
@@ -227,18 +227,18 @@ echo $folder_names #say it
 
 
 ## calls R script that makes color gradient profiles from read depth information
-$Rscript $mydir/mk_profiles.R $folder_names $R_packages $Normalized $verticalplots
+$Rscript $mydir/mk_profiles.R $folder_names $R_packages $Normalized $verticalplots $annotate_file
 
 mv $folder_names $the_output
 done < fofn_folders.txt
 
 rm -f *.pdf
 ##This makes the combined colorful plots with plots from all samples for a given reference 
-$Rscript $mydir/mk_profiles_ref.R $R_packages $Normalized
+$Rscript $mydir/mk_profiles_ref.R $R_packages $Normalized $annotate_file
 
 
 ##This makes the combined variant plots with plots from all samples for a given reference 
-$Rscript $mydir/multi_var_plots.R $R_packages
+$Rscript $mydir/multi_var_plots.R $R_packages $annotate_file
 
 rm -f Rplots.pdf
 #move R scripts to their relevant output folder

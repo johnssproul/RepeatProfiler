@@ -57,6 +57,12 @@ currentdir=`pwd`
 
 #
 
+
+
+
+
+
+
 reads=$4
 
 u_or_p_flag=$2
@@ -272,14 +278,76 @@ exit 1
 else
 
 reads=$(pwd)
-reads="$reads/badfastqs"
+reads="$reads/badfastqs-temp-RP"
 fi
 
 fi
 
+index=0
+
+annotate_file="placeholder"
+#work in progress making annotation file
+for k in "${array[@]}"
+do
+((index ++))
+if [[ $k  ==  "-bed" ]]; then
+
+bedfile_directory=${array[index]}
+
+
+echo $bedfile_directory
+if [[ -f $bedfile_directory ]]; then
+		annotate_file=$bedfile_directory
+		 
+
+else
+
+echo "The path provided to the bed file is not found. Please enter FULL path to the bed file"
+exit 1
+fi
+#annotate_file="/mnt/d/Pipeline_project/scriptTest/scriptTest/RepeatProfiler/testing.bed"
+
+grep ">" $refs_full_path | sort | uniq > refnames.txt
+sed -i "s/>//" refnames.txt
+
+sed -i $'s/[^[:print:]\t]//g' refnames.txt
+
+grep -f refnames.txt $annotate_file > bedfile_toanalyze.bed
+cut -f1-4 bedfile_toanalyze.bed > temp
+cat temp > bedfile_toanalyze.bed 
+rm -f temp
+
+bedfileline_count=$(wc -l bedfile_toanalyze.bed | cut -f1 -d " ")
+if [[ $bedfileline_count == 0 ]];
+then
+echo "The bed file entered has no reference names matching the reference file provided or bed file is badly fortmated."
+
+exit 1
+
+
+else
+
+while read line; 
+	do
+		echo "changing names in bed"
+		line=$(echo $line | cut -f1  )
+		name_edited=$(echo "$line" | tr ' \\<.,:#"/\|?' '_')
+
+		sed -i 's/"$line"/"$name_edited"/g' bedfile_toanalyze.bed
+		
+	done < bedfile_toanalyze.bed
+
+
+fi
+curpwd=$(pwd)
+annotate_file="$curpwd/bedfile_toanalyze.bed"
+bed="true"
 
 
 
+
+fi
+done
 
 
 
@@ -294,9 +362,10 @@ index=0
 
 for p in "${array[@]}"
 do
+((index ++))
 
 if [[ $p  ==  "-corr" ]]; then
-	((index ++))
+	#((index ++))
 
 ##### end command structure checks and error handling
 
@@ -580,7 +649,7 @@ then
 bowtie2-build all_References.fa $BASE 
 fi 
 ##calls map_reads.sh which runs bowtie aligning and uses the indexes we built and also run samtools mpileup
-bash $mydir/map_reads.sh $line $reads $u_or_p_flag $p $a $rmdup $bam_mode
+bash $mydir/map_reads.sh $line $reads $u_or_p_flag $p $a $rmdup $bam_mode 
 
 
 retval=$? 
@@ -665,7 +734,7 @@ mkdir plots_single_copy
 
 $Rscript $mydir/single_copy_calculator.R $readnumbers
 
-$Rscript $mydir/mk_profiles_single.R plots_single_copy $R_packages $Normalized
+$Rscript $mydir/mk_profiles_single.R plots_single_copy $R_packages $Normalized 
 
 mv single_cvs plots_single_copy
 
@@ -747,6 +816,7 @@ echo "Rscript=$Rscript">>vars.txt
 echo "Normalized=$Normalized">>vars.txt
 echo "the_output=$the_output" >>vars.txt
 echo "The_folder=$The_folder">>vars.txt
+echo "annotate_file=$annotate_file" >> vars.txt
 #
 
 echo "bash $mydir/analyze_per_ref.sh $line" >> analyzing_refs_commands.txt
@@ -778,7 +848,7 @@ echo "Thenumber: $Number"
 
 ##### calls script to combine color profiles for all references and puts them on the same color scale of coverage depth, more output organization
 
-$Rscript $mydir/mk_profiles_all.R $Number $R_packages $Normalized
+$Rscript $mydir/mk_profiles_all.R $Number $R_packages $Normalized $annotate_file
 
 mv  scaled_profiles_allrefs $The_folder
 mv  *ReadMe*  $The_folder #move read me to the final folder
@@ -958,7 +1028,7 @@ fi
 if [[ $u_or_p_flag = "-bam" ]]; then
 bash $mydir/preparing_bam_to_analyze.sh $reads
 reads=$(pwd)
-reads="$reads/badfastqs"
+reads="$reads/badfastqs-temp-RP"
 u_or_p_flag="-u"
 
 
@@ -1157,6 +1227,7 @@ rm -f index_conv
 
 fi
 #####end of modular corr
+rm -fr badfastqs-temp-RP
 
 
 
