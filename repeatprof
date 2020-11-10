@@ -7,7 +7,7 @@ bam_mode="false"
 if ((num_commands == 0 )) # if no commands entered, show this
  then
 
-echo "RepeatProfiler v 0.99 -prerelease- x soon x"
+echo "RepeatProfiler v 1.0 -pre-release- x soon x"
 echo "use -h flag for help using this tool"
 echo "____ ____ ___  ____ ____ ___    ___  ____ ____ ____ _ _    ____ ____"
 echo "|__/ |___ |__] |___ |__|  |     |__] |__/ |  | |___ | |    |___ |__/ "
@@ -988,7 +988,7 @@ fi
 
 mv map_depth_allrefs $The_folder
 
-if [[ indel == "true" ]];
+if [[ $indel == "true" ]];
 then
 mv indel_info_allrefs $The_folder
 
@@ -1045,15 +1045,6 @@ echo "________________________________"
 echo "< The analysis has been completed! >"
 echo "--------------------------------"
 
-
-echo "________________________________"
-echo "< WOW what a great pipeline !!!! >"
-echo "--------------------------------"
-echo "       \   ^__^"
-echo "        \  (oo)\_______         "
-echo "           (__)\       )\/\  "
-echo "               ||----w |    "
-echo "               ||     ||    "
 
 
 
