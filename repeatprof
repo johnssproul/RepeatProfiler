@@ -987,6 +987,12 @@ fi
 fi
 
 mv map_depth_allrefs $The_folder
+
+if [[ indel == "true" ]];
+then
+mv indel_info_allrefs $The_folder
+
+fi
 mv index_conv.txt $The_folder #for testing
 
 mv Run_summary.csv Errors_README.log base_coverage_summary.csv $The_folder 2> /dev/null
