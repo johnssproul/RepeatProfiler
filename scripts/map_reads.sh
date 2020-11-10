@@ -59,8 +59,9 @@ fi
 fi
 
 #we check if the lines of the fofn for pair 1 is equal to lines fofn of pair 2 if not then give an error because that mean user has missing data if paired
-reads1_check=`cat fofn1.txt | wc -l`
-reads2_check=`cat fofn2.txt | wc -l `
+reads1_check=`cat fofn1.txt | wc -l |  xargs`
+reads2_check=`cat fofn2.txt | wc -l |  xargs`
+
 
 if [[ $reads1_check == 0 && $reads2_check == 0 ]];then #if both are empty then there was no reads of correct format to begin with
   echo ""
@@ -181,10 +182,11 @@ echo "${F}	${Read_length}" >> read_lengths.txt
 	do
 		echo "changing names"
 
-		name_edited=$(echo "$line" | tr ' \\<.,:#"/\|?' '_')
+		name_edited=$(echo "$line" | tr ' 	\\<.,:#"/\|?%' '_')
 
-		sed -i 's/"$line"/"$name_edited"/g' temp.sam
-		
+		tr  "$line" "$name_edited" < temp.sam  > tempi.sam 
+		cat tempi.sam > temp.sam
+
 	done < temp_ref_names.txt
 
 	samtools view -bh temp.sam > ${F}_sorted.bam
@@ -193,7 +195,7 @@ echo "${F}	${Read_length}" >> read_lengths.txt
 	
 	
 	
-	rm -f temp.sam
+	rm -f temp.sam tempi.sam
 else
 
     (bowtie2 -p $4 -x $BASE -U $READ1 $5   | samtools view -bS -h -F 4 /dev/stdin | samtools sort -o ${F}_sorted.bam /dev/stdin) 2> mapping_log_files/${F}_bowtie.log

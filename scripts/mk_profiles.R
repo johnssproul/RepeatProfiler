@@ -19,11 +19,43 @@ print(Normalized)
 plot_yaxis<-"Depth"
 ft <- '.pdf'
 
-
+annote=FALSE
 annotation_file <- as.character(args[5]) #annotation file path
+color_flag <- as.character(args[6]) #colorflag
+indel_flag<-as.character(args[7])
+indel_cutoff<-as.numeric(as.character(args[8]))
+
+if(!is.na(indel_cutoff)){
+  
+  if (indel_cutoff>1 || indel_cutoff<0 ){
+    
+    indel_cutoff<-0.10
+    
+    
+    
+    
+  }
+  
+  
+  
+}else {
+  
+  
+  indel_cutoff<-0.10
+  
+  
+}
+
+
+
+
+
+
+
+
 
 if (annotation_file != "placeholder"){
-  
+  annote=TRUE
   print("annotation is working")
   annotation_file  <-  read.table(annotation_file,stringsAsFactors = FALSE)
   colnames(annotation_file)<-c("ref","start","end","annot")
@@ -54,6 +86,43 @@ multmerge <- function(mypath){
 #index.conv <- read.table('../index_conv.txt', header = TRUE, stringsAsFactors = FALSE) #testing
 index.conv <- read.table('index_conv.txt', header = TRUE, stringsAsFactors = FALSE) #reads textfile containing names of reads
 all.depth.csv <- multmerge('temp_cvs')
+
+
+
+if(indel_flag=="true"){
+  
+  indel_info<-multmerge('temp_indel_cvs')
+  indel_info$indels<-(as.numeric(indel_info$insertion)+as.numeric(indel_info$deletetion))
+  indel_info$indel_frac<-indel_info$indels/as.numeric(indel_info$depth)
+  indel_info$color<-rep("not_good",NROW(indel_info))
+  
+  
+  #indel_info<-indel_info[indel_info$indel_frac>indel_cutoff,]
+  checker<-NROW(indel_info[(indel_info$insertion/indel_info$depth)>indel_cutoff,])
+  if(checker>0){
+    
+    indel_info[(indel_info$insertion/indel_info$depth)>indel_cutoff,]$color<- "gray"
+  }
+  checker<-NROW(indel_info[(indel_info$deletetion/indel_info$depth)>indel_cutoff,])
+  if(checker>0){
+    
+    indel_info[(indel_info$deletetion/indel_info$depth)>indel_cutoff,]$color<-"black"
+  }
+  checker<-NROW(indel_info[(indel_info$deletetion/indel_info$depth)>indel_cutoff && (indel_info$insertion/indel_info$depth)>indel_cutoff ,])
+  if(checker>0){
+    indel_info[(indel_info$deletetion/indel_info$depth)>indel_cutoff && (indel_info$insertion/indel_info$depth)>indel_cutoff ,]$color<-"blue"
+  }
+  indel_info<-indel_info[indel_info$color!="not_good",]
+  
+  
+}
+
+
+print(indel_cutoff)
+
+
+
+
 
 #normalization
 if(Normalized == 'true'){
@@ -145,8 +214,26 @@ lc <- function(plot) {
 }
 
 ########## Plot Aesthetics ##########
-colors <- c('blue4', 'springgreen2', 'yellow', 'orange', 'red', 'red') #sets color scheme for gradient
-cs <- scale_colour_gradientn(name = plot_yaxis, values = c(0, .20, .40, .60, .80, 1.0), colours = colors, limits = c(0, max), guide = 'colourbar', aesthetics = 'fill') #sets color gradient environment for gradient plots (horizontal and vertical)
+if(color_flag=="true"){
+  
+  colors <- c('#440154FF', '#3B528BFF', '#21908CFF', '#5DC863FF', '#FDE725FF', '#FDE725FF') #sets color scheme for gradient
+  cs <- scale_colour_gradientn(name = plot_yaxis, values = c(0, .20, .40, .60, .80, 1.0), colours = colors, limits = c(0, max), guide = 'colourbar', aesthetics = 'fill') #sets color gradient environment for gradient plots (horizontal and vertical)
+  
+  
+}else{
+  
+  
+  colors <- c('#6f4c9b', '#6059a9', '#5568b8', '#4e79c5', '#4d8ac6', 
+              '#4e96bc', '#549eb3', '#59a5a9', '#60ab9e', '#69b190',
+              '#77b77d', '#8cbc68', '#bebc48', '#d1b541', '#ddaa3c',
+              '#e49c39', '#e78c35', '#e67932', '#e4632d', '#df4828', 
+              '#da2222', '#da2222')
+  cs <- scale_fill_gradientn(name = "Depth", values = c(0, .03, .06, .10, .11, 
+                                                        .12, .13, .15, .17, .19, 
+                                                        .22, .27, .30, .33, .40, 
+                                                        .47, .53, .60, .67, .73, 
+                                                        .80, 1.0), colours = colors, limits = c(0, max), guide = 'colourbar', aesthetics = 'fill') #sets color gradient environment for gradient plots (horizontal and vertical)
+}
 tf <- theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), #to remove gridlines
         plot.title = element_text(size = 6, face = 'bold'), axis.title = element_text(size = 6)) #formats plot title
 tl <- theme(legend.text = element_text(size = 6)) #formats legend
@@ -165,8 +252,10 @@ horizontalPlot <- ggplot(data = df1, aes(x = Position, y = Depth))+
 
 
 
+indel_ymin=0.08 #to allow overlaying annotate and the indel bar too 
+indel_ymax=0
 
-if (NROW(annotation_file)>0){
+if (annote==TRUE){
   print("annotation exist")
   
   name.first <- strsplit(name, '_')
@@ -185,14 +274,44 @@ if (NROW(annotation_file)>0){
   }
   else{
     horizontalPlot <- horizontalPlot+ 
-      annotate("text", x = annotation$start+0.5*(annotation$end-annotation$start), y = max(df1$Depth)+15, label = annotation$annot, size=6)+
-      annotate("rect", xmin=annotation$start, xmax=annotation$end, ymin=0, ymax=max(df1$Depth)+10, alpha=.2)
+      annotate("text", x = annotation$start+0.5*(annotation$end-annotation$start), y = -(0.035*(max(df1$Depth))), label = annotation$annot, size=1)+
+      annotate("rect", xmin=annotation$start, xmax=annotation$end, ymin=-(0.08*(max(df1$Depth))), ymax=0, alpha=.2,col="white")
+    indel_ymin=0.18 #to allow overlaying annotate and the indel bar too 
+    indel_ymax=0.10
+    
     
     
   }
   }
   
 }
+
+
+
+if(indel_flag=="true"){
+  
+  print(name)
+  
+  
+  indel_info_cur<-indel_info[indel_info$ref==name,]
+  
+  if(NROW(indel_info_cur)>1){
+    
+    print("indel info exist")
+    
+    horizontalPlot<-horizontalPlot+ annotate("rect", xmin=indel_info_cur$pos, xmax=indel_info_cur$pos+0.001*NROW(df1$Depth), ymin=-(indel_ymin*(max(df1$Depth))), ymax=-(indel_ymax*(max(df1$Depth))), alpha=1,fill=indel_info_cur$color)
+    
+  }else{
+    
+    
+    
+    horizontalPlot<-horizontalPlot+  annotate("text", x = 1, y = -(indel_ymin*(max(df1$Depth))),label="No significant indels found",size=1)
+    
+  }
+  
+  
+}
+
 
 
 
@@ -247,8 +366,10 @@ verticalPlot <- ggplot(data = df2)+
 
 
 
+indel_ymin=0.08 #to allow overlaying annotate and the indel bar too 
+indel_ymax=0
 
-if (NROW(annotation_file)>0){
+if (annote==TRUE){
   print("annotation exist")
   
   name.first <- strsplit(name, '_')
@@ -268,8 +389,11 @@ if (NROW(annotation_file)>0){
   else{
     
     verticalPlot <- verticalPlot+ 
-      annotate("text", x = annotation$start+0.5*(annotation$end-annotation$start), y = max(df2$Depth)+15, label = annotation$annot, size=6)+
-      annotate("rect", xmin=annotation$start, xmax=annotation$end, ymin=0, ymax=max(df2$Depth)+10, alpha=.2)
+      annotate("text", x = annotation$start+0.5*(annotation$end-annotation$start), y = -(0.035*(max(df1$Depth))), label = annotation$annot, size=1)+
+      annotate("rect", xmin=annotation$start, xmax=annotation$end, ymin=-(0.08*(max(df1$Depth))), ymax=0, alpha=1,col="white")
+    
+    indel_ymin=0.18 #to allow overlaying annotate and the indel bar too 
+    indel_ymax=0.10
     
     
   }
@@ -280,6 +404,29 @@ if (NROW(annotation_file)>0){
 
 
 
+if(indel_flag=="true"){
+  
+  print(name)
+  
+  
+  indel_info_cur<-indel_info[indel_info$ref==name,]
+  
+  if(NROW(indel_info_cur)>1){
+    
+    print("indel info exist")
+    
+    verticalPlot<-verticalPlot+ annotate("rect", xmin=indel_info_cur$pos, xmax=indel_info_cur$pos+0.001*NROW(df1$Depth), ymin=-(indel_ymin*(max(df1$Depth))), ymax=-(indel_ymax*(max(df1$Depth))), alpha=.4,fill=indel_info_cur$color)
+    
+  }else{
+    
+    
+    
+    verticalPlot<-verticalPlot+  annotate("text", x = 1, y = -(indel_ymin*(max(df1$Depth))),label="No significant indels found",size=1)
+    
+  }
+  
+  
+}
 
 
 
@@ -340,6 +487,76 @@ solidPlot <- ggplot(data = df3, aes(x = Position, y = Depth))+
   geom_area(fill = 'blue4')+
   theme_bw()+
   tf+ tl+ ggtitle(t)+labs(y=plot_yaxis)
+
+
+
+
+
+
+
+
+if (annote==TRUE){
+  print("annotation exist")
+  
+  name.first <- strsplit(name, '_')
+  name.first <- name.first[[1]]
+  name.first <- name.first[1:length(name.first)-1]
+  name.first<- paste(name.first, collapse = '_')
+  
+  
+  annotation <-annotation_file[annotation_file$ref==name.first,]
+  if(NROW(annotation)>0){
+    
+    if( any(annotation$start <0) || any(annotation$end >(NROW(df1$Depth)+100))){
+      
+      print(paste("The annotation for",name.first,"is out bounds. Skipped"))
+      
+    }
+    else{
+      
+      solidPlot <- solidPlot+ 
+        annotate("text", x = annotation$start+0.5*(annotation$end-annotation$start), y = -(0.035*(max(df1$Depth))), label = annotation$annot, size=1)+
+        annotate("rect", xmin=annotation$start, xmax=annotation$end, ymin=-(0.08*(max(df1$Depth))), ymax=0, alpha=.2,col="white")
+      
+      
+      
+    }
+  }
+  
+}
+
+
+
+
+
+if(indel_flag=="true"){
+  
+  print(name)
+  
+  
+  indel_info_cur<-indel_info[indel_info$ref==name,]
+  
+  if(NROW(indel_info_cur)>1){
+    
+    print("indel info exist")
+    
+    solidPlot<-solidPlot+ annotate("rect", xmin=indel_info_cur$pos, xmax=indel_info_cur$pos+0.001*NROW(df1$Depth), ymin=-(indel_ymin*(max(df1$Depth))), ymax=-(indel_ymax*(max(df1$Depth))), alpha=1,fill=indel_info_cur$color)
+    
+  }else{
+    
+    
+    
+    solidPlot<-solidPlot+  annotate("text", x = 1, y = -(indel_ymin*(max(df1$Depth))),label="No significant indels found",size=1)
+    
+  }
+  
+  
+}
+
+
+
+
+
 
 solidPlot <- lc(solidPlot);
 

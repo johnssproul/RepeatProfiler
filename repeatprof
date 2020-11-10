@@ -308,14 +308,16 @@ fi
 #annotate_file="/mnt/d/Pipeline_project/scriptTest/scriptTest/RepeatProfiler/testing.bed"
 
 grep ">" $refs_full_path | sort | uniq > refnames.txt
-sed -i "s/>//" refnames.txt
+sed  "s/>//" refnames.txt > temp_bedref
 
-sed -i $'s/[^[:print:]\t]//g' refnames.txt
+sed  $'s/[^[:print:]\t]//g'  temp_bedref > temp_bedref2
 
+cat temp_bedref2 >  refnames.txt
+rm -f temp_bedref temp_bedref2
 grep -f refnames.txt $annotate_file > bedfile_toanalyze.bed
-cut -f1-4 bedfile_toanalyze.bed > temp
-cat temp > bedfile_toanalyze.bed 
-rm -f temp
+cut  -f1-4 bedfile_toanalyze.bed > temp_bed
+cat temp_bed > bedfile_toanalyze.bed 
+rm -f temp_bed
 
 bedfileline_count=$(wc -l bedfile_toanalyze.bed | cut -f1 -d " ")
 if [[ $bedfileline_count == 0 ]];
@@ -327,13 +329,15 @@ exit 1
 
 else
 
-while read line; 
+while read line_bed; 
 	do
 		echo "changing names in bed"
-		line=$(echo $line | cut -f1  )
-		name_edited=$(echo "$line" | tr ' \\<.,:#"/\|?' '_')
+		line_bed=$(echo $line_bed | cut -f1 -d " "  )
+		name_edited=$(echo "$line_bed" | tr ' 	\\<.,:#"/\|?%' '_')
 
-		sed -i 's/"$line"/"$name_edited"/g' bedfile_toanalyze.bed
+		tr  "$line_bed" "$name_edited" < bedfile_toanalyze.bed  > temp_bed 
+		cat temp_bed > bedfile_toanalyze.bed
+		
 		
 	done < bedfile_toanalyze.bed
 
@@ -343,11 +347,58 @@ curpwd=$(pwd)
 annotate_file="$curpwd/bedfile_toanalyze.bed"
 bed="true"
 
+rm -f temp_bed
+
+fi
+done
+
+
+
+
+
+alt_color="false"
+#virdis color flag
+for k in "${array[@]}"
+do
+if [[ $k  ==  "-altcol" ]]; then
+
+alt_color="true"
 
 
 
 fi
 done
+
+
+#insert indel check
+
+indel="false"
+
+index=0
+indel_cutoff=0.10
+
+for k in "${array[@]}"
+do
+((index ++))
+
+if [[ $k  ==  "-indel" ]]; then
+
+indel="true"
+indel_cutoff=${array[index]}
+
+
+
+fi
+done
+
+if [[ $indel_cutoff == "" ]];
+then
+
+indel_cutoff=0.10
+
+fi
+
+#
 
 
 
@@ -406,9 +457,9 @@ fi
 
 #checks if the lines of the fofn for pair 1 is equal to lines fofn of pair 2 if not then give an error because that mean user has missing data if paired  
 echo "checking reads"
-reads1_check=`cat fofn1.txt | wc -l` 
+reads1_check=`cat fofn1.txt | wc -l | xargs` 
 echo $reads1_check
-reads2_check=`cat fofn2.txt | wc -l `
+reads2_check=`cat fofn2.txt | wc -l | xargs`
 
 
 if [[ $reads1_check == 0 && $reads2_check == 0 ]];then #if both are empty then there was no reads of correct format to begin with 
@@ -500,6 +551,12 @@ rm -f -r map_depth_allrefs  2> /dev/null
 
 
 mkdir map_depth_allrefs #this creates map_depth_allrefs where it store  a table of postion of reference and the coverage depth (the folder will be used later by $Rscripts)
+if [[ $indel == "true" ]];
+then
+mkdir indel_info_allrefs
+
+fi
+
 
 Normalized=false #this is equal 1 always unless the user chooses to normalize 
 
@@ -648,6 +705,8 @@ then
 ##preps references for read mapping in bowtie2
 bowtie2-build all_References.fa $BASE 
 fi 
+
+
 ##calls map_reads.sh which runs bowtie aligning and uses the indexes we built and also run samtools mpileup
 bash $mydir/map_reads.sh $line $reads $u_or_p_flag $p $a $rmdup $bam_mode 
 
@@ -817,6 +876,10 @@ echo "Normalized=$Normalized">>vars.txt
 echo "the_output=$the_output" >>vars.txt
 echo "The_folder=$The_folder">>vars.txt
 echo "annotate_file=$annotate_file" >> vars.txt
+echo "alt_color=$alt_color" >> vars.txt
+echo "indel=$indel" >> vars.txt
+echo "indel_cutoff=$indel_cutoff" >> vars.txt
+
 #
 
 echo "bash $mydir/analyze_per_ref.sh $line" >> analyzing_refs_commands.txt
@@ -826,6 +889,9 @@ echo "analyzing reference: $line"
  #this an fi for error handling dont mess with it. this is the end of the reference
 done < fofnrefs.txt #keep looping until all references inputed undergone the analysis
 cat analyzing_refs_commands.txt | parallel -j $p --will-cite
+
+
+
 rm -f Run_summary.csv
 $Rscript $mydir/depth_analyser.R $Normalized #run the depth analyzer which produces the final summary table
 
@@ -848,7 +914,9 @@ echo "Thenumber: $Number"
 
 ##### calls script to combine color profiles for all references and puts them on the same color scale of coverage depth, more output organization
 
-$Rscript $mydir/mk_profiles_all.R $Number $R_packages $Normalized $annotate_file
+
+echo $alt_color
+$Rscript $mydir/mk_profiles_all.R $Number $R_packages $Normalized $annotate_file $alt_color $indel $indel_cutoff
 
 mv  scaled_profiles_allrefs $The_folder
 mv  *ReadMe*  $The_folder #move read me to the final folder
@@ -1017,8 +1085,8 @@ if [ $u_or_p_flag = "-p" ]; then
 
   ls ${reads}/*_R2.fastq ${reads}/*_R2.gz ${reads}/*_R2.fq ${reads}/*_R2.fq.gz  ${reads}/*_2.fq.gz  ${reads}/*_2.fq ${reads}/*_2.gz ${reads}/*_2.fastq ${reads}/*_2.fastq.gz > fofn2.txt 2>/dev/null
 
-reads1_check=`cat fofn1.txt | wc -l`
-reads2_check=`cat fofn2.txt | wc -l `
+reads1_check=`cat fofn1.txt | wc -l | xargs`
+reads2_check=`cat fofn2.txt | wc -l | xargs`
 
 fi
 
@@ -1129,8 +1197,8 @@ if [ $u_or_p_flag = "-p" ]; then
   ls ${reads}/*_R1.fastq ${reads}/*_R1.gz ${reads}/*_R1.fq ${reads}/*_R1.fq.gz  ${reads}/*_1.fq ${reads}/*_1.fq.gz ${reads}/*_1.gz ${reads}/*_1.fastq ${reads}/*_1.fastq.gz > fofn1.txt 2>/dev/null
 
   ls ${reads}/*_R2.fastq ${reads}/*_R2.gz ${reads}/*_R2.fq ${reads}/*_R2.fq.gz  ${reads}/*_2.fq.gz  ${reads}/*_2.fq ${reads}/*_2.gz ${reads}/*_2.fastq ${reads}/*_2.fastq.gz > fofn2.txt 2>/dev/null
-reads1_check=`cat fofn1.txt | wc -l`
-reads2_check=`cat fofn2.txt | wc -l `
+reads1_check=`cat fofn1.txt | wc -l | xargs`
+reads2_check=`cat fofn2.txt | wc -l | xargs`
 
 fi
 
@@ -1156,8 +1224,8 @@ else
 
 fi 
 
-reads1_check=`cat fofn1.txt | wc -l`
-reads2_check=`cat fofn2.txt | wc -l `
+reads1_check=`cat fofn1.txt | wc -l | xargs`
+reads2_check=`cat fofn2.txt | wc -l | xargs`
 
 fi
 

@@ -10,7 +10,7 @@ end=`tail -c1 $Fasta_file`
 awk '/^>/ { if(NR>1) print "";  printf("%s\n",$0); next; } { printf("%s",$0);}  END {printf("\n");}'  $Fasta_file > all_References.fa
 
 
-tr ' 	\\<.,:#"/\|?' '_'  < all_References.fa >test.fa
+tr ' 	\\<.,:#"/\|?%' '_'  < all_References.fa >test.fa
 
  
 cat test.fa  > all_References.fa

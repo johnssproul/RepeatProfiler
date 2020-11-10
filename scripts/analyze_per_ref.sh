@@ -52,7 +52,7 @@ ref_char_count=`echo $temp | wc -c` #this gets the reference sequence length
 
 echo $ref_char_count
 
-name_ref=`tr ' 	\\<.,:#"/\|?*' '_' <<<"$line"` # this awk command is to get the reference name from the path of references stored in fofnrefs.txt we did earlier
+name_ref=`tr ' 	\\<.,:#"/\|?*%' '_' <<<"$line"` # this awk command is to get the reference name from the path of references stored in fofnrefs.txt we did earlier
 echo $name_ref
 											   # this command separates on / and get the last word which is the reference name
 
@@ -74,7 +74,7 @@ The_ref_size=$ref_char_count #same as above re_char_count
     echo ""
 
 #bash index_refs.sh
-name_ref=`tr ' 	\\<.,:#"/\|?*' '_' <<<"$line"`  #same as above just to make sure
+name_ref=`tr ' 	\\<.,:#"/\|?*%' '_' <<<"$line"`  #same as above just to make sure
 
 Ref_name=$name_ref #assigning it to another variable
 
@@ -167,6 +167,17 @@ rm -f -r multi_poly
 mkdir multi_poly
 rm -f temp_cvs
 mkdir temp_cvs #this store the current postion vs coverage depth of the current reference (this is used in r script)
+
+if [[ $indel == "true" ]];
+then
+
+mkdir temp_indel_cvs
+
+fi
+
+
+
+
 cp ../index_conv.txt .
 while read pairpile # for each pair pile this means for each pileup output from the map_mpileup
 do
@@ -185,6 +196,95 @@ python $mydir/pileup_basecount.py $pairpile $pile_counted_name $The_ref_size # t
 
 cp "$pile_counted_name.csv" ../map_depth_allrefs # cp the selected .csv produced by the python script
 mv "$pile_counted_name.csv" temp_cvs #this moves it to temp_cvs  also. both steps are needed to be done because all_depths_cvs runs at the end for the all references statistcs   while temp_cvs just for this reference combined graphs and scaling
+
+
+#indel addition <working>
+if [[ $indel == "true" ]];
+then
+
+echo "counting_indels"
+
+echo "ref,pos,depth,insertion,deletetion,median_ins,median_del" > ${pile_counted_name}.csv
+
+
+grep   -e  '\-[0-9][ATGCatgc*#]*\|\+[0-9][ATGCatgc*#]*' $pairpile > indel_temp.txt
+
+count_indels=$(wc -l indel_temp.txt | cut -d " " -f1) 
+
+if [[ $count_indels == 0 ]];
+
+then
+
+echo "$pile_counted_name,0,1,0,0,0,0"  >> ${pile_counted_name}.csv
+
+else 
+
+while read line_indel 
+do
+
+# awk -v var=$t ' -1*$1 > var { print }'
+
+echo $line_indel > temp_indel                      
+ 
+refname=$(cut -f1 -d " " temp_indel )
+ 
+pos=$(cut -f2 -d " " temp_indel)
+depth=$(cut -f4 -d " " temp_indel)
+ins=$(cut -f5 -d " " temp_indel  | grep -o -e "\+[0-9]" | wc -l )
+del=$(cut -f5 -d " " temp_indel  | grep -o -e  "\-[0-9]" |  wc -l )
+
+if [[ $ins == 0 ]];
+then
+median_ins=0
+else
+median_ins=$(cut -f5 -d " " temp_indel   | grep -o -e "\+[0-9]"  | sed 's/+//g' | sort  | awk ' { a[i++]=$1; }
+    END { x=int((i+1)/2); if (x < (i+1)/2) print (a[x-1]+a[x])/2; else print a[x-1]; }' )
+fi	
+if [[ $del == 0 ]];
+then
+median_del=0
+
+else
+median_del=$(cut -f5 -d " " temp_indel  | grep -o -e "\-[0-9]"  | sed 's/-//g' | sort  | awk ' { a[i++]=$1; }
+    END { x=int((i+1)/2); if (x < (i+1)/2) print (a[x-1]+a[x])/2; else print a[x-1]; }' )
+
+fi
+
+
+
+echo "$pile_counted_name,$pos,$depth,$ins,$del,$median_ins,$median_del" >> ${pile_counted_name}.csv
+
+rm -f temp_indel
+
+
+
+
+
+done < indel_temp.txt
+
+rm -f indel_temp.txt
+
+
+
+cp ${pile_counted_name}.csv ../indel_info_allrefs
+
+mv  ${pile_counted_name}.csv temp_indel_cvs
+
+
+fi
+
+
+fi
+
+
+
+
+
+#yarab
+
+
+
+
 
 output=$Ref_name
 
@@ -209,8 +309,7 @@ echo "$output" >> fofn_folders.txt #adds the name to the fofn_folders.txt
 
 ## calls R script that makes depth profiles that summarize variants
 
-
-$Rscript $mydir/var_plots.R $output $R_packages $annotate_file
+$Rscript $mydir/var_plots.R $output $R_packages $annotate_file $indel $indel_cutoff
 rm -f -r $output
 mkdir $output
 
@@ -227,18 +326,18 @@ echo $folder_names #say it
 
 
 ## calls R script that makes color gradient profiles from read depth information
-$Rscript $mydir/mk_profiles.R $folder_names $R_packages $Normalized $verticalplots $annotate_file
+$Rscript $mydir/mk_profiles.R $folder_names $R_packages $Normalized $verticalplots $annotate_file $alt_color $indel $indel_cutoff
 
 mv $folder_names $the_output
 done < fofn_folders.txt
 
 rm -f *.pdf
 ##This makes the combined colorful plots with plots from all samples for a given reference 
-$Rscript $mydir/mk_profiles_ref.R $R_packages $Normalized $annotate_file
+$Rscript $mydir/mk_profiles_ref.R $R_packages $Normalized $annotate_file $alt_color $indel $indel_cutoff
 
 
 ##This makes the combined variant plots with plots from all samples for a given reference 
-$Rscript $mydir/multi_var_plots.R $R_packages $annotate_file
+$Rscript $mydir/multi_var_plots.R $R_packages $annotate_file $indel $indel_cutoff
 
 rm -f Rplots.pdf
 #move R scripts to their relevant output folder
@@ -307,7 +406,7 @@ mv $the_output ../$The_folder
 rm -f folder_names.txt
 
 rm -f *bt2
-rm -f -r temp_cvs
+rm -f -r temp_cvs temp_indel_cvs
 rm -f fofn_folders.txt
 echo "$The_folder"
 echo "done"

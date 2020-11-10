@@ -16,12 +16,82 @@ library(ggplot2)
 
 
 annotation_file <- as.character(args[2]) #annotation file path
+indel_flag<-as.character(args[3])
 
-if (annotation_file != "placeholder"){
+
+indel_cutoff<-as.numeric(as.character(args[4]))
+
+if(!is.na(indel_cutoff)){
   
+  if (indel_cutoff>1 || indel_cutoff<0 ){
+    
+    indel_cutoff<-0.10
+    
+    
+    
+    
+  }
+  
+  
+  
+}else {
+  
+  
+  indel_cutoff<-0.10
+  
+  
+}
+
+
+
+
+
+
+
+annote=FALSE
+if (annotation_file != "placeholder"){
+  annote=TRUE
   print("annotation is working")
   annotation_file  <-  read.table(annotation_file,stringsAsFactors = FALSE)
   colnames(annotation_file)<-c("ref","start","end","annot")
+  
+}
+
+
+multmerge <- function(mypath){
+  filenames <- list.files(path = mypath, full.names = TRUE)
+  datalist <- lapply(filenames, function(x){read.csv(file = x, header = T, check.names = FALSE)})
+  Reduce(function(x, y) {merge(x, y, all = TRUE)}, datalist)
+}
+
+
+
+
+if(indel_flag=="true"){
+  
+  indel_info<-multmerge('temp_indel_cvs')
+  indel_info$indels<-(as.numeric(indel_info$insertion)+as.numeric(indel_info$deletetion))
+  indel_info$indel_frac<-indel_info$indels/as.numeric(indel_info$depth)
+  indel_info$color<-rep("not_good",NROW(indel_info))
+  
+  
+  #indel_info<-indel_info[indel_info$indel_frac>indel_cutoff,]
+  checker<-NROW(indel_info[(indel_info$insertion/indel_info$depth)>indel_cutoff,])
+  if(checker>0){
+    
+    indel_info[(indel_info$insertion/indel_info$depth)>indel_cutoff,]$color<- "gray"
+  }
+  checker<-NROW(indel_info[(indel_info$deletetion/indel_info$depth)>indel_cutoff,])
+  if(checker>0){
+    
+    indel_info[(indel_info$deletetion/indel_info$depth)>indel_cutoff,]$color<-"black"
+  }
+  checker<-NROW(indel_info[(indel_info$deletetion/indel_info$depth)>indel_cutoff && (indel_info$insertion/indel_info$depth)>indel_cutoff ,])
+  if(checker>0){
+    indel_info[(indel_info$deletetion/indel_info$depth)>indel_cutoff && (indel_info$insertion/indel_info$depth)>indel_cutoff ,]$color<-"blue"
+  }
+  indel_info<-indel_info[indel_info$color!="not_good",]
+  
   
 }
 
@@ -125,8 +195,10 @@ for (i in 1:NROW(multi.poly.names)) {
     polymorphPlot <- polymorphPlot+ cap
   }
   
+  indel_ymin=0.08 #to allow overlaying annotate and the indel bar too 
+  indel_ymax=0
   
-  if (NROW(annotation_file)>0){
+  if (annote==TRUE){
     print("annotation exist")
     
     name.first <- strsplit(name, '_')
@@ -145,8 +217,10 @@ for (i in 1:NROW(multi.poly.names)) {
       }
       else{
         polymorphPlot <- polymorphPlot+ 
-          annotate("text", x = annotation$start+0.5*(annotation$end-annotation$start), y = max(base.countsRed.m$Depth), label = annotation$annot, size=5)+
-          annotate("rect", xmin=annotation$start, xmax=annotation$end, ymin=0, ymax=max(base.countsRed.m$Depth)+10, alpha=.2)
+          annotate("text", x = annotation$start+0.5*(annotation$end-annotation$start), y = -(0.035*(max(base.countsRed.m$Depth))), label = annotation$annot, size=3)+
+          annotate("rect", xmin=annotation$start, xmax=annotation$end, ymin=-(0.08*(max(base.countsRed.m$Depth))), ymax=0, alpha=.2,col="white")
+        indel_ymin=0.18 #to allow overlaying annotate and the indel bar too 
+        indel_ymax=0.10
         
         
       }
@@ -154,6 +228,29 @@ for (i in 1:NROW(multi.poly.names)) {
     
   }
   
+  if(indel_flag=="true"){
+    
+    print(name)
+    
+    
+    indel_info_cur<-indel_info[indel_info$ref==name,]
+    
+    if(NROW(indel_info_cur)>1){
+      
+      print("indel info exist")
+      
+      polymorphPlot<-polymorphPlot+ annotate("rect", xmin=indel_info_cur$pos, xmax=indel_info_cur$pos+0.0008*NROW(base.countsRed.m$Depth), ymin=-(indel_ymin*(max(base.countsRed.m$Depth))), ymax=-(indel_ymax*(max(base.countsRed.m$Depth))), alpha=1,fill=indel_info_cur$color)
+      
+    }else{
+      
+      
+      
+      polymorphPlot<-polymorphPlot+  annotate("text", x = 1, y = -(indel_ymin*(max(base.countsRed.m$Depth))),label="No indels found")
+      
+    }
+    
+    
+  }
   
   
   
