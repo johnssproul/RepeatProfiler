@@ -1,4 +1,4 @@
-﻿
+
 # RepeatProfiler
 
 A tool for studying repetitive DNA dynamics using low-coverage, short-read data. RepeatProfiler automates generation and visualization of repeat profiles from low-coverage sequence data and allows statistical comparison of profile attributes. The pipeline maps reads to consensus sequences of one or more repeat of interest, generates visually enhanced read depth/copy number profiles for each repeat, and facilitates comparison across profiles within and among samples. Output enables standardized visualization of profiles, and comparative analysis of profile shape within and among user-defined groups, and prepares input files for phylogenetic analysis signal arising from variants within repeat profiles. RepeatProfiler is developed specifically to facilitate study of repetitive DNA dynamics over short evolutionary time scales in groups with limited genomic resources; however, it may be useful in any application where extracting signal from repetitive sequences is useful.
@@ -119,7 +119,7 @@ repeatprof profile -p reference.fa  <enter full path of current directory>
 ###### Commands: 
 | Command                        | usage                                                                                                                                                           |
 |------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|
-| profile                     | Primary analysis command. This command should be followed by read type (i.e., '-p' or -u' for paired-end or single-end respecitively), the name of the fasta file containing reference sequences (or the path if that file is not in the current directory), the path to the input reads, and any optional flags.                                                                |
+| profile                     | Primary analysis command. This command should be followed by read type (i.e., '-p' or -u' for paired-end or single-end respecitively) or '-bam' if bam files are provided instead of reads. Then the name of the fasta file containing reference sequences (or the path if that file is not in the current directory), the path to the input reads (or bam files), and any optional flags.                                                                |
 |pre-corr                                | Auto-generates the base user_groups.txt file required for correlation analysis (see -corr optional flag below).                                                              |
 | clean    | In the event of a failed run, this command will clean the remnants of the run from the current directory.                             |
 
@@ -139,6 +139,8 @@ repeatprof profile -p reference.fa  <enter full path of current directory>
 | -rmdup                                   | Uses SAMtools to remove PCR duplicates from read mapping output (left off by default as reads from repetitive loci may be incorrectly assigned as PCR duplicates).                                                            |
 | --<bowtie_setting>                     | Allows user to change among Bowtie 2 preset parameters. Valid arguments include '--very-fast-local', '--fast-local', '--sensitive-local', '--very-sensitive-local', '--very-fast', '--fast', '--sensitive', '--very-sensitive'. Default is '--very-sensitive-local'. If changing Bowtie2 settings beyond these presets, use the next flag|
 | -bowtieflag ""                   | Use this flag to enter more complex Bowtie2 settings. Any valid Bowtie2 command can be entered between the quotes. For example:   -bowtieflag "--sensitive-local --no-mixed"|
+| -indel <cut_off>  | Use this flag to detect and annotate the plots for indels. the cut off is 0.10 by default. User can provide a custom cutoff between 1 and 0. For example: -indel 0.5
+| -bed <bed file full directory> | Use this flag and provide FULL path to bed file that contains annotations to the references you are analyzing to annotate the plots. 
 
 
 
