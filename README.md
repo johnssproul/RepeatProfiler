@@ -52,6 +52,7 @@ git clone https://github.com/johnssproul/RepeatProfiler/
 Required dependencies are:
  - bowtie2 (v2.3.5.1 or newer)
  - samtools
+ - GNU parallel
  - python (2 and 3)
  - R
  - R packages: ggplot2, ggpubr, scales, reshape2
