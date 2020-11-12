@@ -267,7 +267,7 @@ for(i in 2:NCOL(all.depth.csv)){
         
       }
       else{
-        print("annotation exist")
+        print("annotation exists")
         
         horizontalPlot <- horizontalPlot+ 
           annotate("text", x = annotation$start+0.5*(annotation$end-annotation$start), y = -(0.035*(max(df1$Depth))), label = annotation$annot, size=3)+
@@ -295,7 +295,7 @@ for(i in 2:NCOL(all.depth.csv)){
     
     if(NROW(indel_info_cur)>1){
       
-      print("indel info exist")
+      print("indel info exists")
       
       horizontalPlot<-horizontalPlot+ annotate("rect", xmin=indel_info_cur$pos, xmax=indel_info_cur$pos+0.001*NROW(df1$Depth), ymin=-(indel_ymin*(max(df1$Depth))), ymax=-(indel_ymax*(max(df1$Depth))), alpha=1,col=indel_info_cur$color,fill=indel_info_cur$color)
       
