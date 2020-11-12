@@ -260,7 +260,7 @@ indel_ymin=0.08 #to allow overlaying annotate and the indel bar too
 indel_ymax=0
 
 if (annote==TRUE){
-  print("annotation exist")
+  print("annotation exists")
   
   name.first <- strsplit(name, '_')
   name.first <- name.first[[1]]
@@ -301,7 +301,7 @@ if(indel_flag=="true"){
   
   if(NROW(indel_info_cur)>1){
     
-    print("indel info exist")
+    print("indel info exists")
     
     horizontalPlot<-horizontalPlot+ annotate("rect", xmin=indel_info_cur$pos, xmax=indel_info_cur$pos+0.001*NROW(df1$Depth), ymin=-(indel_ymin*(max(df1$Depth))), ymax=-(indel_ymax*(max(df1$Depth))), alpha=1,fill=indel_info_cur$color)
     
@@ -374,7 +374,7 @@ indel_ymin=0.08 #to allow overlaying annotate and the indel bar too
 indel_ymax=0
 
 if (annote==TRUE){
-  print("annotation exist")
+  print("annotation exists")
   
   name.first <- strsplit(name, '_')
   name.first <- name.first[[1]]
@@ -417,7 +417,7 @@ if(indel_flag=="true"){
   
   if(NROW(indel_info_cur)>1){
     
-    print("indel info exist")
+    print("indel info exists")
     
     verticalPlot<-verticalPlot+ annotate("rect", xmin=indel_info_cur$pos, xmax=indel_info_cur$pos+0.001*NROW(df1$Depth), ymin=-(indel_ymin*(max(df1$Depth))), ymax=-(indel_ymax*(max(df1$Depth))), alpha=.4,fill=indel_info_cur$color)
     
@@ -500,7 +500,7 @@ solidPlot <- ggplot(data = df3, aes(x = Position, y = Depth))+
 
 
 if (annote==TRUE){
-  print("annotation exist")
+  print("annotation exists")
   
   name.first <- strsplit(name, '_')
   name.first <- name.first[[1]]
@@ -542,7 +542,7 @@ if(indel_flag=="true"){
   
   if(NROW(indel_info_cur)>1){
     
-    print("indel info exist")
+    print("indel info exists")
     
     solidPlot<-solidPlot+ annotate("rect", xmin=indel_info_cur$pos, xmax=indel_info_cur$pos+0.001*NROW(df1$Depth), ymin=-(indel_ymin*(max(df1$Depth))), ymax=-(indel_ymax*(max(df1$Depth))), alpha=1,fill=indel_info_cur$color)
     
