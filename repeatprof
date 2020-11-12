@@ -304,7 +304,7 @@ if [[ -f $bedfile_directory ]]; then
 
 else
 
-echo "The path provided to the bed file is not found. Please enter FULL path to the bed file"
+echo "The path provided to the bed file is not found. Please enter FULL path to the bed file, be sure there are not spaces in directory names"
 exit 1
 fi
 #annotate_file="/mnt/d/Pipeline_project/scriptTest/scriptTest/RepeatProfiler/testing.bed"
@@ -324,7 +324,7 @@ rm -f temp_bed
 bedfileline_count=$(wc -l bedfile_toanalyze.bed | cut -f1 -d " ")
 if [[ $bedfileline_count == 0 ]];
 then
-echo "The bed file entered has no reference names matching the reference file provided or bed file is badly fortmated."
+echo "The BED file entered has no reference names matching the reference sequence file provided, or the bed file is incorrectly fortmated."
 
 exit 1
 
