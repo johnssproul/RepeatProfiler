@@ -194,7 +194,9 @@ cp user_groups.txt $The_folder
 fi
 
 cd $The_folder
-exec > >(tee -i logfile.log)
+#exec > >(tee -i logfile.log)
+exec >  >(tee -ia logfile.log)
+exec 2> >(tee -ia logfile.log >&2)
 
 if [[ -f $3 ]]; then 
 
@@ -1039,6 +1041,13 @@ mkdir temp
 mv ${The_folder}/index_conv.txt ${The_folder}/The_summary.txt temp
 mv *.txt *.fa *_tempi  temp  #.fai
 rm -f *.bt2
+if [[ $bed == "true" ]];
+then
+
+mv *.bed temp
+fi
+
+
 #design of the cow was borrowed from the famous cowsay package
 
 echo "________________________________"

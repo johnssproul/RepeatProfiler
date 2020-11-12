@@ -107,14 +107,20 @@ if(indel_flag=="true"){
 
 indel_info<-multmerge('indel_info_allrefs')
 indel_info$indels<-(as.numeric(indel_info$insertion)+as.numeric(indel_info$deletetion))
-indel_info$indel_frac<-indel_info$indels/as.numeric(indel_info$depth)
+indel_info[indel_info$depth==0,3]<-1
+
+indel_info$indel_frac<-indel_info$indels/(as.numeric(indel_info$depth))
 indel_info$color<-rep("not_good",NROW(indel_info))
+
+
+
+
 
 #indel_info<-indel_info[indel_info$indel_frac>0.1,]
 checker<-NROW(indel_info[(indel_info$insertion/indel_info$depth)>indel_cutoff,])
 if(checker>0){
   
-indel_info[(indel_info$insertion/indel_info$depth)>indel_cutoff,]$color<- "gray"
+indel_info[(indel_info$insertion/(indel_info$depth))>indel_cutoff,]$color<- "gray"
 }
 checker<-NROW(indel_info[(indel_info$deletetion/indel_info$depth)>indel_cutoff,])
 if(checker>0){

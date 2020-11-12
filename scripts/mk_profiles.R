@@ -93,7 +93,11 @@ if(indel_flag=="true"){
   
   indel_info<-multmerge('temp_indel_cvs')
   indel_info$indels<-(as.numeric(indel_info$insertion)+as.numeric(indel_info$deletetion))
-  indel_info$indel_frac<-indel_info$indels/as.numeric(indel_info$depth)
+ 
+  indel_info[indel_info$depth==0,3]<-1
+  
+  
+   indel_info$indel_frac<-indel_info$indels/as.numeric(indel_info$depth)
   indel_info$color<-rep("not_good",NROW(indel_info))
   
   
