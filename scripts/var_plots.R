@@ -191,7 +191,7 @@ if (annote==TRUE){
   
   annotation <-annotation_file[annotation_file$ref==name.first,]
   if(NROW(annotation)>0){
-    print("annotation exist variation plot")
+    print("annotation exists variation plot")
     
     if(any (annotation$start <0) || any(annotation$end >(NROW(base.countsRed.m$Depth)+100))){
       
@@ -224,7 +224,7 @@ if(indel_flag=="true"){
   
   if(NROW(indel_info_cur)>1){
     
-    print("indel info exist")
+    print("indel info exists")
     
     polymorphPlot<-polymorphPlot+ annotate("rect", xmin=indel_info_cur$pos, xmax=indel_info_cur$pos+0.0008*NROW(base.countsRed.m$Depth), ymin=-(indel_ymin*(max(base.countsRed.m$Depth))), ymax=-(indel_ymax*(max(base.countsRed.m$Depth))), alpha=1,fill=indel_info_cur$color)
     
