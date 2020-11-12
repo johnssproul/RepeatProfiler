@@ -201,7 +201,7 @@ for (i in 1:NROW(multi.poly.names)) {
   indel_ymax=0
   
   if (annote==TRUE){
-    print("annotation exist")
+    print("annotation exists")
     
     name.first <- strsplit(name, '_')
     name.first <- name.first[[1]]
@@ -239,7 +239,7 @@ for (i in 1:NROW(multi.poly.names)) {
     
     if(NROW(indel_info_cur)>1){
       
-      print("indel info exist")
+      print("indel info exists")
       
       polymorphPlot<-polymorphPlot+ annotate("rect", xmin=indel_info_cur$pos, xmax=indel_info_cur$pos+0.0008*NROW(base.countsRed.m$Depth), ymin=-(indel_ymin*(max(base.countsRed.m$Depth))), ymax=-(indel_ymax*(max(base.countsRed.m$Depth))), alpha=1,fill=indel_info_cur$color)
       
