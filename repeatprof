@@ -7,7 +7,7 @@ bam_mode="false"
 if ((num_commands == 0 )) # if no commands entered, show this
  then
 
-echo "RepeatProfiler v 1.0 -pre-release- x soon x"
+echo "RepeatProfiler v 1.0 x The x Beginning x "
 echo "use -h flag for help using this tool"
 echo "____ ____ ___  ____ ____ ___    ___  ____ ____ ____ _ _    ____ ____"
 echo "|__/ |___ |__] |___ |__|  |     |__] |__/ |  | |___ | |    |___ |__/ "
@@ -1396,3 +1396,4 @@ echo "               ||----w |    "
 echo "               ||     ||    "
 fi
 ##### end help menu
+
