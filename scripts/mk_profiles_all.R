@@ -14,6 +14,7 @@ library(ggplot2)
 
 
 
+zx <- 1 #new flag -- allows for custom scaling of color gradient
 
 
 Normalized <- as.character(args[3]) #normalize stuff
@@ -184,7 +185,7 @@ for (i in 2:NCOL(all.depth.csv)) {
 if(color_flag=="true"){
   
   colors <- c('#440154FF', '#3B528BFF', '#21908CFF', '#5DC863FF', '#FDE725FF', '#FDE725FF') #sets color scheme for gradient
-  cs <- scale_colour_gradientn(name = plot_yaxis, values = c(0, .20, .40, .60, .80, 1.0), colours = colors, limits = c(0, max), guide = 'colourbar', aesthetics = 'fill') #sets color gradient environment for gradient plots (horizontal and vertical)
+  cs <- scale_colour_gradientn(name = plot_yaxis, values = c(0, .20*zx, .40*zx, .60*zx, .80*zx, 1.0), colours = colors, limits = c(0, max), guide = 'colourbar', aesthetics = 'fill') #sets color gradient environment for gradient plots (horizontal and vertical)
   
   
 }else{
@@ -195,11 +196,11 @@ if(color_flag=="true"){
               '#77b77d', '#8cbc68', '#bebc48', '#d1b541', '#ddaa3c',
               '#e49c39', '#e78c35', '#e67932', '#e4632d', '#df4828', 
               '#da2222', '#da2222')
-  cs <- scale_fill_gradientn(name = "Depth", values = c(0, .03, .06, .10, .11, 
-                                                        .12, .13, .15, .17, .19, 
-                                                        .22, .27, .30, .33, .40, 
-                                                        .47, .53, .60, .67, .73, 
-                                                        .80, 1.0), colours = colors, limits = c(0, max), guide = 'colourbar', aesthetics = 'fill') #sets color gradient environment for gradient plots (horizontal and vertical)
+  cs <- scale_fill_gradientn(name = "Depth", values = c(0, .03*zx, .06*zx, .10*zx, .11*zx, 
+                                                        .12*zx, .13*zx, .15*zx, .17*zx, .19*zx, 
+                                                        .22*zx, .27*zx, .30*zx, .33*zx, .40*zx, 
+                                                        .47*zx, .53*zx, .60*zx, .67*zx, .73*zx, 
+                                                        .80*zx, 1.0), colours = colors, limits = c(0, max), guide = 'colourbar', aesthetics = 'fill') #sets color gradient environment for gradient plots (horizontal and vertical)
 }
 tf <- theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), #removes gridlines
             plot.title = element_text(size = 10, face = 'bold'), axis.title = element_text(size = 6)) #formats plot title
