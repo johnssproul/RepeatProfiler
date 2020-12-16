@@ -12,6 +12,9 @@ A tool for studying repetitive DNA dynamics using low-coverage, short-read data.
   - Conducts comparative analysis of profiles shape across and within user specified groups
   - Enables comparative study of variation within repeats through phylogenetic analysis
 
+### Citation
+
+Negm, S.; Greenberg, A.D.; Larracuente, A.M.; Sproul, J.S. (2020) RepeatProfiler: a pipeline for visualization and comparative analysis of repetitive DNA profiles. https://doi.org/10.1111/1755-0998.13305 (in press, Molecular Ecology Resources)
 
 ### Installation
 
