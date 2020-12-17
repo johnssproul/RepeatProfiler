@@ -30,6 +30,11 @@ line=$(echo $line | tr -cd "[:print:]\n")
 mkdir ${PWD}/${line}_tempi
 cd ${PWD}/${line}_tempi
 
+if [[ -f  ${PWD}/../normalized_table.csv ]]; then
+cp  ${PWD}/../normalized_table.csv .
+
+fi 
+#ls ${currentdir}/normalized_table.csv
 
 
 #echo "$mydir"

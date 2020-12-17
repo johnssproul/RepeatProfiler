@@ -893,7 +893,6 @@ done < fofnrefs.txt #keep looping until all references inputed undergone the ana
 cat analyzing_refs_commands.txt | parallel -j $p --will-cite
 
 
-
 rm -f Run_summary.csv
 $Rscript $mydir/depth_analyser.R $Normalized #run the depth analyzer which produces the final summary table
 
