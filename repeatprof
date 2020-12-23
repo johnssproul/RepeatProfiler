@@ -401,8 +401,26 @@ indel_cutoff=0.10
 fi
 
 #
+# insert new flag scale
 
 
+scale=1
+array=(${commands})
+index=0
+
+for k in "${array[@]}"
+do
+((index ++))
+
+if [[ $k  ==  "-scale" ]]; then
+
+
+scale=${array[index]}
+
+
+
+fi
+done
 
 
 
@@ -881,6 +899,7 @@ echo "annotate_file=$annotate_file" >> vars.txt
 echo "alt_color=$alt_color" >> vars.txt
 echo "indel=$indel" >> vars.txt
 echo "indel_cutoff=$indel_cutoff" >> vars.txt
+echo "scale=$scale" >> vars.txt
 
 #
 
@@ -917,7 +936,7 @@ echo "Thenumber: $Number"
 
 
 echo $alt_color
-$Rscript $mydir/mk_profiles_all.R $Number $R_packages $Normalized $annotate_file $alt_color $indel $indel_cutoff
+$Rscript $mydir/mk_profiles_all.R $Number $R_packages $Normalized $annotate_file $alt_color $indel $indel_cutoff $scale
 
 mv  scaled_profiles_allrefs $The_folder
 mv  *ReadMe*  $The_folder #move read me to the final folder

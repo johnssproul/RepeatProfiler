@@ -20,6 +20,20 @@ color_flag <- as.character(args[4]) #colorflag
 indel_flag<-as.character(args[5])
 indel_cutoff<-as.numeric(as.character(args[6]))
 
+
+scale_value<-as.numeric(as.character(args[7]))
+
+
+if(scale_value>1 || scale_value<=0){
+  
+  scale_value=1
+  
+}
+
+
+
+
+
 if(!is.na(indel_cutoff)){
   
   if (indel_cutoff>1 || indel_cutoff<0 ){
@@ -175,7 +189,7 @@ for (i in 2:NCOL(all.depth.csv)) {
 if(color_flag=="true"){
   
   colors <- c('#440154FF', '#3B528BFF', '#21908CFF', '#5DC863FF', '#FDE725FF', '#FDE725FF') #sets color scheme for gradient
-  cs <- scale_colour_gradientn(name = 'Depth', values = c(0, .20, .40, .60, .80, 1.0), colours = colors, limits = c(0, max), guide = 'colourbar', aesthetics = 'fill') #sets color gradient environment for gradient plots (horizontal and vertical)
+  cs <- scale_colour_gradientn(name = 'Depth', values = c(0, .20*scale_value, .40*scale_value, .60*scale_value, .80*scale_value, 1.0), colours = colors, limits = c(0, max), guide = 'colourbar', aesthetics = 'fill') #sets color gradient environment for gradient plots (horizontal and vertical)
   
   
 }else{
@@ -186,11 +200,11 @@ if(color_flag=="true"){
               '#77b77d', '#8cbc68', '#bebc48', '#d1b541', '#ddaa3c',
               '#e49c39', '#e78c35', '#e67932', '#e4632d', '#df4828', 
               '#da2222', '#da2222')
-  cs <- scale_fill_gradientn(name = "Depth", values = c(0, .03, .06, .10, .11, 
-                                                        .12, .13, .15, .17, .19, 
-                                                        .22, .27, .30, .33, .40, 
-                                                        .47, .53, .60, .67, .73, 
-                                                        .80, 1.0), colours = colors, limits = c(0, max), guide = 'colourbar', aesthetics = 'fill') #sets color gradient environment for gradient plots (horizontal and vertical)
+  cs <- scale_fill_gradientn(name = "Depth", values = c(0, .03*scale_value, .06*scale_value, .10*scale_value, .11*scale_value, 
+                                                        .12*scale_value, .13*scale_value, .15*scale_value, .17*scale_value, .19*scale_value, 
+                                                        .22*scale_value, .27*scale_value, .30*scale_value, .33*scale_value, .40*scale_value, 
+                                                        .47*scale_value, .53*scale_value, .60*scale_value, .67*scale_value, .73*scale_value, 
+                                                        .80*scale_value, 1.0), colours = colors, limits = c(0, max), guide = 'colourbar', aesthetics = 'fill') #sets color gradient environment for gradient plots (horizontal and vertical)
 }
 tf <- theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), #to remove gridlines
             plot.title = element_text(size = 10, face = 'bold'), axis.title = element_text(size = 6)) #formats plot title

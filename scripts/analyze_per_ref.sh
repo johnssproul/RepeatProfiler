@@ -331,14 +331,14 @@ echo $folder_names #say it
 
 
 ## calls R script that makes color gradient profiles from read depth information
-$Rscript $mydir/mk_profiles.R $folder_names $R_packages $Normalized $verticalplots $annotate_file $alt_color $indel $indel_cutoff
+$Rscript $mydir/mk_profiles.R $folder_names $R_packages $Normalized $verticalplots $annotate_file $alt_color $indel $indel_cutoff $scale
 
 mv $folder_names $the_output
 done < fofn_folders.txt
 
 rm -f *.pdf
 ##This makes the combined colorful plots with plots from all samples for a given reference 
-$Rscript $mydir/mk_profiles_ref.R $R_packages $Normalized $annotate_file $alt_color $indel $indel_cutoff
+$Rscript $mydir/mk_profiles_ref.R $R_packages $Normalized $annotate_file $alt_color $indel $indel_cutoff $scale
 
 
 ##This makes the combined variant plots with plots from all samples for a given reference 
