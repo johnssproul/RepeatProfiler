@@ -16,12 +16,12 @@ A tool for studying repetitive DNA dynamics using low-coverage, short-read data.
 
 Negm, S.; Greenberg, A.D.; Larracuente, A.M.; Sproul, J.S. (2020) RepeatProfiler: a pipeline for visualization and comparative analysis of repetitive DNA profiles. https://doi.org/10.1111/1755-0998.13305 (in press, Molecular Ecology Resources)
 
-## Getting Started
+### Need more context?
 
 If you want to use RepeatProfiler to explore your data but aren't sure where to start, you might check out the "Tips for Users" page of the RepeatProfiler website:
 https://johnssproul.github.io/RepeatProfiler/tips/
 
-### Installation
+## Installation
 
 #### Homebrew
 The easiest way to setup RepeatProfiler with all of its dependencies is through the package manager [Homebrew]. If you don’t have Homebrew, it is available for installation on [linux/WSL] and on [macOS].
