@@ -1147,7 +1147,7 @@ else
 
 echo "The path to the unpaired reads file(s) is incorrect, or the file(s) is/are in a unsupported format"
 
-echo "Make sure the path is correct (including checking for blanks). Make sure read files have '.fastq' or '.fq' extensions. Compressed (i.e., '.gz') formats also accepted (e.g., 'fastq.gz')."
+echo "Make sure the path is correct (also, there should be no spaces in folder/file names). Make sure read files have '.fastq' or '.fq' extensions. Compressed (i.e., '.gz') formats also accepted (e.g., 'fastq.gz')."
 
 
 fi 
