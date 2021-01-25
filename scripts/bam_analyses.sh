@@ -42,7 +42,7 @@ else
 
 echo "The path to the unpaired reads file(s) is incorrect, or the file(s)format is not supported"
 
-echo "Make sure the path is correct (note that spaces in directory names can cause errors). Make sure read files have '.fastq' or '.fq' extensions. Compressed (i.e., '.gz') formats also accepted (e.g., 'fastq.gz')."
+echo "Make sure the path is correct (note: there should be no spaces in folder/file names).
 
 
 fi 
@@ -65,8 +65,8 @@ reads2_check=`cat fofn2.txt | wc -l `
 if [[ $reads1_check == 0 && $reads2_check == 0 ]];then #if both are empty then there was no reads of correct format to begin with
   echo ""
 
-  echo "The path to the paired reads file(s) is incorrect, or the file(s) is/are in a unsupported format"| tee -a Errors_README.log
-  echo "Make sure the path is correct (including checking for blanks). Make sure read files have '.fastq' or '.fq' extensions. Compressed (i.e., '.gz') formats also accepted (e.g., 'fastq.gz')."| tee -a Errors_README.log
+  echo "The path to the BAM file(s) is incorrect, or the file(s) is/are in a unsupported format"| tee -a Errors_README.log
+  echo "Make sure the path is correct (note: there should be no spaces in folder/file names).| tee -a Errors_README.log
   
   exit 1
 fi
