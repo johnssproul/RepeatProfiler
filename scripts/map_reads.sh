@@ -162,6 +162,21 @@ Read_length=`samtools view ${F}_sorted.bam | awk '{print length($10)}' |   sort 
 
 echo "${F}	${Read_length}" >> read_lengths.txt
 
+if gzip -t $Read1; then
+	echo "it is gzipped"
+	allreads=`echo $(zcat $READ1|wc -l)/2|bc`
+
+else 
+	echo "using alternative counting method"
+
+	allreads=`echo $(cat $READ1|wc -l)/2|bc`
+fi
+
+  echo "$allreads" >> reads_lengths.txt 
+  echo ""
+
+
+
 
   fi
 
@@ -225,7 +240,25 @@ fi
 fi 
 Read_length=`samtools view ${F}_sorted.bam | awk '{print length($10)}' |   sort -n -r | head -n1`
 
-echo "${F}	${Read_length}" >> read_lengths.txt
+echo "${F}	${Read_length}" >> read_lengths.txt #mapped
+
+
+
+if gzip -t $Read1; then
+	echo "it is gzipped"
+	allreads=`echo $(zcat $READ1|wc -l)/4|bc`
+
+else 
+	echo "using alternative counting method"
+
+	allreads=`echo $(cat $READ1|wc -l)/4|bc`
+fi
+
+  echo "$allreads" >> reads_lengths.txt 
+  echo ""
+
+
+
 
  fi
 
@@ -241,22 +274,11 @@ echo "${F}	${Read_length}" >> read_lengths.txt
   
  #this checks if the read is actually in gzip format or not, so we know which way to count the reads for summary table 
 
-if gzip -t $Read1; then
-	echo "it is gzipped"
-	allreads=`echo $(zcat $READ1|wc -l)/4|bc`
-
-else 
-	echo "using alternative counting method"
-
-	allreads=`echo $(cat $READ1|wc -l)/4|bc`
-fi
 
   
  # aligned=`tail -n 1 bowtie.log | grep -Eo '[+-]?[0-9]+([.][0-9]+)?'`
   
   #echo "${REF_name}	S${F}	$Read1name	$Read2name	$allreads	$aligned" >> The_summary.txt
-  echo "$allreads" >> reads_lengths.txt 
-  echo ""
 
 	((N ++)) #increases the value of $N by one
 done #< RefList2.txt
