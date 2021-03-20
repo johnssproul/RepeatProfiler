@@ -1,2 +1,0 @@
-001_sorted.bam
-002_sorted.bam

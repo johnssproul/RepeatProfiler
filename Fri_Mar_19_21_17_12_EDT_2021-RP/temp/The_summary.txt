@@ -1,5 +1,0 @@
-Reference	Sample_index	Read1	Read2	Total_reads	percent_mapped
-Dmel_Top1_FBgn0004924_900_singlecopy	S001	500K_mauG_R1.fastq	500K_mauG_R2.fastq	500000	0
-dmel_rDNA_E__TS_Other_rDNA	S001	500K_mauG_R1.fastq	500K_mauG_R2.fastq	500000	.0008
-Dmel_Top1_FBgn0004924_900_singlecopy	S002	5M_isoG_1.fq.gz	5M_isoG_2.fq.gz	500000	0
-dmel_rDNA_E__TS_Other_rDNA	S002	5M_isoG_1.fq.gz	5M_isoG_2.fq.gz	500000	.0018

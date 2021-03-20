@@ -1,2 +1,0 @@
-bash /mnt/d/Pipeline_project/scriptTest/scriptTest/RepeatProfiler/scripts//analyze_per_ref.sh dmel_rDNA_E__TS_Other_rDNA
-bash /mnt/d/Pipeline_project/scriptTest/scriptTest/RepeatProfiler/scripts//analyze_per_ref.sh Dmel_Top1_FBgn0004924_900_singlecopy
