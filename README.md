@@ -150,7 +150,7 @@ repeatprof profile -p reference.fa  <enter full path of current directory>
 | -bowtieflag ""                   | Use this flag to enter more complex Bowtie2 settings. Any valid Bowtie2 command can be entered between the quotes. For example:   -bowtieflag "--sensitive-local --no-mixed"|
 | -indel <cut_off>  | Use this flag to detect and annotate the plots for indels. the cut off is 0.10 by default. User can provide a custom cutoff between 1 and 0. For example: -indel 0.5
 | -bed <bed file full directory> | Use this flag and provide FULL path to bed file that contains annotations to the references you are analyzing to annotate the plots. 
-
+| -scale <decimal value between 0 and 1> | This flag changes the transition point of the color gradient in color-scaled profiles. Lower values will shift the color transitions to a lower point on the y-axis of profiles, high values shift it higher on the y-axis (default is 0.8). This flag is included to allow users some control over color aesthetics in order to visually highlight the most relevant aspects of variation in profiles.
 
 
 
