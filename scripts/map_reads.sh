@@ -23,9 +23,9 @@ echo "Read_Index	Readlength" > read_lengths.txt
 ##### Looks for input reads, does error handling prior to read mapping
 
 if [ $3 = "-p" ]; then #if user specified paired data then look for this
-  ls ${reads}/*_R1.fastq ${reads}/*_R1.gz ${reads}/*_R1.fq ${reads}/*_R1.fq.gz  ${reads}/*_1.fq ${reads}/*_1.fq.gz ${reads}/*_1.gz ${reads}/*_1.fastq ${reads}/*_1.fastq.gz ${reads}/*_R1.fq.gz ${reads}/*_R1.fastq.gz > fofn1.txt 2>/dev/null
+  ls ${reads}/*_R1.fastq ${reads}/*_R1.gz ${reads}/*_R1.fq ${reads}/*_R1.fq.gz  ${reads}/*_1.fq ${reads}/*_1.fq.gz ${reads}/*_1.gz ${reads}/*_1.fastq ${reads}/*_1.fastq.gz > fofn1.txt 2>/dev/null
 
-  ls ${reads}/*_R2.fastq ${reads}/*_R2.gz ${reads}/*_R2.fq ${reads}/*_R2.fq.gz  ${reads}/*_2.fq.gz  ${reads}/*_2.fq ${reads}/*_2.gz ${reads}/*_2.fastq ${reads}/*_2.fastq.gz ${reads}/*_R2.fq.gz ${reads}/*_R2.fastq.gz > fofn2.txt 2>/dev/null
+  ls ${reads}/*_R2.fastq ${reads}/*_R2.gz ${reads}/*_R2.fq ${reads}/*_R2.fq.gz  ${reads}/*_2.fq.gz  ${reads}/*_2.fq ${reads}/*_2.gz ${reads}/*_2.fastq ${reads}/*_2.fastq.gz > fofn2.txt 2>/dev/null
 fi
 
 if [ $3 = "-u" ]; then
