@@ -200,7 +200,13 @@ if(maxi != 0){
   cat("there is no closely related reads for this reference or there is only 1 read/read pair","\n")
 }
 
-if(fraction_table$Read1 == fraction_table$Read2){
+cat("Contents of fraction_table$Read1:\n:")
+print (fraction_table$Read1)
+
+cat("Contents of fraction_table$Read2:\n:")
+print (fraction_table$Read2)
+
+if(all(fraction_table$Read1 == fraction_table$Read2)){
   fraction_table$Read2 <- NULL
 
   names(fraction_table)[names(fraction_table) == 'Read1'] <- 'Read'
