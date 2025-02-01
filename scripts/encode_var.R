@@ -1,3 +1,6 @@
+##Feb 01 2025 -- Updated to include dashes in .phy file and encode variants as nucleotide. .phy file can either be analyzed as molecular morphological characters (i.e., morphology data), or nucleotide data
+#if analyzed as the former, sites with multiple variant peaks will be evaluated as "A peak and T peak" during analysis. If analyzed as nucleotide data, sites with multiple variant peaks will be encoded as "A Peak or T peak".
+
 ##### This script (called in 'repeatprof') takes variant information from mpileup (after it has been summarized by pileup_basecount.py), 
 ##### calculates the fraction of variants at each position, and outputs a phylip file that encodes the patterns of variants as molecular morphological characters
 
@@ -14,28 +17,13 @@ fraction_table$Peaks_A <- ""
 fraction_table$Peaks_T <- ""
 fraction_table$Peaks_G <- ""
 fraction_table$Peaks_C <- ""
+fraction_table$ReferenceBase <- NA
 
-perecentagecutoff <- 0.1
+perecentagecutoff <- 0.1 #changing this value will allow smaller peaks to be encoded in .phy output. With the default setting of 0.1, a variant peak is only encoded if it is at least 10% of total coverage depth at that site.
 
 #assigns index based on read name
 index_conv <- read.table("index_conv.txt", header = TRUE, stringsAsFactors = FALSE)
 
-##### ignore this previous implementation, keeping code for now
-#find_peaks <- function (x, m = 3){
-# shape <- diff(sign(diff(x, na.pad = FALSE)))
-#  pks <- sapply(which(shape < 0), FUN = function(i){
-#    z <- i-m+1
-#    z <- ifelse(z > 0, z, 1)
-#    w <- i+m +1
-#    w <- ifelse(w < length(x), w, length(x))
-#    if(all(x[c(z : i, (i + 2) : w)] <= x[i + 1])) return(i + 1) else return(numeric(0))
-#  })
-#  pks <- unlist(pks)
-#  pks
-#}
-##### end previous implementation
-
-##### 
 
 for (i in 1:NROW(multi_poly_names)) {
   name <- multi_poly_names[i,1]
@@ -56,35 +44,43 @@ for (i in 1:NROW(multi_poly_names)) {
   difference <- sum(multi_table$Depth)-sum(multi_table$CountMatch)
 
   fraction_table[i,"fraction_of_unmatched"] <- difference/sum(multi_table$Depth)
+  #fraction_table[i, "ReferenceBase"] <- paste(multi_table$ReferenceBase, collapse = " ")
 }
 
 for (i in 1:NROW(multi_poly_names)) {
   name_of_table_used <- paste("multi_poly/", multi_poly_names[i,1], ".txt", sep = "")
-
+  
   multi_table <- read.table(name_of_table_used, header = TRUE)
+  
+  m <- NROW(multi_table) * perecentagecutoff  # Not used later in the code
 
-  m <- NROW(multi_table)*perecentagecutoff
+  for (t in 1:NROW(multi_table)) {
+    cut_off <- multi_table[t,2] * perecentagecutoff  # 10% of read depth at position t
 
-  for(t in 1:NROW(multi_table)){
-    cut_off <- multi_table[t,2]*perecentagecutoff
+    # Update ReferenceBase storage
+    fraction_table[i, "ReferenceBase"] <- paste(multi_table$ReferenceBase, collapse = " ")
+    cat("Updated ReferenceBase for position ", t, ": ", fraction_table[i, "ReferenceBase"], "\n")
 
-    if(multi_table[t,3] > cut_off){ #Base A
+    if (multi_table[t,3] > cut_off) {  # Base A
       fraction_table[i,"Peaks_A"] <- paste(t, fraction_table[i,"Peaks_A"], sep = " ", collapse = " ")
     }
 
-    if(multi_table[t,4] > cut_off){ #Base T
+    if (multi_table[t,4] > cut_off) {  # Base T
       fraction_table[i,"Peaks_T"] <- paste(t, fraction_table[i,"Peaks_T"], sep = " ", collapse = " ")
     }
 
-    if(multi_table[t,5] > cut_off){ #Base G
+    if (multi_table[t,5] > cut_off) {  # Base G
       fraction_table[i,"Peaks_G"] <- paste(t, fraction_table[i,"Peaks_G"], sep = " ", collapse = " ")
     }
 
-    if(multi_table[t,6]>cut_off){ #Base C
+    if (multi_table[t,6] > cut_off) {  # Base C
       fraction_table[i,"Peaks_C"] <- paste(t, fraction_table[i,"Peaks_C"], sep = " ", collapse = " ")
     }
   }
 }
+
+#message("PancakePancakePancakePancakePancakePancake")
+#message(fraction_table)
 
 ##find common peaks and report them
 num_rows=NROW(fraction_table)
@@ -229,112 +225,147 @@ fraction_table_towrite$Peaks_C <- NULL
 Ref_size <- NROW(multi_table)
 samples <- fraction_table[,1]
 
+#message(NROW(fraction_table))
+#message("PancakePancakePancakePancakePancakePancake")
+
+
 Polyarray <- list()
 
+# Process each row of fraction_table
 for (r in 1:NROW(fraction_table)) {
-  v <- replicate(Ref_size, "f")
+  # Start with the ReferenceBase for each position
+  v <- fraction_table[r, "ReferenceBase"]
+  message("Start processing ReferenceBase for row ", r, ": ", v, "\n")
+  v <- strsplit(gsub(" ", "", fraction_table[r, "ReferenceBase"]), "")[[1]]
+  message("After splitting ReferenceBase into vector: ", v, "\n")
+  v_copy <- v  # Copy the vector before processing each base
 
-  #Base A
-  v1 <- strsplit(fraction_table[r,"Peaks_A"], " ")
+  # Process Base A (Peaks_A)
+  v1 <- strsplit(fraction_table[r, "Peaks_A"], " ")
   v1 <- v1[[1]]
   v1 <- as.numeric(v1)
-
-  if(NROW(v1) > 0){
-    for (i in 1:NROW(v1)) {
-      peak <- v1[[i]]
-
-      if(v[[peak]] == "f"){
-        v[[peak]] <- "0"
+  #message("Processing A peaks, initial list: ", v1, "\n")
+  
+  if (length(v1) > 0) {
+    for (i in 1:length(v1)) {
+      peak <- v1[i]
+      #message("Processing A peak at position ", peak, ", current base in v: ", v[[peak]], "\n")
+      if (v[[peak]] == v_copy[peak]) {  # Check value at same position in ReferenceBase
+        v[[peak]] <- "0"  # Replace with code for A
+        #message("Replacing with 0 at position ", peak, "\n")
       } else {
-        v[[peak]] <- paste(v[[peak]], "0", sep = " ")
+        v[[peak]] <- paste(v[[peak]], "0", sep = " ")  # Append code for A
+        #message("Appending 0 at position ", peak, "\n")
       }
     }
   }
+  message("Post processing A peaks for row ", r, ": ", v, "\n")
 
-  #Base T
-  v1 <- strsplit(fraction_table[r,"Peaks_T"], " ")
+  # Process Base T (Peaks_T)
+  v1 <- strsplit(fraction_table[r, "Peaks_T"], " ")
   v1 <- v1[[1]]
   v1 <- as.numeric(v1)
-  if(NROW(v1) > 0){
-    for (i in 1:NROW(v1)) {
-      peak <- v1[[i]]
+  message("Processing T peaks, initial list: ", v1, "\n")
 
-      if(v[[peak]] == "f"){
-        v[[peak]] <- "1"
+  if (length(v1) > 0) {
+    for (i in 1:length(v1)) {
+      peak <- v1[i]
+      #message("Processing A peak at position ", peak, ", current base in v: ", v[[peak]], "\n")
+      if (v[[peak]] == v_copy[peak]) {  # Check value at same position in ReferenceBase
+        v[[peak]] <- "1"  # Replace with code for T
+        #message("Replacing with 0 at position ", peak, "\n")
       } else {
-        v[[peak]] <- paste(v[[peak]], "1", sep = " ")
+        v[[peak]] <- paste(v[[peak]], "1", sep = " ")  # Append code for T
+        #message("Appending 0 at position ", peak, "\n")
       }
     }
   }
+  message("Post processing T peaks for row ", r, ": ", v, "\n")
 
-  #Base G
-  v1 <- strsplit(fraction_table[r,"Peaks_G"], " ")
+  # Process Base G (Peaks_G)
+  v1 <- strsplit(fraction_table[r, "Peaks_G"], " ")
   v1 <- v1[[1]]
   v1 <- as.numeric(v1)
+  message("Processing G peaks, initial list: ", v1, "\n")
 
-  if(NROW(v1) > 0){
-    for (i in 1:NROW(v1)) {
-      peak <- v1[[i]]
-
-      if(v[[peak]] == "f"){
-        v[[peak]] <- "2"
+  if (length(v1) > 0) {
+    for (i in 1:length(v1)) {
+      peak <- v1[i]
+      #message("Processing A peak at position ", peak, ", current base in v: ", v[[peak]], "\n")
+      if (v[[peak]] == v_copy[peak]) {  # Check value at same position in ReferenceBase
+        v[[peak]] <- "2"  # Replace with code for G
+        #message("Replacing with 0 at position ", peak, "\n")
       } else {
-        v[[peak]] <- paste(v[[peak]], "2", sep = " ")
+        v[[peak]] <- paste(v[[peak]], "2", sep = " ")  # Append code for G
+        #message("Appending 0 at position ", peak, "\n")
       }
     }
   }
+  message("Post processing G peaks for row ", r, ": ", v, "\n")
 
-  #Base C
-  v1 <- strsplit(fraction_table[r,"Peaks_C"], " ")
+  # Process Base C (Peaks_C)
+  v1 <- strsplit(fraction_table[r, "Peaks_C"], " ")
   v1 <- v1[[1]]
   v1 <- as.numeric(v1)
+  message("Processing C peaks, initial list: ", v1, "\n")
 
-  if(NROW(v1) > 0){
-    for (i in 1:NROW(v1)) {
-      peak <- v1[[i]]
-
-      if(v[[peak]] == "f"){
-        v[[peak]] <- "3"
+  if (length(v1) > 0) {
+    for (i in 1:length(v1)) {
+      peak <- v1[i]
+      #message("Processing A peak at position ", peak, ", current base in v: ", v[[peak]], "\n")
+      if (v[[peak]] == v_copy[peak]) {  # Check value at same position in ReferenceBase
+        v[[peak]] <- "3"  # Replace with code for C
+        #message("Replacing with 0 at position ", peak, "\n")
       } else {
-        v[[peak]] <- paste(v[[peak]], "3", sep = " ")
+        v[[peak]] <- paste(v[[peak]], "3", sep = " ")  # Append code for C
+        #message("Appending 0 at position ", peak, "\n")
       }
     }
   }
+  message("Post processing C peaks for row ", r, ": ", v, "\n")
 
-  print(r)
-
+  # Store processed result in Polyarray
   Polyarray[[r]] <- v
 }
 
-##### here is where the changing of characters happens so 0 1 2 will be  coded as C (not be confused with base Cytosine. this is morpholgical character)
+# Output Polyarray
+message("Generated Polyarray")
+#message(Polyarray)
+
+
+
+##### Codes variant peaks as IUPAC ambiguities
 codes <- data.frame(codes = character(), meaning = character(), stringsAsFactors = FALSE)
-codes[1,] <- c("0 3","4")
-codes[2,] <- c("0 2","5")
-codes[3,] <- c("0 1","6")
-codes[4,] <- c("3 2","7")
-codes[5,] <- c("3 1","8")
-codes[6,] <- c("2 1","9")
-codes[7,] <- c("0 3 2","A")
-codes[8,] <- c("0 3 1","B")
-codes[9,] <- c("0 2 1","C")
-codes[10,] <- c("3 2 1","D")
-codes[11,] <- c("2 0 1 3","E")
+codes[1,] <- c("0 3", "M") # i.e., variant peaks at A and C  -- if analyzed as morphological data, this means A and C, if DNA sequence data it will be interpred as A or C
+codes[2,] <- c("0 2", "R") # i.e., variant peaks at A and G -- if analyzed as morphological data, this means A and G, if DNA sequence data it will be interpred as A or G
+codes[3,] <- c("0 1", "W") # i.e., variant peaks at A and T -- if analyzed as morphological data, this means A and T, if DNA sequence data it will be interpred as A or T
+codes[4,] <- c("3 2", "S") # i.e., variant peaks at C and G -- if analyzed as morphological data, this means C and G, if DNA sequence data it will be interpred as C or G
+codes[5,] <- c("3 1", "Y") # i.e., variant peaks at C and T -- if analyzed as morphological data, this means C and T, if DNA sequence data it will be interpred as C or T
+codes[6,] <- c("2 1", "K") # i.e., variant peaks at G and T -- if analyzed as morphological data, this means G and T, if DNA sequence data it will be interpred as G or T
+codes[7,] <- c("0 3 2", "V") # i.e., variant peaks at A and C and G -- if analyzed as morphological data, this means A and C and G, if DNA sequence data, replace ands with ors
+codes[8,] <- c("0 3 1", "H") # i.e., variant peaks at A and C and T -- if analyzed as morphological data, this means A and C and T, if DNA sequence data, replace ands with ors
+codes[9,] <- c("0 2 1", "D") # i.e., variant peaks at A and G and T -- if analyzed as morphological data, this means A and G and T, if DNA sequence data, replace ands with ors
+codes[10,] <- c("3 2 1", "B")  # i.e., variant peaks and C and G and T -- if analyzed as morphological data, this means C and G and T, if DNA sequence data, replace ands with ors
+codes[11,] <- c("2 0 1 3", "N")  # i.e., variant peaks at G and A and T and C -- if analyzed as morphological data, this means G and A and T and C, if DNA sequence data, replace ands with ors
+codes[12,] <- c("0", "A")  # A i.e., variant peak at A
+codes[13,] <- c("1", "T")  # T i.e., variant peak at T
+codes[14,] <- c("2", "G")  # G i.e., variant peak at G
+codes[15,] <- c("3", "C")  # C i.e., variant peak at C
 
-
-#ambegious stuff
+# Ambiguous stuff
 for (i in 1:NROW(Polyarray)) {
-  data<- Polyarray[[i]]
+  data <- Polyarray[[i]]
 
   for (t in 1:NROW(data)) {
     v1 <- strsplit(data[t], " ")
     v1 <- v1[[1]]
 
-    for(k in 1:NROW(codes)){
-      v2 <- strsplit(codes[k,1], " ")
+    for (k in 1:NROW(codes)) {
+      v2 <- strsplit(codes[k, 1], " ")
       v2 <- v2[[1]]
 
-      if(setequal(v1,v2)){
-        data[t] <- codes[k,2]
+      if (setequal(v1, v2)) {
+        data[t] <- codes[k, 2]
       }
     }
   }
@@ -342,26 +373,26 @@ for (i in 1:NROW(Polyarray)) {
   Polyarray[[i]] <- data
 }
 
-#saving_the_data_in_phylip fomat
-onetime <- TRUE  #makes writing to the header only once in the phylip file
+# Saving the data in Phylip format
+onetime <- TRUE  # Makes writing to the header only once in the Phylip file
 
 for (i in 1:NROW(Polyarray)) {
-  polydata <- paste(Polyarray[[i]] ,collapse = "")
+  polydata <- paste(Polyarray[[i]], collapse = "")
 
-  #converting index back to name steps
+  # Converting index back to name steps
   name <- samples[[i]]
   name_index <- strsplit(name, "_")
   name_index <- name_index[[1]]
   name_index <- as.numeric(name_index[length(name_index)])
 
-  Read1_name <- index_conv[name_index,1]
-  Read2_name <- index_conv[name_index,2]
+  Read1_name <- index_conv[name_index, 1]
+  Read2_name <- index_conv[name_index, 2]
 
-  if(identical(Read1_name,Read2_name)){
+  if (identical(Read1_name, Read2_name)) {
     name_full <- samples[[i]]
     name_full <- strsplit(name_full, "_")
     name_full <- name_full[[1]]
-    name_full <- name_full[1:length(name_full)-1]
+    name_full <- name_full[1:length(name_full) - 1]
     name_full <- paste(name_full, collapse = "_")
     name_full <- strsplit(name_full, ".", fixed = TRUE)
     name_full <- name_full[[1]]
@@ -370,11 +401,11 @@ for (i in 1:NROW(Polyarray)) {
     name_full <- name_full[name_full != "txt"]
     name_full <- paste(name_full, collapse = ".")
 
-    #prepare names in a visually appealing way by removing extentions and stuff like that
+    # Prepare names in a visually appealing way by removing extensions and stuff like that
     name_of_sample <- strsplit(Read1_name, ".", fixed = TRUE)
     name_of_sample <- name_of_sample[[1]]
 
-    #remove extentions
+    # Remove extensions
     name_of_sample <- name_of_sample[name_of_sample != "fq"]
     name_of_sample <- name_of_sample[name_of_sample != "fastq"]
     name_of_sample <- name_of_sample[name_of_sample != "gz"]
@@ -384,7 +415,7 @@ for (i in 1:NROW(Polyarray)) {
     name_full <- samples[[i]]
     name_full <- strsplit(name_full, "_")
     name_full <- name_full[[1]]
-    name_full <- name_full[1:length(name_full)-1]
+    name_full <- name_full[1:length(name_full) - 1]
     name_full <- paste(name_full, collapse = "_")
     name_full <- strsplit(name_full, ".", fixed = TRUE)
     name_full <- name_full[[1]]
@@ -395,19 +426,19 @@ for (i in 1:NROW(Polyarray)) {
 
     name_of_sample <- strsplit(Read1_name, "_")
     name_of_sample <- name_of_sample[[1]]
-    name_of_sample <- name_of_sample[1:length(name_of_sample)-1]
+    name_of_sample <- name_of_sample[1:length(name_of_sample) - 1]
     name_of_sample <- paste(name_of_sample, collapse = "_")
   }
 
   filename <- paste(name_full, ".phy", sep = "")
 
-  if(onetime == TRUE){
+  if (onetime == TRUE) {
     header <- paste(NROW(samples), Ref_size, sep = " ")
-    cat(c(header,"\n"), file = filename, append = TRUE)
+    cat(c(header, "\n"), file = filename, append = TRUE)
     onetime <- FALSE
   }
 
-  entry <- paste(name_of_sample, polydata, sep =" ")
+  entry <- paste(name_of_sample, polydata, sep = " ")
 
-  cat(c(entry,"\n"), file = filename, append = TRUE)
+  cat(c(entry, "\n"), file = filename, append = TRUE)
 }
