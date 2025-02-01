@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 
 ##### This script (called in 'repeatprof') summarizes mpileup output prior making variant plots and outputting the phylip file that summarizes variant info
+## Updated Feb 1 2025 to add column containing ReferenceBase to multipoly output so that nucleotide info from reference can be included in .phy output files from encode_var.R script
 
 import sys
 import collections
@@ -23,7 +24,7 @@ with open(OutFileName, "w") as OutFile:
     # DepthList = [ ]
 
     Dict = {}
-	### loop that parses input data from mpileup, counts bases at each position, writes output. This block is more or less repeated twice below, see this first loop for comments.
+    ### loop that parses input data from mpileup, counts bases at each position, writes output. This block is more or less repeated twice below, see this first loop for comments.
     with open(sys.argv[1], 'r') as InFile:
         for Line in InFile:
 
@@ -43,6 +44,7 @@ with open(OutFileName, "w") as OutFile:
             DictPosition = int(ElementList[1])  # makes the list of keys for the dictionary using the second element in ElementList (position)
             DictBases = ElementList[4].upper()  # defines uppercase string of bases in fifth element in ElementList in preparation to make dictionary
             DictDepth = ElementList[3]  # defines fourth element (depth) as a value in the dictionary
+            ReferenceBase = ElementList[2]
             Dict[DictPosition] = (DictBases,DictDepth)  # this makes the dictionary with DictPosition as the key and DictBases and DictDepth as the values
 
     # print(Dict)
@@ -67,7 +69,7 @@ with open(OutFileName, "w") as OutFile:
         # NumE = Dict[Position][0].count('*')
         NumF = Dict[Position][0].count(',') + Dict[Position][0].count('.') + Dict[Position][0].count('*')
 
-        # print("%s	%d   %d  %d  %d  %d	%s" % (Position, NumA, NumF, NumT, NumG, NumC, Dict[Position][1]))
+        # print("%s %d   %d  %d  %d  %d %s" % (Position, NumA, NumF, NumT, NumG, NumC, Dict[Position][1]))
 
         # unlike the print command, write requires manual new line command, this prints one element to file in a single column
         OutputString = "%s  %d  %d  %d  %d  %d  %s" % (Position, NumF, NumA, NumT, NumG, NumC, Dict[Position][1])
@@ -106,6 +108,7 @@ with open(countedFile, "w") as OutFile:
             DictPosition = int(ElementList[1])
             DictBases = ElementList[4].upper()
             DictDepth = ElementList[3]
+            ReferenceBase = ElementList[2]
             Dict[DictPosition] = (DictBases,DictDepth)
 
     # print(Dict)
@@ -140,16 +143,13 @@ with open(countedFile, "w") as OutFile:
         OutFile.write(OutputString + "\n")
         Fixing = Fixing + 1
 
-with open(countedFile_multi, "w") as OutFile:
-    # DepthList = [ ]
 
+with open(countedFile_multi, "w") as OutFile:
     Dict = {}
 
     # "1_pileup.out"
     with open(sys.argv[1], 'r') as InFile:
         for Line in InFile:
-
-            # if LineNumber >= 0: #for infile with a header, change to '> 0'
             Strip = Line.strip('\n')
             ElementList = Strip.split('\t')
 
@@ -160,24 +160,18 @@ with open(countedFile_multi, "w") as OutFile:
                     break
                 ElementList[4] = ElementList[4][:match.start()] + ElementList[4][match.end() + int(match.group(1)):]
 
-            # print(ElementList[4])
-
             DictPosition = int(ElementList[1])
             DictBases = ElementList[4].upper()
             DictDepth = ElementList[3]
-            Dict[DictPosition] = (DictBases,DictDepth)
+            ReferenceBase = ElementList[2]  # Capture the reference base from the 3rd column
+            Dict[DictPosition] = (DictBases, DictDepth, ReferenceBase)  # Store ReferenceBase as part of the value in the dictionary
 
-    # print(Dict)
-    HeaderInfo = 'Position\tCountMatch\tCountA\tCountT\tCountG\tCountC\t' + 'Depth'
+    HeaderInfo = 'Position\tCountMatch\tCountA\tCountT\tCountG\tCountC\tDepth\tReferenceBase'  # Add 'ReferenceBase' to header
     OutFile.write(HeaderInfo + "\n")
     Fixing = 1
-    for Position in sorted(
-            Dict.keys()):
-        #print(" pos:" + str(Fixing) + "    " + str(Position))
-
+    for Position in sorted(Dict.keys()):
         while Fixing != Position:
-            OutputString = "%s  %d  %d  %d  %d  %d  %s" % (str(Fixing), 0, 0, 0, 0, 0, "0")
-
+            OutputString = "%s  %d  %d  %d  %d  %d  %s\t%s" % (str(Fixing), 0, 0, 0, 0, 0, "0", "-")  # Use "-" for missing reference base
             OutFile.write(OutputString + "\n")
             Fixing = Fixing + 1
 
@@ -187,19 +181,79 @@ with open(countedFile_multi, "w") as OutFile:
         NumT = Dict[Position][0].count('T')
         NumG = Dict[Position][0].count('G')
         NumC = Dict[Position][0].count('C')
-        # NumE = Dict[Position][0].count('*')
         NumF = Dict[Position][0].count(',') + Dict[Position][0].count('.') + Dict[Position][0].count('*')
-
-        # print("%s	%d   %d  %d  %d  %d	%s" % (Position, NumA, NumF, NumT, NumG, NumC, Dict[Position][1]))
-
-        OutputString = "%s  %d  %d  %d  %d  %d  %s" % (Position, NumF, NumA, NumT, NumG, NumC, Dict[Position][1])
+        
+        # Use the stored ReferenceBase from Dict
+        ReferenceBase = Dict[Position][2]
+        
+        OutputString = "%s  %d  %d  %d  %d  %d  %s\t%s" % (Position, NumF, NumA, NumT, NumG, NumC, Dict[Position][1], ReferenceBase)
         OutFile.write(OutputString + "\n")
-    #print('so long')
+
     while Fixing != The_reference_size:
-        #print("in whileloop")
-        OutputString = "%s  %d  %d  %d  %d  %d  %s" % (str(Fixing), 0, 0, 0, 0, 0, "0")
+        OutputString = "%s  %d  %d  %d  %d  %d  %s\t%s" % (str(Fixing), 0, 0, 0, 0, 0, "0", "-")  # Use "-" for missing reference base
         OutFile.write(OutputString + "\n")
         Fixing = Fixing + 1
+
+# with open(countedFile_multi, "w") as OutFile:
+#     # DepthList = [ ]
+
+#     Dict = {}
+
+#     # "1_pileup.out"
+#     with open(sys.argv[1], 'r') as InFile:
+#         for Line in InFile:
+
+#             # if LineNumber >= 0: #for infile with a header, change to '> 0'
+#             Strip = Line.strip('\n')
+#             ElementList = Strip.split('\t')
+
+#             while True:
+#                 match = re.search(r"[+-](\d+)", ElementList[4])
+
+#                 if match is None:
+#                     break
+#                 ElementList[4] = ElementList[4][:match.start()] + ElementList[4][match.end() + int(match.group(1)):]
+
+#             # print(ElementList[4])
+
+#             DictPosition = int(ElementList[1])
+#             DictBases = ElementList[4].upper()
+#             DictDepth = ElementList[3]
+#             Dict[DictPosition] = (DictBases,DictDepth)
+
+#     # print(Dict)
+#     HeaderInfo = 'Position\tCountMatch\tCountA\tCountT\tCountG\tCountC\t' + 'Depth'
+#     OutFile.write(HeaderInfo + "\n")
+#     Fixing = 1
+#     for Position in sorted(
+#             Dict.keys()):
+#         #print(" pos:" + str(Fixing) + "    " + str(Position))
+
+#         while Fixing != Position:
+#             OutputString = "%s  %d  %d  %d  %d  %d  %s" % (str(Fixing), 0, 0, 0, 0, 0, "0")
+
+#             OutFile.write(OutputString + "\n")
+#             Fixing = Fixing + 1
+
+#         Fixing = Fixing + 1
+
+#         NumA = Dict[Position][0].count('A')
+#         NumT = Dict[Position][0].count('T')
+#         NumG = Dict[Position][0].count('G')
+#         NumC = Dict[Position][0].count('C')
+#         # NumE = Dict[Position][0].count('*')
+#         NumF = Dict[Position][0].count(',') + Dict[Position][0].count('.') + Dict[Position][0].count('*')
+
+#         # print("%s   %d   %d  %d  %d  %d %s" % (Position, NumA, NumF, NumT, NumG, NumC, Dict[Position][1]))
+
+#         OutputString = "%s  %d  %d  %d  %d  %d  %s" % (Position, NumF, NumA, NumT, NumG, NumC, Dict[Position][1])
+#         OutFile.write(OutputString + "\n")
+#     #print('so long')
+#     while Fixing != The_reference_size:
+#         #print("in whileloop")
+#         OutputString = "%s  %d  %d  %d  %d  %d  %s" % (str(Fixing), 0, 0, 0, 0, 0, "0")
+#         OutFile.write(OutputString + "\n")
+#         Fixing = Fixing + 1
     # OutFile.close()
 
 print('end of python script')
