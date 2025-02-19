@@ -62,11 +62,17 @@ if(NCOL(map_depth_allrefs) > 2){
   map_depth_allrefs <- map_depth_allrefs[,-1] #remove position column
   intial_col <- NCOL(map_depth_allrefs)
 
-  while(NCOL(map_depth_allrefs) > 0){
-    current_cvs_samples <- map_depth_allrefs[,1:number_of_samples]
+  while (NCOL(map_depth_allrefs) >= number_of_samples) {
+    current_cvs_samples <- map_depth_allrefs[, 1:number_of_samples]
     current_cvs_samples <- na.omit(current_cvs_samples) #deletesNA values caused by other references positions
     current_cvs_samples <- current_cvs_samples[, colSums(current_cvs_samples != 0) > 0] #remove columns containing only zeroes
+    print(paste("Remaining columns:", NCOL(map_depth_allrefs)))
+    if (NCOL(map_depth_allrefs) < number_of_samples) {
+      stop("Fewer columns remaining than number_of_samples. Exiting loop.")
+    }
     map_depth_allrefs <- map_depth_allrefs[,-(1:number_of_samples)]
+    message(paste("NCOL(map_depth_allrefs):", NCOL(map_depth_allrefs)))
+    message(paste("number_of_samples:", number_of_samples))
     df <- data.frame(matrix(ncol = NROW(allgroups), nrow = 0)) #initialize the table to produce boxplots
     colnames(df) <- allgroups
     rowcounter <- 0
